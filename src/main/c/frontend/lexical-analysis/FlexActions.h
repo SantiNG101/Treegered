@@ -52,5 +52,6 @@ Token CommaLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token GreaterEqualLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token LesserEqualLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token StringLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
+Token WorldLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 
 #endif

@@ -67,6 +67,7 @@
 "if"                                {return ConditionalLexemeAction(createLexicalAnalyzerContext(), IF);}
 "else"                              {return ConditionalLexemeAction(createLexicalAnalyzerContext(), ELSE);}
 
+"world"                             {return WorldLexemeAction(createLexicalAnalyzerContext());}
 "tree"                              {return TreeLexemeAction(createLexicalAnalyzerContext());}
 "forest"                            {return ForestLexemeAction(createLexicalAnalyzerContext());}
 "grow"                              {return GrowLexemeAction(createLexicalAnalyzerContext());}

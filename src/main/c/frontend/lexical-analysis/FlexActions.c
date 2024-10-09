@@ -174,10 +174,10 @@ Token CurlyBraceLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext)
 	switch (lexicalAnalyzerContext->lexeme[0])
 	{
 	case '{':
-		token = OPEN_CURLY;
+		token = OPEN_CURLY_BRACE;
 		break;
 	case '}':
-		token = CLOSE_CURLY;
+		token = CLOSE_CURLY_BRACE;
 		break;
 	}
 	lexicalAnalyzerContext->semanticValue->token = token;
@@ -307,4 +307,12 @@ Token StringLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext)
 
 	lexicalAnalyzerContext->semanticValue->string = lexicalAnalyzerContext->lexeme;
 	return STRING;
+}
+
+Token WorldLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext)
+{
+	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+
+	lexicalAnalyzerContext->semanticValue->token = WORLD;
+	return WORLD;
 }
