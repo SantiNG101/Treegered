@@ -82,6 +82,15 @@ Token ArithmeticOperatorLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerCont
 	case '/':
 		token = DIV;
 		break;
+	case '+=':
+		token = ADD_EQ;
+		break;
+	case '-=':
+		token = SUB_EQ;
+		break;
+	case '*=':
+		token = MUL_EQ;
+		break;
 	}
 	lexicalAnalyzerContext->semanticValue->token = token;
 	return token;
