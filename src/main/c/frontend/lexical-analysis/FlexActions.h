@@ -25,19 +25,18 @@ void BeginMultilineCommentLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerCo
 void EndMultilineCommentLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 void IgnoredLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 
-Token ArithmeticOperatorLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
+Token ArithmeticOperatorLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token IntegerLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
-Token ParenthesisLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
+Token ParenthesisLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 
 Token UnknownLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 
 // Our functions
 Token ArrowLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
-Token EquealLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
+Token EqualLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token BraceLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token SemicolonLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token CurlyBraceLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
-Token CommentLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token LesserThanLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token GreaterThanLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token TreeLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
@@ -52,7 +51,6 @@ Token IdLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token CommaLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token GreaterEqualLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token LesserEqualLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
-Token CommentLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token StringLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 
 #endif
