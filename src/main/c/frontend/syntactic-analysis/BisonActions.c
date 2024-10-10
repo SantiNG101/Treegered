@@ -85,3 +85,19 @@ Program * ExpressionProgramSemanticAction(CompilerState * compilerState, Express
 	}
 	return program;
 }
+
+/*ADDED*/
+id * IdSemanticAction(ID idValue) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	id * toRet = calloc(1, sizeof(id));
+	toRet->value = idValue;
+	return toRet;
+}
+
+World * ExpressionWorldSemanticAction(WorldExpression * expression) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	World * world = calloc(1, sizeof(Factor));
+	world->worldExpressions = expression;
+	world->worldType = ASSIGNMENT;//TODO ???
+	return factor;
+}

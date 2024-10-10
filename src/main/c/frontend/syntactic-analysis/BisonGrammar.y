@@ -37,13 +37,49 @@
 */
 
 /** Terminals. */
+//TODO: there might be non terminals here to
+
+%token <world> WORLD
+%token <tree> TREE
+%token <forest> FOREST
+%token <grow> GROW
+
 %token <integer> INTEGER
-%token <token> ADD
-%token <token> CLOSE_PARENTHESIS
+%token <id> ID
+%token <string> STRING
+
+%token <token> IF
+%token <token> ELSE
+%token <for> FOR
+%token <in> IN
+%token <with> WITH
+
 %token <token> DIV
 %token <token> MUL
-%token <token> OPEN_PARENTHESIS
+%token <token> ADD
 %token <token> SUB
+%token <token> ADD_EQ
+%token <token> SUB_EQ
+%token <token> MUL_EQ
+
+%token <arrow> ARROW
+
+%token <equal> EQUAL
+%token <greaterequal> GREATEREQUAL
+%token <lesserequal> LESSEREQUAL
+
+%token <lesserthan> LESSERTHAN
+%token <greaterthan> GREATERTHAN
+
+%token <token> CLOSE_PARENTHESIS
+%token <token> OPEN_PARENTHESIS
+%token <token> CLOSE_BRACE
+%token <token> OPEN_BRACE
+%token <token> CLOSE_CURLY_BRACE
+%token <token> OPEN_CURLY_BRACE
+
+%token <semicolon> SEMICOLON
+%token <comma> COMMA
 
 %token <token> UNKNOWN
 
@@ -81,5 +117,14 @@ factor: OPEN_PARENTHESIS expression CLOSE_PARENTHESIS				{ $$ = ExpressionFactor
 
 constant: INTEGER													{ $$ = IntegerConstantSemanticAction($1); }
 	;
+
+//ADDED
+
+world: OPEN_CURLY_BRACE worldExpression CLOSE_CURLY_BRACE			{$$ = ExpressionWorldSemanticAction($2);}
+
+id: ID																{ $$ = IdSemanticAction($1); }
+	;
+
+
 
 %%
