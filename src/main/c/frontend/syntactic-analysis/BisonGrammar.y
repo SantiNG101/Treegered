@@ -121,6 +121,7 @@ constant: INTEGER													{ $$ = IntegerConstantSemanticAction($1); }
 //ADDED
 
 world: OPEN_CURLY_BRACE worldExpression CLOSE_CURLY_BRACE			{$$ = ExpressionWorldSemanticAction($2);}
+	;
 
 id: ID																{ $$ = IdSemanticAction($1); }
 	;
