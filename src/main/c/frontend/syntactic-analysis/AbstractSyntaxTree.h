@@ -19,6 +19,8 @@ typedef enum ExpressionType ExpressionType;
 typedef enum FactorType FactorType;
 typedef enum ProgramType ProgramType;
 typedef enum WorldExpressionsType WorldExpressionsType;
+typedef enum MainExpressionsType MainExpressionsType;
+typedef enum MainExpressionType MainExpressionType;
 
 typedef struct Constant Constant;
 typedef struct Expression Expression;
@@ -32,6 +34,15 @@ typedef struct WorldExpression WorldExpression;
 typedef struct MainExpression MainExpression;
 typedef struct assignment assignment;
 typedef struct WorldExpressions WorldExpressions;
+
+typedef struct TreeExpression TreeExpression;
+typedef struct ForestExpression ForestExpression;
+typedef struct ForExpression ForExpression;
+typedef struct ConditionalExpression ConditionalExpression;
+typedef struct Assignment Assignment;
+typedef struct ArithmeticExpression ArithmeticExpression;
+
+typedef struct Attributes Attributes;
 
 /**
  * Node types for the Abstract Syntax Tree (AST).
@@ -47,6 +58,10 @@ enum FactorType { CONSTANT, EXPRESSION };
 enum ProgramType { WORLDLESS, WORLD };
 
 enum WorldExpressionsType { ASSIGNMENT, WORLD_EXPRESSIONS };
+
+enum MainExpressionsType { MAIN_EXPRESSION, MAIN_EXPRESSIONS };
+
+enum MainExpressionType { TREE, FOREST, FOR, ASSIGNMENT, CONDITIONAL, ARITHMETIC };
 
 /* 
 	Structs for the ast
@@ -75,9 +90,43 @@ struct Expression {
     ExpressionType type;
 };
 
+struct Attributes {
+    union {
+        struct  {
+            Assignment *assignment;
+            Attributes *attributes;
+        };
+        Assignment *assignment;
+    };
+};
 
+struct TreeExpression {
+    Id id;
+    Attributes * attributes;
+};
 
+struct MainExpression {
+    union {
+        TreeExpression *treeExpression;
+        ForestExpression *forestExpression;
+        ForExpression *forExpression;
+        Assignment *assignment;
+        ArithmeticExpression *arithmeticExpression;
+        ConditionalExpression *conditionalExpression;
+    };
+    MainExpressionType type;
+};
 
+struct MainExpressions {
+    union {
+        MainExpression *mainExpression;
+        struct {
+            MainExpression *mainExpression;
+            MainExpressions *mainExpressions;
+        };
+    };
+    MainExpressionsType type;
+};
 
 struct WorldExpression {
 	WorldExpressions *worldExpressions;

@@ -7,5 +7,6 @@ typedef enum {
 } boolean;
 
 typedef int Token;
+typedef char* Id;
 
 #endif
