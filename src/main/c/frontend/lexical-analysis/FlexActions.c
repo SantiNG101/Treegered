@@ -64,34 +64,9 @@ void IgnoredLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext)
 	}
 }
 
-Token ArithmeticOperatorLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext)
+Token ArithmeticOperatorLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token)
 {
 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-	Token token;
-	switch (lexicalAnalyzerContext->lexeme[0])
-	{
-	case '+':
-		token = ADD;
-		break;
-	case '-':
-		token = SUB;
-		break;
-	case '*':
-		token = MUL;
-		break;
-	case '/':
-		token = DIV;
-		break;
-	case '+=':
-		token = ADD_EQ;
-		break;
-	case '-=':
-		token = SUB_EQ;
-		break;
-	case '*=':
-		token = MUL_EQ;
-		break;
-	}
 	lexicalAnalyzerContext->semanticValue->token = token;
 	return token;
 }
@@ -103,19 +78,9 @@ Token IntegerLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext)
 	return INTEGER;
 }
 
-Token ParenthesisLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext)
+Token ParenthesisLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext, Token token)
 {
 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-	Token token;
-	switch (lexicalAnalyzerContext->lexeme[0])
-	{
-	case '(':
-		token = OPEN_PARENTHESIS;
-		break;
-	case ')':
-		token = CLOSE_PARENTHESIS;
-		break;
-	}
 	lexicalAnalyzerContext->semanticValue->token = token;
 	return token;
 }
@@ -142,19 +107,9 @@ Token EqualLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext)
 	return EQUAL;
 }
 
-Token BraceLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext)
+Token BraceLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext, Token token)
 {
 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-	Token token;
-	switch (lexicalAnalyzerContext->lexeme[0])
-	{
-	case '[':
-		token = OPEN_BRACE;
-		break;
-	case ']':
-		token = CLOSE_BRACE;
-		break;
-	}
 	lexicalAnalyzerContext->semanticValue->token = token;
 	return token;
 }
@@ -167,19 +122,9 @@ Token SemicolonLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext)
 	return SEMICOLON;
 }
 
-Token CurlyBraceLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext)
+Token CurlyBraceLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token)
 {
 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-	Token token;
-	switch (lexicalAnalyzerContext->lexeme[0])
-	{
-	case '{':
-		token = OPEN_CURLY_BRACE;
-		break;
-	case '}':
-		token = CLOSE_CURLY_BRACE;
-		break;
-	}
 	lexicalAnalyzerContext->semanticValue->token = token;
 	return token;
 }
@@ -240,15 +185,9 @@ Token ForLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext)
 	return FOR;
 }
 
-Token ConditionalLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext)
+Token ConditionalLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token)
 {
 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-	Token token;
-	if (strcmp(lexicalAnalyzerContext->lexeme, "if") == 0)
-		token = IF;
-	if (strcmp(lexicalAnalyzerContext->lexeme, "else") == 0)
-		token = ELSE;
-
 	lexicalAnalyzerContext->semanticValue->token = token;
 	return token;
 }
