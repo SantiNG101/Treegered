@@ -45,7 +45,6 @@ Token ForestLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token InLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token ForLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token ConditionalLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
-Token WhileLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token GrowLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token IdLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token CommaLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);

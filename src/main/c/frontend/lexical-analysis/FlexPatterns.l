@@ -62,7 +62,6 @@
 
 "for"                               {return ForLexemeAction(createLexicalAnalyzerContext());}
 "in"                                {return InLexemeAction(createLexicalAnalyzerContext());}
-"while"                             {return WhileLexemeAction(createLexicalAnalyzerContext());}
 "with"                              {return WithLexemeAction(createLexicalAnalyzerContext());}
 "if"                                {return ConditionalLexemeAction(createLexicalAnalyzerContext(), IF);}
 "else"                              {return ConditionalLexemeAction(createLexicalAnalyzerContext(), ELSE);}
