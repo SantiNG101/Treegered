@@ -57,7 +57,7 @@ enum AssignmentValues {INTEGER, BOOLEAN, STRING, HEXCOLOR};
 
 enum ConditionalExpressionType {IF, ELSE_IF};
 
-enum ConditionalClauseExpressionsType {VALUE, EXPRESSION};
+enum ConditionalClauseExpressionType {VALUE, EXPRESSION};
 
 enum ConditionalClauseExpressionsType {LESSER, GREATER, EQUAL, LESSER_EQUAL, GREATER_EQUAL, NOT_EQUAL};
 

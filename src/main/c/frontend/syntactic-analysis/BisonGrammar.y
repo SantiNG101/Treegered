@@ -12,22 +12,21 @@
 
 	int integer;
 	Token token;
+	char* string;
+	Id id;
+
+	/** Non-terminals. */
+
 	WorldExpression * world;
 	TreeExpression * tree;
 	ForestExpression * forest;
 	GrowExpression * grow;
-	char* string;
-	ID* id;
 	ForExpression * for;
 	ConditionalClauseExpression * equal;
 	ConditionalClauseExpression * greaterequal;
 	ConditionalClauseExpression * lesserequal;
 	ConditionalClauseExpression * lesserthan;
 	ConditionalClauseExpression * greaterthan;
-
-	/** Non-terminals. */
-
-	Constant * constant;
 	Program * program;
 }
 
@@ -78,8 +77,8 @@
 %token <greaterequal> GREATEREQUAL
 %token <lesserequal> LESSEREQUAL
 
-%token <lesserthan> LESSER
-%token <greaterthan> GREATER
+%token <lesserthan> LESSERTHAN
+%token <greaterthan> GREATERTHAN
 
 %token <token> CLOSE_PARENTHESIS
 %token <token> OPEN_PARENTHESIS
