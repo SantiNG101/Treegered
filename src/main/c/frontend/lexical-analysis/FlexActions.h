@@ -47,6 +47,8 @@ Token ForLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token ConditionalLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
 Token GrowLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token IdLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
+Token BooleanLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
+Token HexcolorLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token CommaLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token GreaterEqualLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token LesserEqualLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);

@@ -53,7 +53,7 @@ enum WorldExpressionsType { ASSIGNMENT, WORLD_EXPRESSIONS };
 
 enum AssignmentExpressionsType {UNIQUE, MULTIPLE};
 
-enum AssignmentValues {INTEGER, BOOLEAN, STRING, HEXCOLOR};
+enum AssignmentValues {INTEGER, TRUE, FALSE, STRING, HEXCOLOR};
 
 enum ConditionalExpressionType {IF, ELSE_IF};
 

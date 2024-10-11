@@ -75,6 +75,11 @@
 
 [[:alpha:][:alnum:]*]+              {return IdLexemeAction(createLexicalAnalyzerContext());}
 
+"true"                              {return BooleanLexemeAction(createLexicalAnalyzerContext(), TRUE);}
+"false"                             {return BooleanLexemeAction(createLexicalAnalyzerContext(), FALSE);}
+
+"#"([0-9A-Fa-f]{6})                 {return HexcolorLexemeAction(createLexicalAnalyzerContext());}
+
 [[:digit:]]+						{ return IntegerLexemeAction(createLexicalAnalyzerContext()); }
 
 [[:space:]]+						{ IgnoredLexemeAction(createLexicalAnalyzerContext()); }

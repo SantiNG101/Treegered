@@ -44,6 +44,9 @@
 
 %token <integer> INTEGER
 %token <id> ID
+%token <hexcolor> HEXCOLOR
+%token <token> TRUE
+%token <token> FALSE
 %token <string> STRING
 
 %token <token> IF
@@ -105,16 +108,16 @@ expression: mainExpression
 
 mainExpression: treeExpression mainExpression
 	| 			forestExpression mainExpression
-	|			assignmentExpression mainExpression
+	|			assignment mainExpression
 	|			forExpression mainExpression
-	|			arithmeticExpression mainExpression
+	|			arithmeticAssignationExpression mainExpression
 	|			conditionalExpression mainExpression
 	|			growExpression mainExpression
 	|			treeExpression
 	| 			forestExpression
-	|			assignmentExpression
+	|			assignment
 	|			forExpression
-	|			arithmeticExpression
+	|			arithmeticAssignationExpression
 	|			conditionalExpression
 	|			growExpression
 	;
@@ -123,23 +126,46 @@ worldExpression: WORLD OPEN_CURLY_BRACE worldExpressions CLOSE_CURLY_BRACE			{$$
 	;
 
 worldExpressions: assignmentExpression
+	|			  worldExpressions COMMA worldExpressions
+	;
+
+treeExpression: TREE ID WITH OPEN_PARENTHESIS treeExpressions CLOSE_PARENTHESIS SEMICOLON
+	;
+
+treeExpressions: assignmentExpression
+	|			 treeExpressions COMMA treeExpressions
+	;
+
+forestExpression: FOREST ID WITH OPEN_PARENTHESIS forestExpressions CLOSE_PARENTHESIS SEMICOLON
+	;
+
+forestExpressions: assignmentExpression
+	|			 forestExpressions COMMA forestExpressions
+	;
+
+growExpression: GROW OPEN_PARENTHESIS ID CLOSE_PARENTHESIS SEMICOLON
+	;
+
+assignment: assignmentExpression SEMICOLON
+	;
+
+assignmentExpression: ID EQUAL declarationValue
+	|				  ID EQUAL ID arithmeticExpression
+	;
+
+arithmeticAssignationExpression: arithmeticAssignationExpressions SEMICOLON
+	;
+
+arithmeticAssignationExpressions: ID ADD_EQ declarationValue
+	|				  			 ID SUB_EQ declarationValue
 	;
 
 id: ID																{ $$ = IdSemanticAction($1); }
 	;
 
-type: TREE		{$$ = ();}
-	| FOREST	{$$ = ();}
-
-declaration: type ID WITH OPEN_PARENTHESIS declarationExpression CLOSE_PARENTHESIS SEMICOLON	{$$ = ExpressionDeclarationSemanticAction($1, $2, $4);}
-	;
-
-declarationExpression: ID EQUAL declarationValue COMMA			{$$ = ();}
-	| 				   ID EQUAL declarationValue				{$$ = ();}
-	;
-
 declarationValue: INTEGER									{$$ = declarationValueSemanticAction($1);}
-	|			  BOOLEAN									{$$ = declarationValueSemanticAction($1);}
+	|			  TRUE										{$$ = declarationValueSemanticAction($1);}
+	|			  FALSE										{$$ = declarationValueSemanticAction($1);}
 	|			  STRING									{$$ = declarationValueSemanticAction($1);}
 	|			  HEXCOLOR									{$$ = declarationValueSemanticAction($1);}
 	;
