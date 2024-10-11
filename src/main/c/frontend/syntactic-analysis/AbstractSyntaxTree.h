@@ -15,16 +15,13 @@ void shutdownAbstractSyntaxTreeModule();
  * This typedefs allows self-referencing types.
  */
 
-typedef enum ExpressionType ExpressionType;
-typedef enum FactorType FactorType;
 typedef enum ProgramType ProgramType;
 typedef enum WorldExpressionsType WorldExpressionsType;
 typedef enum MainExpressionsType MainExpressionsType;
 typedef enum MainExpressionType MainExpressionType;
 
-typedef struct Constant Constant;
-typedef struct Expression Expression;
-typedef struct Factor Factor;
+typedef struct ID ID;
+
 typedef struct Program Program;
 
 typedef struct ProgramExpression ProgramExpression;
@@ -32,7 +29,6 @@ typedef struct MainExpressions MainExpressions;
 typedef struct WorldExpression WorldExpression;
 
 typedef struct MainExpression MainExpression;
-typedef struct assignment assignment;
 typedef struct WorldExpressions WorldExpressions;
 
 typedef struct TreeExpression TreeExpression;
@@ -51,13 +47,19 @@ typedef struct Attributes Attributes;
 /*
 	Enums for the ast
 */
-enum ExpressionType { ADDITION, DIVISION, FACTOR, MULTIPLICATION, SUBTRACTION };
-
-enum FactorType { CONSTANT, EXPRESSION };
-
 enum ProgramType { WORLDLESS, WORLD };
 
 enum WorldExpressionsType { ASSIGNMENT, WORLD_EXPRESSIONS };
+
+enum AssignmentExpressionsType {UNIQUE, MULTIPLE};
+
+enum AssignmentValues {INTEGER, BOOLEAN, STRING, HEXCOLOR};
+
+enum ConditionalExpressionType {IF, ELSE_IF};
+
+enum ConditionalClauseExpressionsType {VALUE, EXPRESSION};
+
+enum ConditionalClauseExpressionsType {LESSER, GREATER, EQUAL, LESSER_EQUAL, GREATER_EQUAL, NOT_EQUAL};
 
 enum MainExpressionsType { MAIN_EXPRESSION, MAIN_EXPRESSIONS };
 
@@ -67,52 +69,90 @@ enum MainExpressionType { TREE, FOREST, FOR, ASSIGNMENT, CONDITIONAL, ARITHMETIC
 	Structs for the ast
 */
 
-struct Constant {
-    int value;
+struct ID{
+	Id idValue;
 };
 
-struct Factor {
-    union {
-        Constant *constant;
-        Expression *expression;
-    };
-    FactorType type;
+struct AssignmentExpression{
+	ID *attribute;
+	union{
+		char* *value;
+		int *value;
+		boolean *value;
+		hexcolor *value;
+	}
+	AssignmentValues valueType;
 };
 
-struct Expression {
-    union {
-        Factor *factor;
-        struct {
-            Expression *leftExpression;
-            Expression *rightExpression;
-        };
-    };
-    ExpressionType type;
-};
-
-struct Attributes {
-    union {
-        struct  {
-            Assignment *assignment;
-            Attributes *attributes;
-        };
-        Assignment *assignment;
-    };
+struct AssignmentExpressions{
+	union{
+		AssignmentExpression *AssignmentExpression;
+		struct{
+			AssignmentExpression *AssignmentExpression;
+			AssignmentExpressions *AssignmentExpressions;
+		}
+	}
+	AssignmentExpressionsType type;
 };
 
 struct TreeExpression {
-    Id id;
-    Attributes * attributes;
+    ID * id;
+    AssignmentExpressions * AssignmentExpressions;
+};
+
+struct ForestExpression {
+    ID * id;
+    AssignmentExpressions * AssignmentExpressions;
+};
+
+struct ForExpression{
+	ID *id;
+	int rangeStart;
+	int rangeEnd;
+	MainExpressions *mainExpressions;
+};
+
+struct ConditionalClauseExpression{
+	union{
+		char* *value;
+		int *value;
+		boolean *value;
+		hexcolor *value;
+		MainExpressions *expression;
+	}
+	ConditionalClauseExpressionType type;
+}
+
+struct ConditionalClauseExpressions{
+	union{
+		ConditionalClauseExpression *conditionalClauseExpression;
+		struct{
+			ConditionalClauseExpression *leftConditionalClauseExpression;
+			ConditionalClauseExpression *rightConditionalClauseExpressions;
+		}
+	}
+	ConditionalClauseExpressionsType type;
+};
+
+struct ConditionalExpression{
+	ConditionalClauseExpressions *conditionalClauseExpressions;
+	MainExpressions *mainExpressions;
+	ConditionalExpressionType *conditionalExpressionType;
+};
+
+struct GrowExpression{
+	ID *id;
 };
 
 struct MainExpression {
     union {
         TreeExpression *treeExpression;
         ForestExpression *forestExpression;
+		AssignmentExpression *assignmentExpression;
         ForExpression *forExpression;
-        Assignment *assignment;
         ArithmeticExpression *arithmeticExpression;
         ConditionalExpression *conditionalExpression;
+		GrowExpression *growExpression;
     };
     MainExpressionType type;
 };
@@ -134,16 +174,14 @@ struct WorldExpression {
 
 struct WorldExpressions {
 	union {
-		assignment *assignment;
+		AssignmentExpression *AssignmentExpression;
 		struct {
-			assignment *assignment;
+			AssignmentExpression *AssignmentExpression;
 			WorldExpressions *worldExpressions;
 		};
 	};
-
 	WorldExpressionsType type;
 };
-
 
 struct ProgramExpression {
     union {
@@ -164,8 +202,13 @@ struct Program {
  * Node recursive destructors.
  */
 void releaseConstant(Constant *constant);
-void releaseExpression(Expression *expression);
-void releaseFactor(Factor *factor);
+void releaseID(ID *ID);
 void releaseProgram(Program *program);
+void releaseProgramExpression(ProgramExpression *programExpression);
+void releaseWorldExpression(WorldExpression *worldExpression);
+void releaseWorldExpressions(WorldExpressions *worldExpressions);
+void releaseMainExpression(MainExpression *mainExpression);
+void releaseMainExpressions(MainExpressions *mainExpressions);
+void releaseTreeExpression(TreeExpression *treeExpression);
 
 #endif

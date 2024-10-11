@@ -16,8 +16,6 @@
 	/** Non-terminals. */
 
 	Constant * constant;
-	Expression * expression;
-	Factor * factor;
 	Program * program;
 }
 
@@ -84,9 +82,6 @@
 %token <token> UNKNOWN
 
 /** Non-terminals. */
-%type <constant> constant
-%type <expression> expression
-%type <factor> factor
 %type <program> program
 
 /**
@@ -104,26 +99,28 @@
 program: expression													{ $$ = ExpressionProgramSemanticAction(currentCompilerState(), $1); }
 	;
 
-expression: expression[left] ADD expression[right]					{ $$ = ArithmeticExpressionSemanticAction($left, $right, ADDITION); }
-	| expression[left] DIV expression[right]						{ $$ = ArithmeticExpressionSemanticAction($left, $right, DIVISION); }
-	| expression[left] MUL expression[right]						{ $$ = ArithmeticExpressionSemanticAction($left, $right, MULTIPLICATION); }
-	| expression[left] SUB expression[right]						{ $$ = ArithmeticExpressionSemanticAction($left, $right, SUBTRACTION); }
-	| factor														{ $$ = FactorExpressionSemanticAction($1); }
-	;
-
-factor: OPEN_PARENTHESIS expression CLOSE_PARENTHESIS				{ $$ = ExpressionFactorSemanticAction($2); }
-	| constant														{ $$ = ConstantFactorSemanticAction($1); }
-	;
-
-constant: INTEGER													{ $$ = IntegerConstantSemanticAction($1); }
-	;
-
-//ADDED
+expression: 
 
 world: OPEN_CURLY_BRACE worldExpression CLOSE_CURLY_BRACE			{$$ = ExpressionWorldSemanticAction($2);}
 	;
 
 id: ID																{ $$ = IdSemanticAction($1); }
+	;
+
+type: TREE		{$$ = ();}
+	| FOREST	{$$ = ();}
+
+declaration: type ID WITH OPEN_PARENTHESIS declarationExpression CLOSE_PARENTHESIS SEMICOLON	{$$ = ExpressionDeclarationSemanticAction($1, $2, $4);}
+	;
+
+declarationExpression: ID EQUAL declarationValue COMMA			{$$ = ();}
+	| 				   ID EQUAL declarationValue				{$$ = ();}
+	;
+
+declarationValue: INTEGER									{$$ = declarationValueSemanticAction($1);}
+	|			  BOOLEAN									{$$ = declarationValueSemanticAction($1);}
+	|			  STRING									{$$ = declarationValueSemanticAction($1);}
+	|			  HEXCOLOR									{$$ = declarationValueSemanticAction($1);}
 	;
 
 
