@@ -99,9 +99,30 @@
 program: expression													{ $$ = ExpressionProgramSemanticAction(currentCompilerState(), $1); }
 	;
 
-expression: 
+expression: mainExpression
+	|		worldExpression mainExpression
+	;
 
-world: OPEN_CURLY_BRACE worldExpression CLOSE_CURLY_BRACE			{$$ = ExpressionWorldSemanticAction($2);}
+mainExpression: treeExpression mainExpression
+	| 			forestExpression mainExpression
+	|			assignmentExpression mainExpression
+	|			forExpression mainExpression
+	|			arithmeticExpression mainExpression
+	|			conditionalExpression mainExpression
+	|			growExpression mainExpression
+	|			treeExpression
+	| 			forestExpression
+	|			assignmentExpression
+	|			forExpression
+	|			arithmeticExpression
+	|			conditionalExpression
+	|			growExpression
+	;
+
+worldExpression: WORLD OPEN_CURLY_BRACE worldExpressions CLOSE_CURLY_BRACE			{$$ = ExpressionWorldSemanticAction($2);}
+	;
+
+worldExpressions: assignmentExpression
 	;
 
 id: ID																{ $$ = IdSemanticAction($1); }
