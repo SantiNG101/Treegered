@@ -31,16 +31,7 @@
 <MULTILINE_COMMENT>[^*]+			{ IgnoredLexemeAction(createLexicalAnalyzerContext()); }
 <MULTILINE_COMMENT>.				{ IgnoredLexemeAction(createLexicalAnalyzerContext()); }
 
-/*"->"                                {return ArrowLexemeAction(createLexicalAnalyzerContext());}
-
-"="                                 {return EqualLexemeAction(createLexicalAnalyzerContext());}
-"<"                                 {return LesserThanLexemeAction(createLexicalAnalyzerContext());}
-"<="                                {return LesserEqualLexemeAction(createLexicalAnalyzerContext());}
-">"                                 {return GreaterThanLexemeAction(createLexicalAnalyzerContext());}
-">="                                {return GreaterEqualLexemeAction(createLexicalAnalyzerContext());}
-
-//","                                 {return CommaLexemeAction(reateLexicalAnalyzerContext());}
-*/";"                                 {return SemicolonLexemeAction(createLexicalAnalyzerContext());}
+";"                                 {return SemicolonLexemeAction(createLexicalAnalyzerContext());}
 
 "-"									{ return ArithmeticOperatorLexemeAction(createLexicalAnalyzerContext(), SUB); }
 "*"									{ return ArithmeticOperatorLexemeAction(createLexicalAnalyzerContext(), MUL); }
@@ -60,17 +51,11 @@
 "["                                 {return BraceLexemeAction(createLexicalAnalyzerContext(), OPEN_BRACE);}
 "]"                                 {return BraceLexemeAction(createLexicalAnalyzerContext(), CLOSE_BRACE);}
 
-/*"for"                               {return ForLexemeAction(createLexicalAnalyzerContext());}
-"in"                                {return InLexemeAction(createLexicalAnalyzerContext());}
-"with"                              {return WithLexemeAction(createLexicalAnalyzerContext());}
-*/"if"                                {return ConditionalLexemeAction(createLexicalAnalyzerContext(), IF);}
+"if"                                {return ConditionalLexemeAction(createLexicalAnalyzerContext(), IF);}
 "else"                              {return ConditionalLexemeAction(createLexicalAnalyzerContext(), ELSE);}
 
 "world"                             {return WorldLexemeAction(createLexicalAnalyzerContext());}
-/*"tree"                              {return TreeLexemeAction(createLexicalAnalyzerContext());}
-"forest"                            {return ForestLexemeAction(createLexicalAnalyzerContext());}
-"grow"                              {return GrowLexemeAction(createLexicalAnalyzerContext());}
-*/
+
 "'"[[:alnum:]]+"'"                  {return StringLexemeAction(createLexicalAnalyzerContext());}
 
 [[:alpha:][:alnum:]*]+              {return IdLexemeAction(createLexicalAnalyzerContext());}
