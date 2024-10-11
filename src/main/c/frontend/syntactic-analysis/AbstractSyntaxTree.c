@@ -55,7 +55,7 @@ logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	}
 }
 
-void releaseID(ID * idValue) {
+void release_ID(_ID * idValue) {
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (idValue != NULL) {
 		if (idValue->idValue != NULL) {

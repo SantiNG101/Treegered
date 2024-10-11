@@ -53,17 +53,17 @@ enum ProgramType { WORLDLESS, WORLD };
 	Structs for the ast
 */
 
-struct ID{
+struct _ID{
 	Id idValue;
 };
 
 
 struct MainExpression {
-    ID *id;
+    _ID *id;
 };
 
 struct WorldExpression {
-	ID *id;
+	_ID *id;
 };
 
 
@@ -85,7 +85,7 @@ struct Program {
 /**
  * Node recursive destructors.
  */
-void releaseID(ID *ID);
+void release_ID(_ID *ID);
 void releaseProgram(Program *program);
 void releaseProgramExpression(ProgramExpression *programExpression);
 void releaseWorldExpression(WorldExpression *worldExpression);
