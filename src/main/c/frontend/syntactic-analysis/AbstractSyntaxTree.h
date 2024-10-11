@@ -49,22 +49,6 @@ typedef struct Attributes Attributes;
 */
 enum ProgramType { WORLDLESS, WORLD };
 
-enum WorldExpressionsType { ASSIGNMENT, WORLD_EXPRESSIONS };
-
-enum AssignmentExpressionsType {UNIQUE, MULTIPLE};
-
-enum AssignmentValues {INTEGER, BOOLEAN, STRING, HEXCOLOR};
-
-enum ConditionalExpressionType {IF, ELSE_IF};
-
-enum ConditionalClauseExpressionType {VALUE, EXPRESSION};
-
-enum ConditionalClauseExpressionsType {LESSER, GREATER, EQUAL, LESSER_EQUAL, GREATER_EQUAL, NOT_EQUAL};
-
-enum MainExpressionsType { MAIN_EXPRESSION, MAIN_EXPRESSIONS };
-
-enum MainExpressionType { TREE, FOREST, FOR, ASSIGNMENT, CONDITIONAL, ARITHMETIC };
-
 /* 
 	Structs for the ast
 */
@@ -79,7 +63,7 @@ struct MainExpression {
 };
 
 struct WorldExpression {
-	WorldExpressions *worldExpressions;
+	ID *id;
 };
 
 

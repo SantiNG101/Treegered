@@ -16,53 +16,51 @@ void shutdownAbstractSyntaxTreeModule() {
 
 /** PUBLIC FUNCTIONS */
 
-void releaseConstant(Constant * constant) {
-	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
-	if (constant != NULL) {
-		free(constant);
-	}
-}
-
-void releaseExpression(Expression * expression) {
+void releaseProgramExpression(ProgramExpression * expression) {
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (expression != NULL) {
-		switch (expression->type) {
-			case ADDITION:
-			case DIVISION:
-			case MULTIPLICATION:
-			case SUBTRACTION:
-				releaseExpression(expression->leftExpression);
-				releaseExpression(expression->rightExpression);
-				break;
-			case FACTOR:
-				releaseFactor(expression->factor);
+		switch(program->type){
+			case WORLD:
+				releaseWorldExpression(expression->worldExpression);
+			case WORLDLESS:
+				releaseMainExpression(expression->mainExpression);
 				break;
 		}
 		free(expression);
 	}
 }
 
-void releaseFactor(Factor * factor) {
-	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
-	if (factor != NULL) {
-		switch (factor->type) {
-			case CONSTANT:
-				releaseConstant(factor->constant);
-				break;
-			case EXPRESSION:
-				releaseExpression(factor->expression);
-				break;
-		}
-		free(factor);
-	}
-}
-
 void releaseProgram(Program * program) {
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (program != NULL) {
-		releaseExpression(program->expression);
+		releaseProgramExpression(program->programExpression);
 		free(program);
 	}
 }
 
 /*ADDED*/
+void releaseWorldExpression(WorldExpression *worldExpression){
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if (worldExpression != NULL) {
+		releaseID(worldExpression->id);
+		free(worldExpression);
+	}
+}
+
+void releaseMainExpression(MainExpression *mainExpression){
+logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if (mainExpression != NULL) {
+		releaseID(mainExpression->id);
+		free(mainExpression);
+	}
+}
+
+void releaseID(ID * idValue) {
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if (idValue != NULL) {
+		if (idValue->idValue != NULL) {
+			free(idValue->idValue);
+		}
+		free(idValue);
+	}
+}
