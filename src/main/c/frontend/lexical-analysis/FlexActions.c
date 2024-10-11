@@ -84,17 +84,17 @@ Token UnknownLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
 }
 
 Token ArrowLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
-    _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+   /* _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
 
     lexicalAnalyzerContext->semanticValue->token = ARROW;
-    return ARROW;
+    return ARROW;*/
 }
 
 Token EqualLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
-    _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+    /*_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
 
     lexicalAnalyzerContext->semanticValue->token = EQUAL;
-    return EQUAL;
+    return EQUAL;*/
 }
 
 Token BraceLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext,
@@ -119,52 +119,52 @@ Token CurlyBraceLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext,
 }
 
 Token LesserThanLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
-    _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+   /* _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
 
     lexicalAnalyzerContext->semanticValue->token = LESSERTHAN;
-    return LESSERTHAN;
+    return LESSERTHAN;*/
 }
 
 Token GreaterThanLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
-    _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+    /*_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
 
     lexicalAnalyzerContext->semanticValue->token = GREATERTHAN;
-    return GREATERTHAN;
+    return GREATERTHAN;*/
 }
 
 Token TreeLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
-    _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+    /*_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
 
     lexicalAnalyzerContext->semanticValue->token = TREE;
-    return TREE;
+    return TREE;*/
 }
 
 Token WithLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
-    _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+    /*_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
 
     lexicalAnalyzerContext->semanticValue->token = WITH;
-    return WITH;
+    return WITH;*/
 }
 
 Token ForestLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
-    _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+    /*_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
 
     lexicalAnalyzerContext->semanticValue->token = FOREST;
-    return FOREST;
+    return FOREST;*/
 }
 
 Token InLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
-    _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+    /*_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
 
     lexicalAnalyzerContext->semanticValue->token = IN;
-    return IN;
+    return IN;*/
 }
 
 Token ForLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
-    _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+    /*_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
 
     lexicalAnalyzerContext->semanticValue->token = FOR;
-    return FOR;
+    return FOR;*/
 }
 
 Token ConditionalLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext,
@@ -175,10 +175,10 @@ Token ConditionalLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext,
 }
 
 Token GrowLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
-    _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+    /*_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
 
     lexicalAnalyzerContext->semanticValue->token = GROW;
-    return GROW;
+    return GROW;*/
 }
 
 Token IdLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
@@ -189,24 +189,24 @@ Token IdLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
 }
 
 Token CommaLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
-    _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+    /*_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
 
     lexicalAnalyzerContext->semanticValue->token = COMMA;
-    return COMMA;
+    return COMMA;*/
 }
 
 Token GreaterEqualLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
-    _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+   /* _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
 
     lexicalAnalyzerContext->semanticValue->token = GREATER_EQUAL;
-    return GREATER_EQUAL;
+    return GREATER_EQUAL;*/
 }
 
 Token LesserEqualLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
-    _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+    /*_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
 
     lexicalAnalyzerContext->semanticValue->token = LESSER_EQUAL;
-    return LESSER_EQUAL;
+    return LESSER_EQUAL;*/
 }
 
 Token StringLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
