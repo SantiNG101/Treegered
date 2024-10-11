@@ -18,11 +18,7 @@ void shutdownGeneratorModule() {
 
 /** PRIVATE FUNCTIONS */
 
-static const char _expressionTypeToCharacter(const ExpressionType type);
-static void _generateConstant(const unsigned int indentationLevel, Constant * constant);
 static void _generateEpilogue(const int value);
-static void _generateExpression(const unsigned int indentationLevel, Expression * expression);
-static void _generateFactor(const unsigned int indentationLevel, Factor * factor);
 static void _generateProgram(Program * program);
 static void _generatePrologue(void);
 static char * _indentation(const unsigned int indentationLevel);
@@ -75,7 +71,7 @@ static void _generateExpression(const unsigned int indentationLevel, Expression 
  * Generates the output of the program.
  */
 static void _generateProgram(Program * program) {
-	_generateExpression(3, program->expression);
+	//_generateExpression(3, program->expression);
 }
 
 /**
@@ -130,9 +126,11 @@ static void _output(const unsigned int indentationLevel, const char * const form
 /** PUBLIC FUNCTIONS */
 
 void generate(CompilerState * compilerState) {
+	/*
 	logDebugging(_logger, "Generating final output...");
 	_generatePrologue();
 	_generateProgram(compilerState->abstractSyntaxtTree);
 	_generateEpilogue(compilerState->value);
 	logDebugging(_logger, "Generation is done.");
+	*/
 }
