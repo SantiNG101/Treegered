@@ -33,26 +33,6 @@
 
 ";"                                 {return SemicolonLexemeAction(createLexicalAnalyzerContext());}
 
-"-"									{ return ArithmeticOperatorLexemeAction(createLexicalAnalyzerContext(), SUB); }
-"*"									{ return ArithmeticOperatorLexemeAction(createLexicalAnalyzerContext(), MUL); }
-"/"									{ return ArithmeticOperatorLexemeAction(createLexicalAnalyzerContext(), DIV); }
-"+"									{ return ArithmeticOperatorLexemeAction(createLexicalAnalyzerContext(), ADD); }
-
-"+="                                {return ArithmeticOperatorLexemeAction(createLexicalAnalyzerContext(), ADD_EQ);}
-"-="                                {return ArithmeticOperatorLexemeAction(createLexicalAnalyzerContext(), SUB_EQ);}
-"*="                                {return ArithmeticOperatorLexemeAction(createLexicalAnalyzerContext(), MUL_EQ);}
-
-"("									{ return ParenthesisLexemeAction(createLexicalAnalyzerContext(), OPEN_PARENTHESIS); }
-")"									{ return ParenthesisLexemeAction(createLexicalAnalyzerContext(), CLOSE_PARENTHESIS); }
-
-"{"                                 {return BraceLexemeAction(createLexicalAnalyzerContext(), OPEN_CURLY_BRACE);}
-"}"                                 {return BraceLexemeAction(createLexicalAnalyzerContext(), CLOSE_CURLY_BRACE);}
-
-"["                                 {return BraceLexemeAction(createLexicalAnalyzerContext(), OPEN_BRACE);}
-"]"                                 {return BraceLexemeAction(createLexicalAnalyzerContext(), CLOSE_BRACE);}
-
-"if"                                {return ConditionalLexemeAction(createLexicalAnalyzerContext(), IF);}
-"else"                              {return ConditionalLexemeAction(createLexicalAnalyzerContext(), ELSE);}
 
 "world"                             {return WorldLexemeAction(createLexicalAnalyzerContext());}
 
