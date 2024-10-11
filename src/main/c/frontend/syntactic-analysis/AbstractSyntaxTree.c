@@ -42,7 +42,7 @@ void releaseProgram(Program * program) {
 void releaseWorldExpression(WorldExpression *worldExpression){
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (worldExpression != NULL) {
-		releaseID(worldExpression->id);
+		release_ID(worldExpression->id);
 		free(worldExpression);
 	}
 }
@@ -50,7 +50,7 @@ void releaseWorldExpression(WorldExpression *worldExpression){
 void releaseMainExpression(MainExpression *mainExpression){
 logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (mainExpression != NULL) {
-		releaseID(mainExpression->id);
+		release_ID(mainExpression->id);
 		free(mainExpression);
 	}
 }
