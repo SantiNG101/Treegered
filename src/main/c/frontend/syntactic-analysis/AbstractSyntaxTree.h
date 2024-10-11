@@ -69,7 +69,7 @@ struct WorldExpression {
 
 struct ProgramExpression {
     union {
-        MainExpression *mainExpression;
+        MainExpression *wordlessMainExpression;
         struct {
             WorldExpression *worldExpression;
             MainExpression *mainExpression;
