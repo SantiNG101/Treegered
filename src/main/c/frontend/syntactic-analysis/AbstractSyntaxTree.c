@@ -19,7 +19,7 @@ void shutdownAbstractSyntaxTreeModule() {
 void releaseProgramExpression(ProgramExpression * expression) {
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (expression != NULL) {
-		switch(program->type){
+		switch(expression->type){
 			case WORLDFULL:
 				releaseWorldExpression(expression->worldExpression);
 			case WORLDLESS:
