@@ -19,6 +19,6 @@ void shutdownBisonActionsModule();
  */
 
 
-Program * ExpressionProgramSemanticAction(CompilerState * compilerState, Expression * expression);
+Program * ExpressionProgramSemanticAction(CompilerState * compilerState, ProgramExpression * expression);
 
 #endif
