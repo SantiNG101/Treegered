@@ -20,7 +20,7 @@ typedef enum WorldExpressionsType WorldExpressionsType;
 typedef enum MainExpressionsType MainExpressionsType;
 typedef enum MainExpressionType MainExpressionType;
 
-typedef struct ID ID;
+typedef struct ID _ID;
 
 typedef struct Program Program;
 
