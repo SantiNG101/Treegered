@@ -37,7 +37,7 @@ typedef struct ForExpression ForExpression;
 typedef struct ConditionalExpression ConditionalExpression;
 typedef struct Assignment Assignment;
 typedef struct ArithmeticExpression ArithmeticExpression;
-
+typedef struct GrowExpression GrowExpression;
 typedef struct Attributes Attributes;
 
 /**

@@ -12,6 +12,18 @@
 
 	int integer;
 	Token token;
+	WorldExpression * world;
+	TreeExpression * tree;
+	ForestExpression * forest;
+	GrowExpression * grow;
+	char* string;
+	ID* id;
+	ForExpression * for;
+	ConditionalClauseExpression * equal;
+	ConditionalClauseExpression * greaterequal;
+	ConditionalClauseExpression * lesserequal;
+	ConditionalClauseExpression * lesserthan;
+	ConditionalClauseExpression * greaterthan;
 
 	/** Non-terminals. */
 
@@ -66,8 +78,8 @@
 %token <greaterequal> GREATEREQUAL
 %token <lesserequal> LESSEREQUAL
 
-%token <lesserthan> LESSERTHAN
-%token <greaterthan> GREATERTHAN
+%token <lesserthan> LESSER
+%token <greaterthan> GREATER
 
 %token <token> CLOSE_PARENTHESIS
 %token <token> OPEN_PARENTHESIS
@@ -110,14 +122,12 @@ mainExpression: treeExpression mainExpression
 	|			arithmeticExpression mainExpression
 	|			conditionalExpression mainExpression
 	|			growExpression mainExpression
-	|			treeExpression
-	| 			forestExpression
-	|			assignmentExpression
-	|			forExpression
-	|			arithmeticExpression
-	|			conditionalExpression
-	|			growExpression
+	|		
 	;
+
+forExpression: FOR OPEN_BRACE  IN 
+
+assignmentExpression: 
 
 worldExpression: WORLD OPEN_CURLY_BRACE worldExpressions CLOSE_CURLY_BRACE			{$$ = ExpressionWorldSemanticAction($2);}
 	;
