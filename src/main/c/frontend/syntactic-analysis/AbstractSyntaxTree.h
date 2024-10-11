@@ -47,7 +47,7 @@ typedef struct Attributes Attributes;
 /*
 	Enums for the ast
 */
-enum ProgramType { WORLDLESS, WORLD };
+enum ProgramType { WORLDLESS, WORLDFULL };
 
 /* 
 	Structs for the ast

@@ -20,7 +20,7 @@ void releaseProgramExpression(ProgramExpression * expression) {
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (expression != NULL) {
 		switch(program->type){
-			case WORLD:
+			case WORLDFULL:
 				releaseWorldExpression(expression->worldExpression);
 			case WORLDLESS:
 				releaseMainExpression(expression->mainExpression);
