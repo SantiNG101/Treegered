@@ -1,8 +1,0 @@
-/*
-	A multiline comment.
-*/
-world{
-    hello = yes,
-    bie = yes
-}
-hello = 1;

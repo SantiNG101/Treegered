@@ -217,6 +217,7 @@ declarationValue: ID		{ $$ = NULL;}
 	|			  FALSE		{ $$ = NULL;}
 	|			  HEXCOLOR	{ $$ = NULL;}
 	|			  INTEGER	{ $$ = NULL;}
+	|			  OPEN_PARENTHESIS declarationValue CLOSE_PARENTHESIS	{ $$ = NULL;}
 	;
 
 %%
