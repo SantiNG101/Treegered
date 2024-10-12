@@ -12,12 +12,14 @@
 
 	int integer;
 	Token token;
+	char* string;
+	Id id;
 
 	/** Non-terminals. */
 
-	Constant * constant;
-	Expression * expression;
-	Factor * factor;
+	MainExpression * mainExpression;
+	WorldExpression * worldExpression;
+	ProgramExpression * programExpression;
 	Program * program;
 }
 
@@ -38,20 +40,21 @@
 
 /** Terminals. */
 %token <integer> INTEGER
-%token <token> ADD
-%token <token> CLOSE_PARENTHESIS
-%token <token> DIV
-%token <token> MUL
-%token <token> OPEN_PARENTHESIS
-%token <token> SUB
+%token <id> ID
+%token <string> STRING
+
+%token <token> SEMICOLON
+
+%token <token> WORLD
 
 %token <token> UNKNOWN
 
 /** Non-terminals. */
-%type <constant> constant
-%type <expression> expression
-%type <factor> factor
 %type <program> program
+%type <programExpression> programExpression
+%type <worldExpression> worldExpression
+%type <mainExpression> mainExpression
+
 
 /**
  * Precedence and associativity.
@@ -65,21 +68,17 @@
 
 // IMPORTANT: To use λ in the following grammar, use the %empty symbol.
 
-program: expression													{ $$ = ExpressionProgramSemanticAction(currentCompilerState(), $1); }
+program: programExpression													{ $$ = ExpressionProgramSemanticAction(currentCompilerState(), $1); }
 	;
 
-expression: expression[left] ADD expression[right]					{ $$ = ArithmeticExpressionSemanticAction($left, $right, ADDITION); }
-	| expression[left] DIV expression[right]						{ $$ = ArithmeticExpressionSemanticAction($left, $right, DIVISION); }
-	| expression[left] MUL expression[right]						{ $$ = ArithmeticExpressionSemanticAction($left, $right, MULTIPLICATION); }
-	| expression[left] SUB expression[right]						{ $$ = ArithmeticExpressionSemanticAction($left, $right, SUBTRACTION); }
-	| factor														{ $$ = FactorExpressionSemanticAction($1); }
+programExpression: mainExpression											{ $$ = NULL;}
+	|		worldExpression mainExpression							{ $$ = NULL;}
 	;
 
-factor: OPEN_PARENTHESIS expression CLOSE_PARENTHESIS				{ $$ = ExpressionFactorSemanticAction($2); }
-	| constant														{ $$ = ConstantFactorSemanticAction($1); }
+mainExpression: ID SEMICOLON										{ $$ = NULL;}
 	;
 
-constant: INTEGER													{ $$ = IntegerConstantSemanticAction($1); }
+worldExpression: WORLD SEMICOLON									{ $$ = NULL;}
 	;
 
 %%

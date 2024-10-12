@@ -15,52 +15,52 @@ void shutdownAbstractSyntaxTreeModule() {
 }
 
 /** PUBLIC FUNCTIONS */
-
-void releaseConstant(Constant * constant) {
+void releaseProgram(Program * program) {
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
-	if (constant != NULL) {
-		free(constant);
+	if (program != NULL) {
+		releaseProgramExpression(program->programExpression);
+		free(program);
 	}
 }
 
-void releaseExpression(Expression * expression) {
+void releaseProgramExpression(ProgramExpression * expression) {
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (expression != NULL) {
-		switch (expression->type) {
-			case ADDITION:
-			case DIVISION:
-			case MULTIPLICATION:
-			case SUBTRACTION:
-				releaseExpression(expression->leftExpression);
-				releaseExpression(expression->rightExpression);
+		switch(expression->type){
+			case WORLDFULL:
+				releaseWorldExpression(expression->worldExpression);
+				releaseMainExpression(expression->mainExpression);
 				break;
-			case FACTOR:
-				releaseFactor(expression->factor);
+			case WORLDLESS:
+				releaseMainExpression(expression->worldlessMainExpression);
 				break;
 		}
 		free(expression);
 	}
 }
 
-void releaseFactor(Factor * factor) {
+void releaseWorldExpression(WorldExpression *worldExpression){
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
-	if (factor != NULL) {
-		switch (factor->type) {
-			case CONSTANT:
-				releaseConstant(factor->constant);
-				break;
-			case EXPRESSION:
-				releaseExpression(factor->expression);
-				break;
-		}
-		free(factor);
+	if (worldExpression != NULL) {
+		release_ID(worldExpression->id);
+		free(worldExpression);
 	}
 }
 
-void releaseProgram(Program * program) {
+void releaseMainExpression(MainExpression *mainExpression){
+logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if (mainExpression != NULL) {
+		release_ID(mainExpression->id);
+		free(mainExpression);
+	}
+}
+
+void release_ID(_ID * idValue) {
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
-	if (program != NULL) {
-		releaseExpression(program->expression);
-		free(program);
+	if (idValue != NULL) {
+		if (idValue->idValue != NULL) {
+			free(idValue->idValue);
+		}
+		free(idValue);
 	}
 }

@@ -13,65 +13,62 @@ void shutdownAbstractSyntaxTreeModule();
 /**
  * This typedefs allows self-referencing types.
  */
+typedef enum ProgramType ProgramType;
 
-typedef enum ExpressionType ExpressionType;
-typedef enum FactorType FactorType;
-
-typedef struct Constant Constant;
-typedef struct Expression Expression;
-typedef struct Factor Factor;
+typedef struct _ID _ID;
 typedef struct Program Program;
+
+typedef struct ProgramExpression ProgramExpression;
+typedef struct MainExpression MainExpression;
+typedef struct WorldExpression WorldExpression;
 
 /**
  * Node types for the Abstract Syntax Tree (AST).
  */
 
-enum ExpressionType {
-	ADDITION,
-	DIVISION,
-	FACTOR,
-	MULTIPLICATION,
-	SUBTRACTION
+/*
+	Enums for the ast
+*/
+enum ProgramType { WORLDLESS, WORLDFULL };
+
+/* 
+	Structs for the ast
+*/
+
+struct _ID{
+	Id idValue;
 };
 
-enum FactorType {
-	CONSTANT,
-	EXPRESSION
+struct MainExpression {
+    _ID *id;
 };
 
-struct Constant {
-	int value;
+struct WorldExpression {
+	_ID *id;
 };
 
-struct Factor {
-	union {
-		Constant * constant;
-		Expression * expression;
-	};
-	FactorType type;
-};
-
-struct Expression {
-	union {
-		Factor * factor;
-		struct {
-			Expression * leftExpression;
-			Expression * rightExpression;
-		};
-	};
-	ExpressionType type;
+struct ProgramExpression {
+    union {
+        MainExpression *wordlessMainExpression;
+        struct {
+            WorldExpression *worldExpression;
+            MainExpression *mainExpression;
+        };
+    };
+	ProgramType type;
 };
 
 struct Program {
-	Expression * expression;
+    ProgramExpression *programExpression;
 };
 
 /**
  * Node recursive destructors.
  */
-void releaseConstant(Constant * constant);
-void releaseExpression(Expression * expression);
-void releaseFactor(Factor * factor);
+void release_ID(_ID *ID);
 void releaseProgram(Program * program);
+void releaseProgramExpression(ProgramExpression *programExpression);
+void releaseWorldExpression(WorldExpression *worldExpression);
+void releaseMainExpression(MainExpression *mainExpression);
 
 #endif
