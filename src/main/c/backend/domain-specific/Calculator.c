@@ -1,6 +1,6 @@
-#include "Calculator.h"
+/*#include "Calculator.h"
 
-/* MODULE INTERNAL STATE */
+/* MODULE INTERNAL STATE *
 
 static Logger * _logger = NULL;
 
@@ -14,7 +14,7 @@ void shutdownCalculatorModule() {
 	}
 }
 
-/** PRIVATE FUNCTIONS */
+/** PRIVATE FUNCTIONS *
 
 static BinaryOperator _expressionTypeToBinaryOperator(const ExpressionType type);
 static ComputationResult _invalidBinaryOperator(const int x, const int y);
@@ -24,7 +24,7 @@ static ComputationResult _invalidComputation();
  * Converts and expression type to the proper binary operator. If that's not
  * possible, returns a binary operator that always returns an invalid
  * computation result.
- */
+ *
 static BinaryOperator _expressionTypeToBinaryOperator(const ExpressionType type) {
 	switch (type) {
 		case ADDITION: return add;
@@ -39,14 +39,14 @@ static BinaryOperator _expressionTypeToBinaryOperator(const ExpressionType type)
 
 /**
  * A binary operator that always returns an invalid computation result.
- */
+ *
 static ComputationResult _invalidBinaryOperator(const int x, const int y) {
 	return _invalidComputation();
 }
 
 /**
  * A computation that always returns an invalid result.
- */
+ *
 static ComputationResult _invalidComputation() {
 	ComputationResult computationResult = {
 		.succeed = false,
@@ -55,7 +55,7 @@ static ComputationResult _invalidComputation() {
 	return computationResult;
 }
 
-/** PUBLIC FUNCTIONS */
+/** PUBLIC FUNCTIONS *
 
 ComputationResult add(const int leftAddend, const int rightAddend) {
 	ComputationResult computationResult = {
@@ -134,3 +134,4 @@ ComputationResult computeFactor(Factor * factor) {
 			return _invalidComputation();
 	}
 }
+*/
