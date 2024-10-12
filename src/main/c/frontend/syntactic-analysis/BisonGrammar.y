@@ -18,6 +18,8 @@
 
 	/** Non-terminals. */
 
+	TreeAssignment * treeAssignment;
+	TreeExpression * treeExpression;
 	MainExpression * mainExpression;
 	WorldExpression * worldExpression;
 	WorldAssignment * worldAssignment;
@@ -54,10 +56,15 @@
 %token <token> COMMA
 %token <token> SEMICOLON
 
+%token <token> OPEN_PARENTHESIS
+%token <token> CLOSE_PARENTHESIS
 %token <token> OPEN_CURLY_BRACE
 %token <token> CLOSE_CURLY_BRACE
 
+%token <token> WITH
+
 %token <token> WORLD
+%token <token> TREE
 
 %token <token> UNKNOWN
 
@@ -68,6 +75,8 @@
 %type <worldAssignment> worldAssignment
 %type <declarationValue> declarationValue
 %type <mainExpression> mainExpression
+%type <treeExpression> treeExpression
+%type <treeAssignment> treeAssignment
 
 
 /**
@@ -90,6 +99,16 @@ programExpression: mainExpression									{ $$ = NULL;}
 	;
 
 mainExpression: ID SEMICOLON										{ $$ = NULL;}
+	|			treeExpression										{ $$ = NULL;} 
+	|			mainExpression treeExpression 						{ $$ = NULL;}
+	;
+
+treeExpression: TREE ID WITH OPEN_PARENTHESIS treeAssignment CLOSE_PARENTHESIS SEMICOLON	{ $$ = NULL;}
+	|			TREE ID SEMICOLON									{ $$ = NULL;}
+	;
+
+treeAssignment: ID EQUAL declarationValue							{ $$ = NULL;}
+	|			treeAssignment COMMA ID EQUAL declarationValue		{ $$ = NULL;}
 	;
 
 worldExpression: WORLD OPEN_CURLY_BRACE worldAssignment CLOSE_CURLY_BRACE	{$$ = NULL;}

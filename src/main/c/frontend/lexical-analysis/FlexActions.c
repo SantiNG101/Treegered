@@ -80,6 +80,13 @@ Token WorldLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext)
 	return WORLD;
 }
 
+Token TreeLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
+    _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+
+    lexicalAnalyzerContext->semanticValue->token = TREE;
+    return TREE;
+}
+
 
 Token EqualLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
     _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
@@ -104,6 +111,12 @@ Token SemicolonLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext)
 	return SEMICOLON;
 }
 
+Token ParenthesisLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext,
+                              Token token) {
+    _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+    lexicalAnalyzerContext->semanticValue->token = token;
+    return token;
+}
 
 Token CurlyBraceLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext,
                              Token token) {
@@ -112,6 +125,12 @@ Token CurlyBraceLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext,
     return token;
 }
 
+Token WithLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
+    _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+
+    lexicalAnalyzerContext->semanticValue->token = WITH;
+    return WITH;
+}
 
 Token StringLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext)
 {

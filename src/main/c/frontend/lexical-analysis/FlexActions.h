@@ -29,14 +29,17 @@ Token UnknownLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 
 
 Token WorldLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
-
+Token TreeLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 
 Token EqualLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 
 Token CommaLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token SemicolonLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 
+Token ParenthesisLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
 Token CurlyBraceLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
+
+Token WithLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 
 Token StringLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token IdLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);

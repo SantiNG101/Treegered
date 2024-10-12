@@ -15,6 +15,8 @@ void shutdownAbstractSyntaxTreeModule();
  */
 typedef enum ProgramType ProgramType;
 typedef enum WorldType WorldType;
+typedef enum TreeType TreeType;
+typedef enum MainExpressionType MainExpressionType;
 typedef enum DeclarationValueType DeclarationValueType;
 
 typedef struct _ID _ID;
@@ -29,6 +31,8 @@ typedef struct ProgramExpression ProgramExpression;
 typedef struct WorldExpression WorldExpression;
 typedef struct WorldAssignment WorldAssignment;
 typedef struct MainExpression MainExpression;
+typedef struct TreeExpression TreeExpression;
+typedef struct TreeAssignment TreeAssignment;
 
 /**
  * Node types for the Abstract Syntax Tree (AST).
@@ -38,7 +42,9 @@ typedef struct MainExpression MainExpression;
 	Enums for the ast
 */
 enum ProgramType { WORLDLESS, WORLDFULL };
-enum WorldType { SIMPLE, MULTIPLE };
+enum WorldType { SIMPLE_w, MULTIPLE_w };
+enum TreeType { EMPTY_t, SIMPLE_t, MULTIPLE_t };
+enum MainExpressionType { SIMPLE_m, TREE_m};
 enum DeclarationValueType { IDvalue, STRINGvalue, BOOLEANvalue, HEXCOLORvalue, INTEGERvalue};
 
 /* 
@@ -76,8 +82,29 @@ struct DeclarationValue{
     DeclarationValueType type;
 };
 
-struct MainExpression {
+struct TreeAssignment{
     _ID *id;
+    DeclarationValue *declarationValue;
+};
+
+struct TreeExpression{
+    _ID *id;
+    union{
+        TreeAssignment *simpleTreeAssignment;
+        struct{
+            TreeAssignment *multipleTreeAssignment;
+            TreeExpression *treeExpression;
+        };
+    };
+    TreeType type;
+};
+
+struct MainExpression {
+    union{
+        _ID *id;
+        TreeExpression *treeExpression;
+    };
+    MainExpressionType type;
 };
 
 struct WorldAssignment{
@@ -123,5 +150,7 @@ void releaseWorldExpression(WorldExpression *worldExpression);
 void releaseWorldAssignment(WorldAssignment *worldAssignment);
 void releaseDeclarationValue(DeclarationValue *declarationValue);
 void releaseMainExpression(MainExpression *mainExpression);
+void releaseTreeExpression(TreeExpression *treeExpression);
+void releaseTreeAssignment(TreeAssignment *treeAssignment);
 
 #endif

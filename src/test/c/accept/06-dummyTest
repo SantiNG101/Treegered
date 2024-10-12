@@ -1,0 +1,4 @@
+tree example with (
+    x = other,
+    height = 7
+);

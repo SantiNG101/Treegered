@@ -43,11 +43,11 @@ void releaseWorldExpression(WorldExpression *worldExpression){
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (worldExpression != NULL) {
 		switch(worldExpression->type){
-			case MULTIPLE:
+			case MULTIPLE_w:
 				releaseWorldAssignment(worldExpression->simpleWorldAssignment);
 				releaseWorldExpression(worldExpression->worldExpression);
 				break;
-			case SIMPLE:
+			case SIMPLE_w:
 				releaseWorldAssignment(worldExpression->multipleWorldAssignment);
 				break;
 		}
@@ -64,10 +64,42 @@ void releaseWorldAssignment(WorldAssignment *worldAssignment){
 	}
 }
 
+void releaseTreeExpression(TreeExpression *treeExpression){
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if (treeExpression != NULL) {
+		switch(treeExpression->type){
+			case MULTIPLE_t:
+				releaseTreeAssignment(treeExpression->simpleTreeAssignment);
+				releaseTreeExpression(treeExpression->treeExpression);
+				break;
+			case SIMPLE_t:
+				releaseTreeAssignment(treeExpression->multipleTreeAssignment);
+				break;
+		}
+		free(treeExpression);
+	}
+}
+
+void releaseTreeAssignment(TreeAssignment *treeAssignment){
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if (treeAssignment != NULL) {
+		release_ID(treeAssignment->id);
+		releaseDeclarationValue(treeAssignment->declarationValue);
+		free(treeAssignment);
+	}
+}
+
 void releaseMainExpression(MainExpression *mainExpression){
 logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (mainExpression != NULL) {
-		release_ID(mainExpression->id);
+		switch(mainExpression->type){
+			case TREE_m:
+				releaseTreeExpression(mainExpression->treeExpression);
+				break;
+			case SIMPLE_m:
+				release_ID(mainExpression->id);
+				break;
+		}
 		free(mainExpression);
 	}
 }

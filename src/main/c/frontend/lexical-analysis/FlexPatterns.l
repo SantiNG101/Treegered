@@ -36,10 +36,15 @@
 ","                                 {return CommaLexemeAction(createLexicalAnalyzerContext());}
 ";"                                 {return SemicolonLexemeAction(createLexicalAnalyzerContext());}
 
+"("									{return ParenthesisLexemeAction(createLexicalAnalyzerContext(), OPEN_PARENTHESIS); }
+")"									{return ParenthesisLexemeAction(createLexicalAnalyzerContext(), CLOSE_PARENTHESIS); }
 "{"                                 {return CurlyBraceLexemeAction(createLexicalAnalyzerContext(), OPEN_CURLY_BRACE);}
 "}"                                 {return CurlyBraceLexemeAction(createLexicalAnalyzerContext(), CLOSE_CURLY_BRACE);}
 
+"with"                              {return WithLexemeAction(createLexicalAnalyzerContext());}
+
 "world"                             {return WorldLexemeAction(createLexicalAnalyzerContext());}
+"tree"                              {return TreeLexemeAction(createLexicalAnalyzerContext());}
 
 "'"[[:alnum:]]+"'"                  {return StringLexemeAction(createLexicalAnalyzerContext());}
 
