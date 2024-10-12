@@ -146,6 +146,13 @@ Token BraceLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext,
     return token;
 }
 
+Token ConditionalLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext,
+                              Token token) {
+    _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+    lexicalAnalyzerContext->semanticValue->token = token;
+    return token;
+}
+
 Token ForLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
     _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
 

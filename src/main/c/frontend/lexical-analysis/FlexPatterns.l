@@ -43,6 +43,8 @@
 "["                                 {return BraceLexemeAction(createLexicalAnalyzerContext(), OPEN_BRACE);}
 "]"                                 {return BraceLexemeAction(createLexicalAnalyzerContext(), CLOSE_BRACE);}
 
+"if"                                {return ConditionalLexemeAction(createLexicalAnalyzerContext(), IF);}
+"else"                              {return ConditionalLexemeAction(createLexicalAnalyzerContext(), ELSE);}
 "for"                               {return ForLexemeAction(createLexicalAnalyzerContext());}
 "in"                                {return InLexemeAction(createLexicalAnalyzerContext());}
 "with"                              {return WithLexemeAction(createLexicalAnalyzerContext());}

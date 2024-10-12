@@ -42,6 +42,7 @@ Token ParenthesisLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, To
 Token CurlyBraceLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
 Token BraceLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
 
+Token ConditionalLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
 Token ForLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token InLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token WithLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);

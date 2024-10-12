@@ -38,6 +38,7 @@ typedef struct ForestExpression ForestExpression;
 typedef struct ForestAssignment ForestAssignment;
 typedef struct GrowExpression GrowExpression;
 typedef struct ForExpression ForExpression;
+typedef struct ConditionalExpression COnditionalExpression;
 
 /**
  * Node types for the Abstract Syntax Tree (AST).
@@ -87,6 +88,10 @@ struct DeclarationValue{
     };
     DeclarationValueType type;
 };
+
+struct ConditionalExpression{
+    
+}
 
 struct ForExpression{
     _ID *id;
@@ -140,6 +145,7 @@ struct MainExpression {
         ForestExpression *forestExpression;
         GrowExpression *growExpression;
         ForExpression *forExpression;
+        ConditionalExpression *conditionalExpression;
     };
     MainExpressionType type;
 };
@@ -193,5 +199,6 @@ void releaseForestExpression(ForestExpression *forestExpression);
 void releaseForestAssignment(ForestAssignment *forestAssignment);
 void releaseGrowExpression(GrowExpression *growExpression);
 void releaseForExpression(ForExpression *forExpression);
+void releaseConditionalExpression(ConditionalExpression *conditionalExpression);
 
 #endif

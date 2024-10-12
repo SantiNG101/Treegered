@@ -18,6 +18,7 @@
 
 	/** Non-terminals. */
 	
+	ConditionalExpression * conditionalExpression;
 	ForExpression * forExpression;
 	GrowExpression * growExpression;
 	ForestAssignment * forestAssignment;
@@ -67,6 +68,8 @@
 %token <token> OPEN_BRACE
 %token <token> CLOSE_BRACE
 
+%token <token> IF
+%token <token> ELSE
 %token <token> FOR
 %token <token> IN
 %token <token> WITH
@@ -91,6 +94,7 @@
 %type <forestAssignment> forestAssignment
 %type <growExpression> growExpression
 %type <forExpression> forExpression
+%type <conditionalExpression> conditionalExpression
 
 
 /**
@@ -121,6 +125,21 @@ mainExpression: ID SEMICOLON										{ $$ = NULL;}
 	|			mainExpression growExpression 						{ $$ = NULL;}
 	|			forExpression										{ $$ = NULL;} 
 	|			mainExpression forExpression 						{ $$ = NULL;}
+	|			conditionalExpression										{ $$ = NULL;} 
+	|			mainExpression conditionalExpression 						{ $$ = NULL;}
+	;
+
+conditionalExpression: IF OPEN_PARENTHESIS conditionalClauseExpression CLOSE_PARENTHESIS mainExpression
+	|				   IF OPEN_PARENTHESIS conditionalClauseExpression CLOSE_PARENTHESIS OPEN_CURLY_BRACE mainExpression CLOSE_CURLY_BRACE
+	|				   IF OPEN_PARENTHESIS conditionalClauseExpression CLOSE_PARENTHESIS mainExpression ELSE mainExpression
+	|				   IF OPEN_PARENTHESIS conditionalClauseExpression CLOSE_PARENTHESIS mainExpression ELSE OPEN_CURLY_BRACE mainExpression CLOSE_CURLY_BRACE
+	|				   IF OPEN_PARENTHESIS conditionalClauseExpression CLOSE_PARENTHESIS OPEN_CURLY_BRACE mainExpression CLOSE_CURLY_BRACE ELSE mainExpression
+	|				   IF OPEN_PARENTHESIS conditionalClauseExpression CLOSE_PARENTHESIS OPEN_CURLY_BRACE mainExpression CLOSE_CURLY_BRACE ELSE OPEN_CURLY_BRACE mainExpression CLOSE_CURLY_BRACE
+	;
+
+conditionalClauseExpression: TRUE
+	|						 FALSE
+	|						 
 	;
 
 forExpression: FOR ID IN OPEN_BRACE INTEGER COMMA INTEGER CLOSE_BRACE OPEN_CURLY_BRACE mainExpression CLOSE_CURLY_BRACE	{$$=NULL;}
