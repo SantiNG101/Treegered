@@ -14,11 +14,14 @@
 	Token token;
 	char* string;
 	Id id;
+	Hexcolor hexcolor;
 
 	/** Non-terminals. */
 
 	MainExpression * mainExpression;
 	WorldExpression * worldExpression;
+	WorldAssignment * worldAssignment;
+	DeclarationValue * declarationValue;
 	ProgramExpression * programExpression;
 	Program * program;
 }
@@ -42,8 +45,17 @@
 %token <integer> INTEGER
 %token <id> ID
 %token <string> STRING
+%token <token> TRUE
+%token <token> FALSE
+%token <hexcolor> HEXCOLOR
 
+%token <token> EQUAL
+
+%token <token> COMMA
 %token <token> SEMICOLON
+
+%token <token> OPEN_CURLY_BRACE
+%token <token> CLOSE_CURLY_BRACE
 
 %token <token> WORLD
 
@@ -53,6 +65,8 @@
 %type <program> program
 %type <programExpression> programExpression
 %type <worldExpression> worldExpression
+%type <worldAssignment> worldAssignment
+%type <declarationValue> declarationValue
 %type <mainExpression> mainExpression
 
 
@@ -71,14 +85,26 @@
 program: programExpression													{ $$ = ExpressionProgramSemanticAction(currentCompilerState(), $1); }
 	;
 
-programExpression: mainExpression											{ $$ = NULL;}
+programExpression: mainExpression									{ $$ = NULL;}
 	|		worldExpression mainExpression							{ $$ = NULL;}
 	;
 
 mainExpression: ID SEMICOLON										{ $$ = NULL;}
 	;
 
-worldExpression: WORLD SEMICOLON									{ $$ = NULL;}
+worldExpression: WORLD OPEN_CURLY_BRACE worldAssignment CLOSE_CURLY_BRACE	{$$ = NULL;}
+	;
+
+worldAssignment: ID EQUAL declarationValue									{ $$ = NULL;}
+	|			 worldAssignment COMMA ID EQUAL declarationValue			{$$ = NULL;}
+	;
+
+declarationValue: ID		{ $$ = NULL;}
+	|			  STRING	{ $$ = NULL;}
+	|			  TRUE		{ $$ = NULL;}
+	|			  FALSE		{ $$ = NULL;}
+	|			  HEXCOLOR	{ $$ = NULL;}
+	|			  INTEGER	{ $$ = NULL;}
 	;
 
 %%

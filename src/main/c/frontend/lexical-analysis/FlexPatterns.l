@@ -31,18 +31,32 @@
 <MULTILINE_COMMENT>[^*]+			{ IgnoredLexemeAction(createLexicalAnalyzerContext()); }
 <MULTILINE_COMMENT>.				{ IgnoredLexemeAction(createLexicalAnalyzerContext()); }
 
+"="                                 {return EqualLexemeAction(createLexicalAnalyzerContext());}
+
+","                                 {return CommaLexemeAction(createLexicalAnalyzerContext());}
 ";"                                 {return SemicolonLexemeAction(createLexicalAnalyzerContext());}
+
+"{"                                 {return CurlyBraceLexemeAction(createLexicalAnalyzerContext(), OPEN_CURLY_BRACE);}
+"}"                                 {return CurlyBraceLexemeAction(createLexicalAnalyzerContext(), CLOSE_CURLY_BRACE);}
 
 "world"                             {return WorldLexemeAction(createLexicalAnalyzerContext());}
 
 "'"[[:alnum:]]+"'"                  {return StringLexemeAction(createLexicalAnalyzerContext());}
 
-[[:alpha:][:alnum:]*]+              {return IdLexemeAction(createLexicalAnalyzerContext());}
+"true"                              {return BooleanLexemeAction(createLexicalAnalyzerContext(), TRUE);}
+"TRUE"                              {return BooleanLexemeAction(createLexicalAnalyzerContext(), TRUE);}
+"false"                             {return BooleanLexemeAction(createLexicalAnalyzerContext(), FALSE);}
+"FALSE"                             {return BooleanLexemeAction(createLexicalAnalyzerContext(), FALSE);}
+
+"#"([0-9A-Fa-f]{6})                 {return HexcolorLexemeAction(createLexicalAnalyzerContext());}
 
 [[:digit:]]+						{ return IntegerLexemeAction(createLexicalAnalyzerContext()); }
 
+[[:alpha:][:alnum:]*]+              {return IdLexemeAction(createLexicalAnalyzerContext());}
+
 [[:space:]]+						{ IgnoredLexemeAction(createLexicalAnalyzerContext()); }
 .									{ return UnknownLexemeAction(createLexicalAnalyzerContext()); }
+
 
 %%
 

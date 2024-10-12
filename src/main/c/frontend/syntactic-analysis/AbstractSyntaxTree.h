@@ -14,13 +14,21 @@ void shutdownAbstractSyntaxTreeModule();
  * This typedefs allows self-referencing types.
  */
 typedef enum ProgramType ProgramType;
+typedef enum WorldType WorldType;
+typedef enum DeclarationValueType DeclarationValueType;
 
 typedef struct _ID _ID;
+typedef struct _HEXCOLOR _HEXCOLOR;
+typedef struct _STRING _STRING;
+typedef struct _BOOLEAN _BOOLEAN;
+typedef struct _INTEGER _INTEGER;
+typedef struct DeclarationValue DeclarationValue;
 typedef struct Program Program;
 
 typedef struct ProgramExpression ProgramExpression;
-typedef struct MainExpression MainExpression;
 typedef struct WorldExpression WorldExpression;
+typedef struct WorldAssignment WorldAssignment;
+typedef struct MainExpression MainExpression;
 
 /**
  * Node types for the Abstract Syntax Tree (AST).
@@ -30,6 +38,8 @@ typedef struct WorldExpression WorldExpression;
 	Enums for the ast
 */
 enum ProgramType { WORLDLESS, WORLDFULL };
+enum WorldType { SIMPLE, MULTIPLE };
+enum DeclarationValueType { IDvalue, STRINGvalue, BOOLEANvalue, HEXCOLORvalue, INTEGERvalue};
 
 /* 
 	Structs for the ast
@@ -39,12 +49,51 @@ struct _ID{
 	Id idValue;
 };
 
+struct _HEXCOLOR{
+	Hexcolor value;
+};
+
+struct _STRING{
+	char* value;
+};
+
+struct _BOOLEAN{
+	boolean value;
+};
+
+struct _INTEGER{
+	int value;
+};
+
+struct DeclarationValue{
+    union{
+        _ID *idValue;
+        _STRING *charValue;
+        _BOOLEAN *booleanValue;
+        _HEXCOLOR *hexcolorValue;
+        _INTEGER *intValue;
+    };
+    DeclarationValueType type;
+};
+
 struct MainExpression {
     _ID *id;
 };
 
+struct WorldAssignment{
+    _ID *id;
+    DeclarationValue *declarationValue;
+};
+
 struct WorldExpression {
-	_ID *id;
+	union {
+        WorldAssignment *simpleWorldAssignment;
+        struct {
+            WorldAssignment *multipleWorldAssignment;
+            WorldExpression *worldExpression;
+        };
+    };
+	WorldType type;
 };
 
 struct ProgramExpression {
@@ -66,9 +115,13 @@ struct Program {
  * Node recursive destructors.
  */
 void release_ID(_ID *ID);
+void release_STRING(_STRING * charValue);
+void release_HEXCOLOR(_HEXCOLOR * hexcolorValue);
 void releaseProgram(Program * program);
 void releaseProgramExpression(ProgramExpression *programExpression);
 void releaseWorldExpression(WorldExpression *worldExpression);
+void releaseWorldAssignment(WorldAssignment *worldAssignment);
+void releaseDeclarationValue(DeclarationValue *declarationValue);
 void releaseMainExpression(MainExpression *mainExpression);
 
 #endif

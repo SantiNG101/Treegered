@@ -31,11 +31,17 @@ Token UnknownLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token WorldLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 
 
+Token EqualLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
+
+Token CommaLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token SemicolonLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 
+Token CurlyBraceLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
 
 Token StringLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token IdLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
+Token BooleanLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
+Token HexcolorLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token IntegerLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 
 

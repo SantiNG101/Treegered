@@ -81,6 +81,20 @@ Token WorldLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext)
 }
 
 
+Token EqualLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
+    _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+
+    lexicalAnalyzerContext->semanticValue->token = EQUAL;
+    return EQUAL;
+}
+
+
+Token CommaLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
+    _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+
+    lexicalAnalyzerContext->semanticValue->token = COMMA;
+    return COMMA;
+}
 
 Token SemicolonLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext)
 {
@@ -91,6 +105,12 @@ Token SemicolonLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext)
 }
 
 
+Token CurlyBraceLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext,
+                             Token token) {
+    _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+    lexicalAnalyzerContext->semanticValue->token = token;
+    return token;
+}
 
 
 Token StringLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext)
@@ -107,6 +127,20 @@ Token IdLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext)
 
 	lexicalAnalyzerContext->semanticValue->id = lexicalAnalyzerContext->lexeme;
 	return ID;
+}
+
+Token BooleanLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext,
+                             Token token) {
+    _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+    lexicalAnalyzerContext->semanticValue->token = token;
+    return token;
+}
+
+Token HexcolorLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
+    _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+
+    lexicalAnalyzerContext->semanticValue->id = lexicalAnalyzerContext->lexeme;
+    return HEXCOLOR;
 }
 
 Token IntegerLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext)

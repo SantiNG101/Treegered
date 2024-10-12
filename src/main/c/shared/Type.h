@@ -8,5 +8,6 @@ typedef enum {
 
 typedef int Token;
 typedef char* Id;
+typedef char* Hexcolor;
 
 #endif

@@ -1,0 +1,5 @@
+world{
+    hello = #fF0000,
+    bie = 'hello'
+}
+hello;

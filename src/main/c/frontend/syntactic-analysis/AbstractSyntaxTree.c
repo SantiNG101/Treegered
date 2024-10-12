@@ -42,8 +42,25 @@ void releaseProgramExpression(ProgramExpression * expression) {
 void releaseWorldExpression(WorldExpression *worldExpression){
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (worldExpression != NULL) {
-		release_ID(worldExpression->id);
+		switch(worldExpression->type){
+			case MULTIPLE:
+				releaseWorldAssignment(worldExpression->simpleWorldAssignment);
+				releaseWorldExpression(worldExpression->worldExpression);
+				break;
+			case SIMPLE:
+				releaseWorldAssignment(worldExpression->multipleWorldAssignment);
+				break;
+		}
 		free(worldExpression);
+	}
+}
+
+void releaseWorldAssignment(WorldAssignment *worldAssignment){
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if (worldAssignment != NULL) {
+		release_ID(worldAssignment->id);
+		releaseDeclarationValue(worldAssignment->declarationValue);
+		free(worldAssignment);
 	}
 }
 
@@ -62,5 +79,47 @@ void release_ID(_ID * idValue) {
 			free(idValue->idValue);
 		}
 		free(idValue);
+	}
+}
+
+void release_STRING(_STRING * charValue) {
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if (charValue != NULL) {
+		if (charValue->value != NULL) {
+			free(charValue->value);
+		}
+		free(charValue);
+	}
+}
+
+void release_HEXCOLOR(_HEXCOLOR * hexcolorValue) {
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if (hexcolorValue != NULL) {
+		if (hexcolorValue->value != NULL) {
+			free(hexcolorValue->value);
+		}
+		free(hexcolorValue);
+	}
+}
+
+void releaseDeclarationValue(DeclarationValue *declarationValue){
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if (declarationValue != NULL) {
+		switch(declarationValue->type){
+			case IDvalue:
+				release_ID(declarationValue->idValue);
+				break;
+			case STRINGvalue:
+				release_STRING(declarationValue->charValue);
+				break;
+			case BOOLEANvalue:
+				break;
+			case HEXCOLORvalue:
+				release_HEXCOLOR(declarationValue->hexcolorValue);
+				break;
+			case INTEGERvalue:
+				break;
+		}
+		free(declarationValue);
 	}
 }

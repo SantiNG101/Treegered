@@ -1,0 +1,5 @@
+world{
+    hello = yes,
+    bie = yes
+}
+hello;
