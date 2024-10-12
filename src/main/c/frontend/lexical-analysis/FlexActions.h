@@ -38,6 +38,9 @@ Token EqualLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token CommaLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token SemicolonLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 
+Token ArithmeticOperatorLexemeAction(
+    LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
+
 Token ParenthesisLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
 Token CurlyBraceLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
 Token BraceLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);

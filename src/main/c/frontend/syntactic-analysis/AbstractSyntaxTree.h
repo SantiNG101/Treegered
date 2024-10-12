@@ -18,6 +18,7 @@ typedef enum WorldType WorldType;
 typedef enum TreeType TreeType;
 typedef enum ForestType ForestType;
 typedef enum MainExpressionType MainExpressionType;
+typedef enum OperatorType OperatorType;
 typedef enum DeclarationValueType DeclarationValueType;
 
 typedef struct _ID _ID;
@@ -38,6 +39,8 @@ typedef struct ForestExpression ForestExpression;
 typedef struct ForestAssignment ForestAssignment;
 typedef struct GrowExpression GrowExpression;
 typedef struct ForExpression ForExpression;
+typedef struct ArithmeticAssignation ArithmeticAssignation;
+
 
 /**
  * Node types for the Abstract Syntax Tree (AST).
@@ -50,7 +53,8 @@ enum ProgramType { WORLDLESS, WORLDFULL };
 enum WorldType { SIMPLE_w, MULTIPLE_w };
 enum TreeType { EMPTY_t, SIMPLE_t, MULTIPLE_t };
 enum ForestType { EMPTY_f, SIMPLE_f, MULTIPLE_f };
-enum MainExpressionType { SIMPLE_m, TREE_m, FOREST_m, GROW_m, FOR_m};
+enum MainExpressionType { SIMPLE_m, TREE_m, FOREST_m, GROW_m, FOR_m, ARITHMETIC_m};
+enum OperatorType {ADD_o, SUB_o, MUL_o, DIV_o};
 enum DeclarationValueType { IDvalue, STRINGvalue, BOOLEANvalue, HEXCOLORvalue, INTEGERvalue};
 
 /* 
@@ -86,6 +90,20 @@ struct DeclarationValue{
         _INTEGER *intValue;
     };
     DeclarationValueType type;
+};
+
+/*struct ArithmeticOperation{
+    OperatorType operator;
+    union{
+
+    }
+    ArithmeticOperationType type;
+};*/
+
+struct ArithmeticAssignation{
+    _ID *id;
+    OperatorType operator;
+    DeclarationValue *value;
 };
 
 struct ForExpression{
@@ -140,6 +158,7 @@ struct MainExpression {
         ForestExpression *forestExpression;
         GrowExpression *growExpression;
         ForExpression *forExpression;
+        ArithmeticAssignation *arithmeticAssignation;
     };
     MainExpressionType type;
 };
@@ -193,5 +212,6 @@ void releaseForestExpression(ForestExpression *forestExpression);
 void releaseForestAssignment(ForestAssignment *forestAssignment);
 void releaseGrowExpression(GrowExpression *growExpression);
 void releaseForExpression(ForExpression *forExpression);
+void releaseArithmeticAssignation(ArithmeticAssignation *arithmeticAssignation);
 
 #endif

@@ -17,7 +17,8 @@
 	Hexcolor hexcolor;
 
 	/** Non-terminals. */
-	
+
+	ArithmeticAssignation * arithmeticAssignation;
 	ForExpression * forExpression;
 	GrowExpression * growExpression;
 	ForestAssignment * forestAssignment;
@@ -60,6 +61,15 @@
 %token <token> COMMA
 %token <token> SEMICOLON
 
+%token <token> ADD
+%token <token> SUB
+%token <token> MUL
+%token <token> DIV
+%token <token> ADD_EQ
+%token <token> SUB_EQ
+%token <token> MUL_EQ
+%token <token> DIV_EQ
+
 %token <token> OPEN_PARENTHESIS
 %token <token> CLOSE_PARENTHESIS
 %token <token> OPEN_CURLY_BRACE
@@ -91,6 +101,7 @@
 %type <forestAssignment> forestAssignment
 %type <growExpression> growExpression
 %type <forExpression> forExpression
+%type <arithmeticAssignation> arithmeticAssignation
 
 
 /**
@@ -121,6 +132,14 @@ mainExpression: ID SEMICOLON										{ $$ = NULL;}
 	|			mainExpression growExpression 						{ $$ = NULL;}
 	|			forExpression										{ $$ = NULL;} 
 	|			mainExpression forExpression 						{ $$ = NULL;}
+	|			arithmeticAssignation										{ $$ = NULL;} 
+	|			mainExpression arithmeticAssignation 						{ $$ = NULL;}
+	;
+
+arithmeticAssignation: ID ADD_EQ declarationValue SEMICOLON		{ $$ = NULL;}
+	|				   ID SUB_EQ declarationValue SEMICOLON		{ $$ = NULL;}
+	|				   ID MUL_EQ declarationValue SEMICOLON		{ $$ = NULL;}
+	|				   ID DIV_EQ declarationValue SEMICOLON		{ $$ = NULL;}
 	;
 
 forExpression: FOR ID IN OPEN_BRACE INTEGER COMMA INTEGER CLOSE_BRACE OPEN_CURLY_BRACE mainExpression CLOSE_CURLY_BRACE	{$$=NULL;}

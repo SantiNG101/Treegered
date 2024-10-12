@@ -36,6 +36,16 @@
 ","                                 {return CommaLexemeAction(createLexicalAnalyzerContext());}
 ";"                                 {return SemicolonLexemeAction(createLexicalAnalyzerContext());}
 
+"-"									{ return ArithmeticOperatorLexemeAction(createLexicalAnalyzerContext(), SUB); }
+"*"									{ return ArithmeticOperatorLexemeAction(createLexicalAnalyzerContext(), MUL); }
+"/"									{ return ArithmeticOperatorLexemeAction(createLexicalAnalyzerContext(), DIV); }
+"+"									{ return ArithmeticOperatorLexemeAction(createLexicalAnalyzerContext(), ADD); }
+
+"+="                                {return ArithmeticOperatorLexemeAction(createLexicalAnalyzerContext(), ADD_EQ);}
+"-="                                {return ArithmeticOperatorLexemeAction(createLexicalAnalyzerContext(), SUB_EQ);}
+"*="                                {return ArithmeticOperatorLexemeAction(createLexicalAnalyzerContext(), MUL_EQ);}
+"/="                                {return ArithmeticOperatorLexemeAction(createLexicalAnalyzerContext(), DIV_EQ);}
+
 "("									{return ParenthesisLexemeAction(createLexicalAnalyzerContext(), OPEN_PARENTHESIS); }
 ")"									{return ParenthesisLexemeAction(createLexicalAnalyzerContext(), CLOSE_PARENTHESIS); }
 "{"                                 {return CurlyBraceLexemeAction(createLexicalAnalyzerContext(), OPEN_CURLY_BRACE);}

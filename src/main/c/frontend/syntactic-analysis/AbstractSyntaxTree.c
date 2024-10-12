@@ -131,10 +131,22 @@ void releaseForExpression(ForExpression *forExpression){
 	}
 }
 
+void releaseArithmeticAssignation(ArithmeticAssignation *arithmeticAssignation){
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if (arithmeticAssignation != NULL) {
+		release_ID(arithmeticAssignation->id);
+		releaseDeclarationValue(arithmeticAssignation->value);
+		free(arithmeticAssignation);
+	}
+}
+
 void releaseMainExpression(MainExpression *mainExpression){
 logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (mainExpression != NULL) {
 		switch(mainExpression->type){
+			case ARITHMETIC_m:
+				releaseArithmeticAssignation(mainExpression->arithmeticAssignation);
+				break;
 			case FOR_m:
 				releaseForExpression(mainExpression->forExpression);
 				break;
