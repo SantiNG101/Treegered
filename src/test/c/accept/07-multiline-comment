@@ -1,4 +1,8 @@
 /*
 	A multiline comment.
 */
-0
+world{
+    hello = yes,
+    bie = yes
+}
+hello;

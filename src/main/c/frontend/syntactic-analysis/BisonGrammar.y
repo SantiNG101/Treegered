@@ -125,6 +125,10 @@ program: programExpression													{ $$ = ExpressionProgramSemanticAction(cu
 
 programExpression: mainExpression									{ $$ = NULL;}
 	|		worldExpression mainExpression							{ $$ = NULL;}
+	|		multicomment mainExpression								{ $$ = NULL;}
+	;
+
+multicomment:   
 	;
 
 mainExpression: ID SEMICOLON										{ $$ = NULL;}
