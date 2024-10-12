@@ -132,8 +132,8 @@
 program: programExpression													{ $$ = ExpressionProgramSemanticAction(currentCompilerState(), $1); }
 	;
 
-programExpression: mainExpression									{ $$ = NULL;}
-	|		worldExpression mainExpression							{ $$ = NULL;}
+programExpression: mainExpressions									{ $$ = NULL;}
+	|		worldExpression mainExpressions							{ $$ = NULL;}
 	;
 
 mainExpression: treeExpression										{ $$ = NULL;} 
