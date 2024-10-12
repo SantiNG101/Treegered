@@ -30,6 +30,7 @@ Token UnknownLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 
 Token WorldLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token TreeLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
+Token ForestLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 
 Token EqualLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 

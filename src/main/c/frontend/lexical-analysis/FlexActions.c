@@ -87,6 +87,13 @@ Token TreeLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
     return TREE;
 }
 
+Token ForestLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
+    _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+
+    lexicalAnalyzerContext->semanticValue->token = FOREST;
+    return FOREST;
+}
+
 
 Token EqualLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
     _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);

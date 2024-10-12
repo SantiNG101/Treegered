@@ -16,6 +16,7 @@ void shutdownAbstractSyntaxTreeModule();
 typedef enum ProgramType ProgramType;
 typedef enum WorldType WorldType;
 typedef enum TreeType TreeType;
+typedef enum ForestType ForestType;
 typedef enum MainExpressionType MainExpressionType;
 typedef enum DeclarationValueType DeclarationValueType;
 
@@ -33,6 +34,8 @@ typedef struct WorldAssignment WorldAssignment;
 typedef struct MainExpression MainExpression;
 typedef struct TreeExpression TreeExpression;
 typedef struct TreeAssignment TreeAssignment;
+typedef struct ForestExpression ForestExpression;
+typedef struct ForestAssignment ForestAssignment;
 
 /**
  * Node types for the Abstract Syntax Tree (AST).
@@ -44,6 +47,7 @@ typedef struct TreeAssignment TreeAssignment;
 enum ProgramType { WORLDLESS, WORLDFULL };
 enum WorldType { SIMPLE_w, MULTIPLE_w };
 enum TreeType { EMPTY_t, SIMPLE_t, MULTIPLE_t };
+enum ForestType { EMPTY_f, SIMPLE_f, MULTIPLE_f };
 enum MainExpressionType { SIMPLE_m, TREE_m};
 enum DeclarationValueType { IDvalue, STRINGvalue, BOOLEANvalue, HEXCOLORvalue, INTEGERvalue};
 
@@ -82,6 +86,23 @@ struct DeclarationValue{
     DeclarationValueType type;
 };
 
+struct ForestAssignment{
+    _ID *id;
+    DeclarationValue *declarationValue;
+};
+
+struct ForestExpression{
+    _ID *id;
+    union{
+        ForestAssignment *simpleForestAssignment;
+        struct{
+            ForestAssignment *multipleForestAssignment;
+            ForestExpression *forestExpression;
+        };
+    };
+    ForestType type;
+};
+
 struct TreeAssignment{
     _ID *id;
     DeclarationValue *declarationValue;
@@ -103,6 +124,7 @@ struct MainExpression {
     union{
         _ID *id;
         TreeExpression *treeExpression;
+        ForestExpression *forestExpression;
     };
     MainExpressionType type;
 };
@@ -152,5 +174,7 @@ void releaseDeclarationValue(DeclarationValue *declarationValue);
 void releaseMainExpression(MainExpression *mainExpression);
 void releaseTreeExpression(TreeExpression *treeExpression);
 void releaseTreeAssignment(TreeAssignment *treeAssignment);
+void releaseForestExpression(ForestExpression *forestExpression);
+void releaseForestAssignment(ForestAssignment *forestAssignment);
 
 #endif

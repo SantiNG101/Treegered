@@ -18,6 +18,8 @@
 
 	/** Non-terminals. */
 
+	ForestAssignment * forestAssignment;
+	ForestExpression * forestExpression;
 	TreeAssignment * treeAssignment;
 	TreeExpression * treeExpression;
 	MainExpression * mainExpression;
@@ -65,6 +67,7 @@
 
 %token <token> WORLD
 %token <token> TREE
+%token <token> FOREST
 
 %token <token> UNKNOWN
 
@@ -77,6 +80,8 @@
 %type <mainExpression> mainExpression
 %type <treeExpression> treeExpression
 %type <treeAssignment> treeAssignment
+%type <forestExpression> forestExpression
+%type <forestAssignment> forestAssignment
 
 
 /**
@@ -101,6 +106,8 @@ programExpression: mainExpression									{ $$ = NULL;}
 mainExpression: ID SEMICOLON										{ $$ = NULL;}
 	|			treeExpression										{ $$ = NULL;} 
 	|			mainExpression treeExpression 						{ $$ = NULL;}
+	|			forestExpression									{ $$ = NULL;} 
+	|			mainExpression forestExpression 					{ $$ = NULL;}
 	;
 
 treeExpression: TREE ID WITH OPEN_PARENTHESIS treeAssignment CLOSE_PARENTHESIS SEMICOLON	{ $$ = NULL;}
@@ -109,6 +116,14 @@ treeExpression: TREE ID WITH OPEN_PARENTHESIS treeAssignment CLOSE_PARENTHESIS S
 
 treeAssignment: ID EQUAL declarationValue							{ $$ = NULL;}
 	|			treeAssignment COMMA ID EQUAL declarationValue		{ $$ = NULL;}
+	;
+
+forestExpression: FOREST ID WITH OPEN_PARENTHESIS forestAssignment CLOSE_PARENTHESIS SEMICOLON	{ $$ = NULL;}
+	|			  FOREST ID SEMICOLON									{ $$ = NULL;}
+	;
+
+forestAssignment: ID EQUAL declarationValue							{ $$ = NULL;}
+	|			  forestAssignment COMMA ID EQUAL declarationValue		{ $$ = NULL;}
 	;
 
 worldExpression: WORLD OPEN_CURLY_BRACE worldAssignment CLOSE_CURLY_BRACE	{$$ = NULL;}

@@ -64,6 +64,31 @@ void releaseWorldAssignment(WorldAssignment *worldAssignment){
 	}
 }
 
+void releaseForestExpression(ForestExpression *forestExpression){
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if (forestExpression != NULL) {
+		switch(forestExpression->type){
+			case MULTIPLE_f:
+				releaseForestAssignment(forestExpression->simpleForestAssignment);
+				releaseForestExpression(forestExpression->forestExpression);
+				break;
+			case SIMPLE_f:
+				releaseForestAssignment(forestExpression->multipleForestAssignment);
+				break;
+		}
+		free(forestExpression);
+	}
+}
+
+void releaseForestAssignment(ForestAssignment *forestAssignment){
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if (forestAssignment != NULL) {
+		release_ID(forestAssignment->id);
+		releaseDeclarationValue(forestAssignment->declarationValue);
+		free(forestAssignment);
+	}
+}
+
 void releaseTreeExpression(TreeExpression *treeExpression){
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (treeExpression != NULL) {
