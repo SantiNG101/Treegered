@@ -1,2 +1,1 @@
-int hola = 2 + 3;
-hola = 7 * 8;
+int hola += 3;
