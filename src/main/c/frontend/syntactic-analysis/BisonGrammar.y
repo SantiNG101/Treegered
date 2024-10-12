@@ -18,6 +18,7 @@
 
 	/** Non-terminals. */
 
+	GrowExpression * growExpression;
 	ForestAssignment * forestAssignment;
 	ForestExpression * forestExpression;
 	TreeAssignment * treeAssignment;
@@ -64,6 +65,7 @@
 %token <token> CLOSE_CURLY_BRACE
 
 %token <token> WITH
+%token <token> GROW
 
 %token <token> WORLD
 %token <token> TREE
@@ -82,6 +84,7 @@
 %type <treeAssignment> treeAssignment
 %type <forestExpression> forestExpression
 %type <forestAssignment> forestAssignment
+%type <growExpression> growExpression
 
 
 /**
@@ -108,6 +111,11 @@ mainExpression: ID SEMICOLON										{ $$ = NULL;}
 	|			mainExpression treeExpression 						{ $$ = NULL;}
 	|			forestExpression									{ $$ = NULL;} 
 	|			mainExpression forestExpression 					{ $$ = NULL;}
+	|			growExpression										{ $$ = NULL;} 
+	|			mainExpression growExpression 						{ $$ = NULL;}
+	;
+
+growExpression: GROW OPEN_PARENTHESIS ID CLOSE_PARENTHESIS SEMICOLON	{ $$ = NULL;}
 	;
 
 treeExpression: TREE ID WITH OPEN_PARENTHESIS treeAssignment CLOSE_PARENTHESIS SEMICOLON	{ $$ = NULL;}

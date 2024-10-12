@@ -94,6 +94,13 @@ Token ForestLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
     return FOREST;
 }
 
+Token GrowLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
+    _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+
+    lexicalAnalyzerContext->semanticValue->token = GROW;
+    return GROW;
+}
+
 
 Token EqualLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
     _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);

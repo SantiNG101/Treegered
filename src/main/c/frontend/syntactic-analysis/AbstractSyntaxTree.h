@@ -36,6 +36,7 @@ typedef struct TreeExpression TreeExpression;
 typedef struct TreeAssignment TreeAssignment;
 typedef struct ForestExpression ForestExpression;
 typedef struct ForestAssignment ForestAssignment;
+typedef struct GrowExpression GrowExpression;
 
 /**
  * Node types for the Abstract Syntax Tree (AST).
@@ -48,7 +49,7 @@ enum ProgramType { WORLDLESS, WORLDFULL };
 enum WorldType { SIMPLE_w, MULTIPLE_w };
 enum TreeType { EMPTY_t, SIMPLE_t, MULTIPLE_t };
 enum ForestType { EMPTY_f, SIMPLE_f, MULTIPLE_f };
-enum MainExpressionType { SIMPLE_m, TREE_m};
+enum MainExpressionType { SIMPLE_m, TREE_m, FOREST_m, GROW_m};
 enum DeclarationValueType { IDvalue, STRINGvalue, BOOLEANvalue, HEXCOLORvalue, INTEGERvalue};
 
 /* 
@@ -84,6 +85,10 @@ struct DeclarationValue{
         _INTEGER *intValue;
     };
     DeclarationValueType type;
+};
+
+struct GrowExpression{
+    _ID *id;
 };
 
 struct ForestAssignment{
@@ -125,6 +130,7 @@ struct MainExpression {
         _ID *id;
         TreeExpression *treeExpression;
         ForestExpression *forestExpression;
+        GrowExpression *growExpression;
     };
     MainExpressionType type;
 };
@@ -176,5 +182,6 @@ void releaseTreeExpression(TreeExpression *treeExpression);
 void releaseTreeAssignment(TreeAssignment *treeAssignment);
 void releaseForestExpression(ForestExpression *forestExpression);
 void releaseForestAssignment(ForestAssignment *forestAssignment);
+void releaseGrowExpression(GrowExpression *growExpression);
 
 #endif

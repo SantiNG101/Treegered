@@ -46,6 +46,7 @@
 "world"                             {return WorldLexemeAction(createLexicalAnalyzerContext());}
 "tree"                              {return TreeLexemeAction(createLexicalAnalyzerContext());}
 "forest"                            {return ForestLexemeAction(createLexicalAnalyzerContext());}
+"grow"                              {return GrowLexemeAction(createLexicalAnalyzerContext());}
 
 "'"[[:alnum:]]+"'"                  {return StringLexemeAction(createLexicalAnalyzerContext());}
 

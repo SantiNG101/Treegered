@@ -114,10 +114,24 @@ void releaseTreeAssignment(TreeAssignment *treeAssignment){
 	}
 }
 
+void releaseGrowExpression(GrowExpression *growExpression){
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if (growExpression != NULL) {
+		release_ID(growExpression->id);
+		free(growExpression);
+	}
+}
+
 void releaseMainExpression(MainExpression *mainExpression){
 logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (mainExpression != NULL) {
 		switch(mainExpression->type){
+			case GROW_m:
+				releaseGrowExpression(mainExpression->growExpression);
+				break;
+			case FOREST_m:
+				releaseForestExpression(mainExpression->forestExpression);
+				break;
 			case TREE_m:
 				releaseTreeExpression(mainExpression->treeExpression);
 				break;
