@@ -17,7 +17,8 @@
 	Hexcolor hexcolor;
 
 	/** Non-terminals. */
-
+	
+	ForExpression * forExpression;
 	GrowExpression * growExpression;
 	ForestAssignment * forestAssignment;
 	ForestExpression * forestExpression;
@@ -63,7 +64,11 @@
 %token <token> CLOSE_PARENTHESIS
 %token <token> OPEN_CURLY_BRACE
 %token <token> CLOSE_CURLY_BRACE
+%token <token> OPEN_BRACE
+%token <token> CLOSE_BRACE
 
+%token <token> FOR
+%token <token> IN
 %token <token> WITH
 %token <token> GROW
 
@@ -85,6 +90,7 @@
 %type <forestExpression> forestExpression
 %type <forestAssignment> forestAssignment
 %type <growExpression> growExpression
+%type <forExpression> forExpression
 
 
 /**
@@ -113,6 +119,11 @@ mainExpression: ID SEMICOLON										{ $$ = NULL;}
 	|			mainExpression forestExpression 					{ $$ = NULL;}
 	|			growExpression										{ $$ = NULL;} 
 	|			mainExpression growExpression 						{ $$ = NULL;}
+	|			forExpression										{ $$ = NULL;} 
+	|			mainExpression forExpression 						{ $$ = NULL;}
+	;
+
+forExpression: FOR ID IN OPEN_BRACE INTEGER COMMA INTEGER CLOSE_BRACE OPEN_CURLY_BRACE mainExpression CLOSE_CURLY_BRACE	{$$=NULL;}
 	;
 
 growExpression: GROW OPEN_PARENTHESIS ID CLOSE_PARENTHESIS SEMICOLON	{ $$ = NULL;}

@@ -40,7 +40,10 @@ Token SemicolonLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 
 Token ParenthesisLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
 Token CurlyBraceLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
+Token BraceLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
 
+Token ForLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
+Token InLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token WithLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 
 Token StringLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);

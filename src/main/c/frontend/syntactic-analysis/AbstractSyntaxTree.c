@@ -122,10 +122,22 @@ void releaseGrowExpression(GrowExpression *growExpression){
 	}
 }
 
+void releaseForExpression(ForExpression *forExpression){
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if (forExpression != NULL) {
+		release_ID(forExpression->id);
+		if(forExpression->mainExpression != NULL) releaseMainExpression(forExpression->mainExpression);
+		free(forExpression);
+	}
+}
+
 void releaseMainExpression(MainExpression *mainExpression){
 logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (mainExpression != NULL) {
 		switch(mainExpression->type){
+			case FOR_m:
+				releaseForExpression(mainExpression->forExpression);
+				break;
 			case GROW_m:
 				releaseGrowExpression(mainExpression->growExpression);
 				break;

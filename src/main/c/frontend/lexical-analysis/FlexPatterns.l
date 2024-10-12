@@ -40,7 +40,11 @@
 ")"									{return ParenthesisLexemeAction(createLexicalAnalyzerContext(), CLOSE_PARENTHESIS); }
 "{"                                 {return CurlyBraceLexemeAction(createLexicalAnalyzerContext(), OPEN_CURLY_BRACE);}
 "}"                                 {return CurlyBraceLexemeAction(createLexicalAnalyzerContext(), CLOSE_CURLY_BRACE);}
+"["                                 {return BraceLexemeAction(createLexicalAnalyzerContext(), OPEN_BRACE);}
+"]"                                 {return BraceLexemeAction(createLexicalAnalyzerContext(), CLOSE_BRACE);}
 
+"for"                               {return ForLexemeAction(createLexicalAnalyzerContext());}
+"in"                                {return InLexemeAction(createLexicalAnalyzerContext());}
 "with"                              {return WithLexemeAction(createLexicalAnalyzerContext());}
 
 "world"                             {return WorldLexemeAction(createLexicalAnalyzerContext());}
@@ -49,6 +53,7 @@
 "grow"                              {return GrowLexemeAction(createLexicalAnalyzerContext());}
 
 "'"[[:alnum:]]+"'"                  {return StringLexemeAction(createLexicalAnalyzerContext());}
+"'"([^\\s])"'"                      {return StringLexemeAction(createLexicalAnalyzerContext());}
 
 "true"                              {return BooleanLexemeAction(createLexicalAnalyzerContext(), TRUE);}
 "TRUE"                              {return BooleanLexemeAction(createLexicalAnalyzerContext(), TRUE);}

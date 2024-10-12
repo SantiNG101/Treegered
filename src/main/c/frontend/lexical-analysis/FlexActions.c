@@ -139,6 +139,27 @@ Token CurlyBraceLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext,
     return token;
 }
 
+Token BraceLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext,
+                        Token token) {
+    _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+    lexicalAnalyzerContext->semanticValue->token = token;
+    return token;
+}
+
+Token ForLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
+    _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+
+    lexicalAnalyzerContext->semanticValue->token = FOR;
+    return FOR;
+}
+
+Token InLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
+    _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+
+    lexicalAnalyzerContext->semanticValue->token = IN;
+    return IN;
+}
+
 Token WithLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
     _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
 
