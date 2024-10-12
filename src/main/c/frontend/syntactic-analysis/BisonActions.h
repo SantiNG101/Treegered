@@ -19,5 +19,8 @@ void shutdownBisonActionsModule();
  */
 
 Program * ExpressionProgramSemanticAction(CompilerState * compilerState, ProgramExpression * expression);
+MainExpression * TestingSemanticAction(Id id);
+
+/*ADDED*/
 
 #endif

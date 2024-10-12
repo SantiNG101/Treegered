@@ -245,6 +245,20 @@ void release_HEXCOLOR(_HEXCOLOR * hexcolorValue) {
 	}
 }
 
+void release_INTEGER(_INTEGER * intValue) {
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if (intValue != NULL) {
+		free(intValue);
+	}
+}
+
+void release_BOOLEAN(_BOOLEAN * booleanValue) {
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if (booleanValue != NULL) {
+		free(booleanValue);
+	}
+}
+
 void releaseDeclarationValue(DeclarationValue *declarationValue){
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (declarationValue != NULL) {
@@ -255,12 +269,14 @@ void releaseDeclarationValue(DeclarationValue *declarationValue){
 			case STRINGvalue:
 				release_STRING(declarationValue->charValue);
 				break;
-			case BOOLEANvalue://TODO release
+			case BOOLEANvalue:
+				release_BOOLEAN(declarationValue->booleanValue);
 				break;
 			case HEXCOLORvalue:
 				release_HEXCOLOR(declarationValue->hexcolorValue);
 				break;
-			case INTEGERvalue://TODO release
+			case INTEGERvalue:
+				release_INTEGER(declarationValue->intValue);
 				break;
 		}
 		free(declarationValue);

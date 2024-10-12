@@ -44,3 +44,15 @@ Program * ExpressionProgramSemanticAction(CompilerState * compilerState, Program
 	}
 	return program;
 }
+
+
+/*ADDED*/
+//TODO: sacar para la entrega
+MainExpression * TestingSemanticAction(Id id){
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	MainExpression * mainExpression = calloc(1, sizeof(MainExpression));
+	_ID *aux = calloc(1, sizeof(_ID));
+	aux->idValue = id;
+	mainExpression->id = aux;
+	return mainExpression;
+}

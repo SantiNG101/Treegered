@@ -5,4 +5,4 @@ world{
     hello = yes,
     bie = yes
 }
-hello;
+hello = 1;

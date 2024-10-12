@@ -238,6 +238,8 @@ struct Program {
 void release_ID(_ID *ID);
 void release_STRING(_STRING * charValue);
 void release_HEXCOLOR(_HEXCOLOR * hexcolorValue);
+void release_INTEGER(_INTEGER *intValue);
+void release_BOOLEAN(_BOOLEAN *booleanValue);
 void releaseProgram(Program * program);
 void releaseProgramExpression(ProgramExpression *programExpression);
 void releaseWorldExpression(WorldExpression *worldExpression);

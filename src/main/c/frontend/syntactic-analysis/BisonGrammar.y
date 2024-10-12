@@ -125,14 +125,9 @@ program: programExpression													{ $$ = ExpressionProgramSemanticAction(cu
 
 programExpression: mainExpression									{ $$ = NULL;}
 	|		worldExpression mainExpression							{ $$ = NULL;}
-	|		multicomment mainExpression								{ $$ = NULL;}
 	;
 
-multicomment:   
-	;
-
-mainExpression: ID SEMICOLON										{ $$ = NULL;}
-	|			treeExpression										{ $$ = NULL;} 
+mainExpression: treeExpression										{ $$ = NULL;} 
 	|			mainExpression treeExpression 						{ $$ = NULL;}
 	|			forestExpression									{ $$ = NULL;} 
 	|			mainExpression forestExpression 					{ $$ = NULL;}
