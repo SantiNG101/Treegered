@@ -59,7 +59,14 @@ void releaseWorldAssignment(WorldAssignment *worldAssignment){
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (worldAssignment != NULL) {
 		release_ID(worldAssignment->id);
-		releaseDeclarationValue(worldAssignment->declarationValue);
+		switch(worldAssignment->type){
+			case BY_VALUE:
+				releaseDeclarationValue(worldAssignment->value);
+				break;
+			case BY_OPP:
+				releaseArithmeticOperation(worldAssignment->arithmeticOperation);
+				break;
+		}
 		free(worldAssignment);
 	}
 }
@@ -84,7 +91,14 @@ void releaseForestAssignment(ForestAssignment *forestAssignment){
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (forestAssignment != NULL) {
 		release_ID(forestAssignment->id);
-		releaseDeclarationValue(forestAssignment->declarationValue);
+		switch(forestAssignment->type){
+			case BY_VALUE:
+				releaseDeclarationValue(forestAssignment->value);
+				break;
+			case BY_OPP:
+				releaseArithmeticOperation(forestAssignment->arithmeticOperation);
+				break;
+		}
 		free(forestAssignment);
 	}
 }
@@ -109,7 +123,14 @@ void releaseTreeAssignment(TreeAssignment *treeAssignment){
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (treeAssignment != NULL) {
 		release_ID(treeAssignment->id);
-		releaseDeclarationValue(treeAssignment->declarationValue);
+		switch(treeAssignment->type){
+			case BY_VALUE:
+				releaseDeclarationValue(treeAssignment->value);
+				break;
+			case BY_OPP:
+				releaseArithmeticOperation(treeAssignment->arithmeticOperation);
+				break;
+		}
 		free(treeAssignment);
 	}
 }
@@ -135,8 +156,32 @@ void releaseArithmeticAssignation(ArithmeticAssignation *arithmeticAssignation){
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (arithmeticAssignation != NULL) {
 		release_ID(arithmeticAssignation->id);
-		releaseDeclarationValue(arithmeticAssignation->value);
+		switch(arithmeticAssignation->type){
+			case BY_VALUE:
+				releaseDeclarationValue(arithmeticAssignation->value);
+				break;
+			case BY_OPP:
+				releaseArithmeticOperation(arithmeticAssignation->arithmeticOperation);
+				break;
+		}
 		free(arithmeticAssignation);
+	}
+}
+
+void releaseGeneralAssignation(GeneralAssignation *generalAssignation){
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if (generalAssignation != NULL) {
+		release_ID(generalAssignation->id);
+		release_ID(generalAssignation->classType);
+		switch(generalAssignation->type){
+			case BY_VALUE:
+				releaseDeclarationValue(generalAssignation->value);
+				break;
+			case BY_OPP:
+				releaseArithmeticOperation(generalAssignation->arithmeticOperation);
+				break;
+		}
+		free(generalAssignation);
 	}
 }
 
@@ -144,6 +189,9 @@ void releaseMainExpression(MainExpression *mainExpression){
 logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (mainExpression != NULL) {
 		switch(mainExpression->type){
+			case GENERAL_ASSIGNATION_m:
+				releaseGeneralAssignation(mainExpression->generalAssignation);
+				break;
 			case ARITHMETIC_m:
 				releaseArithmeticAssignation(mainExpression->arithmeticAssignation);
 				break;
@@ -207,14 +255,39 @@ void releaseDeclarationValue(DeclarationValue *declarationValue){
 			case STRINGvalue:
 				release_STRING(declarationValue->charValue);
 				break;
-			case BOOLEANvalue:
+			case BOOLEANvalue://TODO release
 				break;
 			case HEXCOLORvalue:
 				release_HEXCOLOR(declarationValue->hexcolorValue);
 				break;
-			case INTEGERvalue:
+			case INTEGERvalue://TODO release
 				break;
 		}
 		free(declarationValue);
+	}
+}
+
+void releaseArithmeticOperation(ArithmeticOperation *arithmeticOperation){
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if (arithmeticOperation != NULL) {
+		switch(arithmeticOperation->type){
+			case LV_RV:
+				releaseDeclarationValue(arithmeticOperation->leftValue);
+				releaseDeclarationValue(arithmeticOperation->rightValue);
+				break;
+			case LV_RO:
+				releaseDeclarationValue(arithmeticOperation->leftValue);
+				releaseArithmeticOperation(arithmeticOperation->rightOperation);
+				break;
+			case LO_RV:
+				releaseArithmeticOperation(arithmeticOperation->leftOperation);
+				releaseDeclarationValue(arithmeticOperation->rightValue);
+				break;
+			case LO_RO:
+				releaseArithmeticOperation(arithmeticOperation->leftOperation);
+				releaseArithmeticOperation(arithmeticOperation->rightOperation);
+				break;
+		}
+		free(arithmeticOperation);
 	}
 }

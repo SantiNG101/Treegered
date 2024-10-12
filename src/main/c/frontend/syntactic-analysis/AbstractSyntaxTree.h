@@ -19,6 +19,8 @@ typedef enum TreeType TreeType;
 typedef enum ForestType ForestType;
 typedef enum MainExpressionType MainExpressionType;
 typedef enum OperatorType OperatorType;
+typedef enum AssignationType AssignationType;
+typedef enum ArithmeticOperationType ArithmeticOperationType;
 typedef enum DeclarationValueType DeclarationValueType;
 
 typedef struct _ID _ID;
@@ -40,6 +42,8 @@ typedef struct ForestAssignment ForestAssignment;
 typedef struct GrowExpression GrowExpression;
 typedef struct ForExpression ForExpression;
 typedef struct ArithmeticAssignation ArithmeticAssignation;
+typedef struct ArithmeticOperation ArithmeticOperation;
+typedef struct GeneralAssignation GeneralAssignation;
 
 
 /**
@@ -53,8 +57,10 @@ enum ProgramType { WORLDLESS, WORLDFULL };
 enum WorldType { SIMPLE_w, MULTIPLE_w };
 enum TreeType { EMPTY_t, SIMPLE_t, MULTIPLE_t };
 enum ForestType { EMPTY_f, SIMPLE_f, MULTIPLE_f };
-enum MainExpressionType { SIMPLE_m, TREE_m, FOREST_m, GROW_m, FOR_m, ARITHMETIC_m};
+enum MainExpressionType { SIMPLE_m, TREE_m, FOREST_m, GROW_m, FOR_m, ARITHMETIC_m, GENERAL_ASSIGNATION_m};
 enum OperatorType {ADD_o, SUB_o, MUL_o, DIV_o};
+enum ArithmeticOperationType {LV_RV, LV_RO, LO_RV, LO_RO};
+enum AssignationType {BY_VALUE, BY_OPP};
 enum DeclarationValueType { IDvalue, STRINGvalue, BOOLEANvalue, HEXCOLORvalue, INTEGERvalue};
 
 /* 
@@ -92,24 +98,43 @@ struct DeclarationValue{
     DeclarationValueType type;
 };
 
-/*struct ArithmeticOperation{
+struct GeneralAssignation{
+    _ID *classType;
+    _ID *id;
+    union{
+        DeclarationValue *value;
+        ArithmeticOperation *arithmeticOperation;
+    };
+    AssignationType type;
+};
+
+struct ArithmeticOperation{
     OperatorType operator;
     union{
-
-    }
+        DeclarationValue *leftValue;
+        ArithmeticOperation *leftOperation;
+    };
+    union{
+        DeclarationValue *rightValue;
+        ArithmeticOperation *rightOperation;
+    };
     ArithmeticOperationType type;
-};*/
+};
 
 struct ArithmeticAssignation{
     _ID *id;
     OperatorType operator;
-    DeclarationValue *value;
+    union{
+        DeclarationValue *value;
+        ArithmeticOperation *arithmeticOperation;
+    };
+    AssignationType type;
 };
 
 struct ForExpression{
     _ID *id;
-    _INTEGER rangeStart;
-    _INTEGER rangeEnd;
+    _INTEGER *rangeStart;
+    _INTEGER *rangeEnd;
     MainExpression *mainExpression;
 };
 
@@ -119,7 +144,11 @@ struct GrowExpression{
 
 struct ForestAssignment{
     _ID *id;
-    DeclarationValue *declarationValue;
+    union{
+        DeclarationValue *value;
+        ArithmeticOperation *arithmeticOperation;
+    };
+    AssignationType type;
 };
 
 struct ForestExpression{
@@ -136,7 +165,11 @@ struct ForestExpression{
 
 struct TreeAssignment{
     _ID *id;
-    DeclarationValue *declarationValue;
+    union{
+        DeclarationValue *value;
+        ArithmeticOperation *arithmeticOperation;
+    };
+    AssignationType type;
 };
 
 struct TreeExpression{
@@ -159,13 +192,18 @@ struct MainExpression {
         GrowExpression *growExpression;
         ForExpression *forExpression;
         ArithmeticAssignation *arithmeticAssignation;
+        GeneralAssignation *generalAssignation;
     };
     MainExpressionType type;
 };
 
 struct WorldAssignment{
     _ID *id;
-    DeclarationValue *declarationValue;
+    union{
+        DeclarationValue *value;
+        ArithmeticOperation *arithmeticOperation;
+    };
+    AssignationType type;
 };
 
 struct WorldExpression {
@@ -213,5 +251,7 @@ void releaseForestAssignment(ForestAssignment *forestAssignment);
 void releaseGrowExpression(GrowExpression *growExpression);
 void releaseForExpression(ForExpression *forExpression);
 void releaseArithmeticAssignation(ArithmeticAssignation *arithmeticAssignation);
+void releaseArithmeticOperation(ArithmeticOperation *arithmeticOperation);
+void releaseGeneralAssignation(GeneralAssignation *generalAssignation);
 
 #endif

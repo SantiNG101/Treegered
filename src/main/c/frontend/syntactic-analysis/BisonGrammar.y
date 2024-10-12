@@ -17,7 +17,9 @@
 	Hexcolor hexcolor;
 
 	/** Non-terminals. */
-
+	
+	GeneralAssignation * generalAssignation;
+	ArithmeticOperation * arithmeticOperation;
 	ArithmeticAssignation * arithmeticAssignation;
 	ForExpression * forExpression;
 	GrowExpression * growExpression;
@@ -102,6 +104,8 @@
 %type <growExpression> growExpression
 %type <forExpression> forExpression
 %type <arithmeticAssignation> arithmeticAssignation
+%type <arithmeticOperation> arithmeticOperation
+%type <generalAssignation> generalAssignation
 
 
 /**
@@ -134,12 +138,24 @@ mainExpression: ID SEMICOLON										{ $$ = NULL;}
 	|			mainExpression forExpression 						{ $$ = NULL;}
 	|			arithmeticAssignation										{ $$ = NULL;} 
 	|			mainExpression arithmeticAssignation 						{ $$ = NULL;}
+	|			generalAssignation										{ $$ = NULL;} 
+	|			mainExpression generalAssignation 						{ $$ = NULL;}
+	;
+
+generalAssignation: ID ID EQUAL declarationValue SEMICOLON		{ $$ = NULL;}
+	|				ID EQUAL declarationValue SEMICOLON			{ $$ = NULL;}
+	|				ID ID EQUAL arithmeticOperation SEMICOLON		{ $$ = NULL;}
+	|				ID EQUAL arithmeticOperation SEMICOLON			{ $$ = NULL;}
 	;
 
 arithmeticAssignation: ID ADD_EQ declarationValue SEMICOLON		{ $$ = NULL;}
 	|				   ID SUB_EQ declarationValue SEMICOLON		{ $$ = NULL;}
 	|				   ID MUL_EQ declarationValue SEMICOLON		{ $$ = NULL;}
 	|				   ID DIV_EQ declarationValue SEMICOLON		{ $$ = NULL;}
+	|				   ID ADD_EQ arithmeticOperation SEMICOLON		{ $$ = NULL;}
+	|				   ID SUB_EQ arithmeticOperation SEMICOLON		{ $$ = NULL;}
+	|				   ID MUL_EQ arithmeticOperation SEMICOLON		{ $$ = NULL;}
+	|				   ID DIV_EQ arithmeticOperation SEMICOLON		{ $$ = NULL;}
 	;
 
 forExpression: FOR ID IN OPEN_BRACE INTEGER COMMA INTEGER CLOSE_BRACE OPEN_CURLY_BRACE mainExpression CLOSE_CURLY_BRACE	{$$=NULL;}
@@ -154,6 +170,8 @@ treeExpression: TREE ID WITH OPEN_PARENTHESIS treeAssignment CLOSE_PARENTHESIS S
 
 treeAssignment: ID EQUAL declarationValue							{ $$ = NULL;}
 	|			treeAssignment COMMA ID EQUAL declarationValue		{ $$ = NULL;}
+	|			ID EQUAL arithmeticOperation							{ $$ = NULL;}
+	|			treeAssignment COMMA ID EQUAL arithmeticOperation		{ $$ = NULL;}
 	;
 
 forestExpression: FOREST ID WITH OPEN_PARENTHESIS forestAssignment CLOSE_PARENTHESIS SEMICOLON	{ $$ = NULL;}
@@ -162,6 +180,8 @@ forestExpression: FOREST ID WITH OPEN_PARENTHESIS forestAssignment CLOSE_PARENTH
 
 forestAssignment: ID EQUAL declarationValue							{ $$ = NULL;}
 	|			  forestAssignment COMMA ID EQUAL declarationValue		{ $$ = NULL;}
+	|			  ID EQUAL arithmeticOperation							{ $$ = NULL;}
+	|			  forestAssignment COMMA ID EQUAL arithmeticOperation		{ $$ = NULL;}
 	;
 
 worldExpression: WORLD OPEN_CURLY_BRACE worldAssignment CLOSE_CURLY_BRACE	{$$ = NULL;}
@@ -169,6 +189,27 @@ worldExpression: WORLD OPEN_CURLY_BRACE worldAssignment CLOSE_CURLY_BRACE	{$$ = 
 
 worldAssignment: ID EQUAL declarationValue									{ $$ = NULL;}
 	|			 worldAssignment COMMA ID EQUAL declarationValue			{$$ = NULL;}
+	|			 ID EQUAL arithmeticOperation									{ $$ = NULL;}
+	|			 worldAssignment COMMA ID EQUAL arithmeticOperation			{$$ = NULL;}
+	;
+
+arithmeticOperation: declarationValue ADD declarationValue					{ $$ = NULL;}
+	|				 declarationValue SUB declarationValue					{ $$ = NULL;}
+	|				 declarationValue MUL declarationValue					{ $$ = NULL;}
+	|				 declarationValue DIV declarationValue					{ $$ = NULL;}
+	|				 arithmeticOperation ADD declarationValue					{ $$ = NULL;}
+	|				 arithmeticOperation SUB declarationValue					{ $$ = NULL;}
+	|				 arithmeticOperation MUL declarationValue					{ $$ = NULL;}
+	|				 arithmeticOperation DIV declarationValue					{ $$ = NULL;}
+	|				 declarationValue ADD arithmeticOperation					{ $$ = NULL;}
+	|				 declarationValue SUB arithmeticOperation					{ $$ = NULL;}
+	|				 declarationValue MUL arithmeticOperation					{ $$ = NULL;}
+	|				 declarationValue DIV arithmeticOperation					{ $$ = NULL;}
+	|				 arithmeticOperation ADD arithmeticOperation					{ $$ = NULL;}
+	|				 arithmeticOperation SUB arithmeticOperation					{ $$ = NULL;}
+	|				 arithmeticOperation MUL arithmeticOperation					{ $$ = NULL;}
+	|				 arithmeticOperation DIV arithmeticOperation					{ $$ = NULL;}
+	|				OPEN_PARENTHESIS arithmeticOperation CLOSE_PARENTHESIS			{ $$ = NULL;}
 	;
 
 declarationValue: ID		{ $$ = NULL;}
