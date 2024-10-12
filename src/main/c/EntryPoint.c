@@ -38,11 +38,11 @@ const int main(const int count, const char ** arguments) {
 		// ----------------------------------------------------------------------------------------
 		// Beginning of the Backend... ------------------------------------------------------------
 		logDebugging(logger, "Computing expression value...");
-		//Program * program = compilerState.abstractSyntaxtTree;
+		Program * program = compilerState.abstractSyntaxtTree;
 		//ComputationResult computationResult = computeExpression(program->expression);
 		//if (computationResult.succeed) {
 		//	compilerState.value = computationResult.value;
-		//	generate(&compilerState);
+			generate(&compilerState);
 		//}
 		//else {
 		//	logError(logger, "The computation phase rejects the input program.");

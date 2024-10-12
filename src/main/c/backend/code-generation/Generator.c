@@ -70,9 +70,8 @@ static void _generateEpilogue(const int value) {
 
 /**
  * Generates the output of an expression.
- */
+ *
 static void _generateExpression(const unsigned int indentationLevel, Expression * expression) {
-	/*
 	_output(indentationLevel, "%s", "[ $E$, circle, draw, black!20\n");
 	switch (expression->type) {
 		case ADDITION:
@@ -91,8 +90,7 @@ static void _generateExpression(const unsigned int indentationLevel, Expression 
 			break;
 	}
 	_output(indentationLevel, "%s", "]\n");
-	*/
-}
+}*/
 
 /**
  * Generates the output of a factor.
