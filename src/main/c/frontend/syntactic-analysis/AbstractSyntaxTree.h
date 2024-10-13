@@ -65,14 +65,14 @@ typedef struct AttributeValue AttributeValue;
 */
 enum ProgramType { WORLDLESS, WORLDFULL };
 enum WorldType { SIMPLE_w, MULTIPLE_w };
-enum TreeType { EMPTY_t, SIMPLE_t, MULTIPLE_t };
+enum TreeType { EMPTY_t, FULL_t };
 enum TreeAssignType {SIMPLE_ta, MULTIPLE_ta};
-enum ForestType { EMPTY_f, SIMPLE_f, MULTIPLE_f };
+enum ForestType { EMPTY_f, FULL_f };
 enum ForestAssignType {SIMPLE_fa, MULTIPLE_fa};
 enum MainExpressionType { SIMPLE_m, TREE_m, FOREST_m, GROW_m, FOR_m, ARITHMETIC_m, GENERAL_ASSIGNATION_m};
 enum ExpressionType {SIMPLE_e, MULTIPLE_e};
-enum OperatorType {ADD_o, SUB_o, MUL_o, DIV_o};
-enum ArithmeticOperationType {LV_RV, LV_RO, LO_RV, LO_RO};
+enum OperatorType {ADD_o, SUB_o, MUL_o, DIV_o, NONE};
+enum ArithmeticOperationType {LV_RV, LV_RO, LO_RV, LO_RO, PARENTHESIS};
 enum AssignationType {ID_BY_VALUE, ID_BY_OPP, ATT_BY_VALUE, ATT_BY_OPP};
 enum ForType{CLASSIC_ITERATION, FOREST_ITERATION};
 enum DeclarationValueType { IDvalue, STRINGvalue, BOOLEANvalue, HEXCOLORvalue, INTEGERvalue, ATTvalue};
@@ -110,6 +110,7 @@ struct DeclarationValue{
         _HEXCOLOR *hexcolorValue;
         _INTEGER *intValue;
         AttributeValue *attValue;
+		DeclarationValue * declareValue;
     };
     DeclarationValueType type;
 };
@@ -117,13 +118,6 @@ struct DeclarationValue{
 struct AttributeValue{
     _ID *variableID;
     _ID *attribute;
-    union{
-        _ID *idValue;
-        _STRING *charValue;
-        _BOOLEAN *booleanValue;
-        _HEXCOLOR *hexcolorValue;
-        _INTEGER *intValue;
-    };
     AttributeValueType type;
 };
 
@@ -144,14 +138,23 @@ struct GeneralAssignation{
 
 struct ArithmeticOperation{
     OperatorType operator;
-    union{
-        DeclarationValue *leftValue;
-        ArithmeticOperation *leftOperation;
-    };
-    union{
-        DeclarationValue *rightValue;
-        ArithmeticOperation *rightOperation;
-    };
+
+	union{
+
+	ArithmeticOperation * arithOp;
+
+	struct{
+    		union{
+        		DeclarationValue *leftValue;
+        		ArithmeticOperation *leftOperation;
+    		};
+    		union{
+        		DeclarationValue *rightValue;
+       			ArithmeticOperation *rightOperation;
+    		};
+		};
+
+	};
     ArithmeticOperationType type;
 };
 
@@ -287,10 +290,10 @@ struct WorldExpression {
 
 struct ProgramExpression {
     union {
-        MainExpression *worldlessMainExpression;
+        MainExpressions *worldlessMainExpression;
         struct {
             WorldExpression *worldExpression;
-            MainExpression *mainExpression;
+            MainExpressions *mainExpression;
         };
     };
 	ProgramType type;
@@ -300,8 +303,7 @@ struct Program {
     ProgramExpression *programExpression;
 };
 
-/**
- * Node recursive destructors.
+/* Node recursive destructors.
  
 void release_ID(_ID *ID);
 void release_STRING(_STRING * charValue);

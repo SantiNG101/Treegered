@@ -365,3 +365,4 @@ void releaseAttributeValue(AttributeValue *attributeValue){
 		free(attributeValue);
 	}
 }
+*/

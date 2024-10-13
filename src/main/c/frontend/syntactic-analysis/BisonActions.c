@@ -48,41 +48,73 @@ Program * ExpressionProgramSemanticAction(CompilerState * compilerState, Program
 
 /*ADDED*/
 
-DeclarationValue * DeclarationValueIDSemanticAction(Id id){
+AttributeValue * AttributeValueSemanticAction(Id varId, Id attId, AttributeValueType type){
+	AttributeValue * attributeValue = calloc(1, sizeof(AttributeValue));
+
+	_ID * aux1 = calloc(1, sizeof(_ID));
+	aux1->idValue = varId;
+	attributeValue->variableID = aux1;
+
+	_ID * aux2 = calloc(1, sizeof(_ID));
+	aux1->idValue = attId;
+	attributeValue->attribute = aux2;
+	return attributeValue;
+}
+
+DeclarationValue * DeclarationValueIDSemanticAction(Id id, DeclarationValueType type){
 	DeclarationValue * declarationValueID = calloc(1, sizeof(DeclarationValue));
 	_ID * aux = calloc(1, sizeof(_ID));
 	aux->idValue = id;
 	declarationValueID->idValue = aux;
+	declarationValueID->type = type;
 	return declarationValueID;
 }
 
-DeclarationValue * DeclarationValueStringSemanticAction(char* string){
+DeclarationValue * DeclarationValueStringSemanticAction(char* string, DeclarationValueType type){
 	DeclarationValue * declarationValueString = calloc(1, sizeof(DeclarationValue));
 	_STRING * aux = calloc(1, sizeof(_STRING));
 	aux->value = string;
 	declarationValueString->charValue = aux;
+	declarationValueString->type = type;
 	return declarationValueString;
 }
-DeclarationValue * DeclarationValueBooleanSemanticAction(boolean value){
+DeclarationValue * DeclarationValueBooleanSemanticAction(boolean value, DeclarationValueType type){
 	DeclarationValue * declarationValueBoolean = calloc(1, sizeof(DeclarationValue));
 	_BOOLEAN * aux = calloc(1, sizeof(_BOOLEAN));
 	aux->value = value;
 	declarationValueBoolean->booleanValue = aux;
+	declarationValueBoolean->type = type;
 	return declarationValueBoolean;
 }
-DeclarationValue * DeclarationValueHexSemanticAction(Hexcolor color){
+DeclarationValue * DeclarationValueHexSemanticAction(Hexcolor color, DeclarationValueType type){
 	DeclarationValue * declarationValueHex = calloc(1, sizeof(DeclarationValue));
 	_HEXCOLOR * aux = calloc(1, sizeof(_HEXCOLOR));
 	aux->value = color;
 	declarationValueHex->hexcolorValue = aux;
+	declarationValueHex->type = type;
 	return declarationValueHex;
 }
-DeclarationValue * DeclarationValueIntSemanticAction(int integer){
+DeclarationValue * DeclarationValueIntSemanticAction(int integer, DeclarationValueType type){
 	DeclarationValue * declarationValueInteger = calloc(1, sizeof(DeclarationValue));
 	_INTEGER * aux = calloc(1, sizeof(_INTEGER));
 	aux->value = integer;
 	declarationValueInteger->intValue = aux;
+	declarationValueInteger->type = type;
 	return declarationValueInteger;
+}
+
+DeclarationValue * DeclarationValueAttributeSemanticAction(AttributeValue * attValue, DeclarationValueType type){
+	DeclarationValue * declarationValueAttribute = calloc(1, sizeof(DeclarationValue));
+	declarationValueAttribute->attValue = attValue;
+	declarationValueAttribute->type = type;
+	return declarationValueAttribute;
+}
+
+DeclarationValue * DeclarationValueInceptionSemanticAction(DeclarationValue * declarationValue, DeclarationValueType type){
+	DeclarationValue * declarationValueInception = calloc(1, sizeof(DeclarationValue));
+	declarationValueInception->declareValue = declarationValue;
+	declarationValueInception->type = type;
+	return declarationValueInception;
 }
 
 ArithmeticOperation * ArithmeticOperationAllDeclarationValueSemanticAction(OperatorType operator, DeclarationValue* left, DeclarationValue* right, ArithmeticOperationType type){
@@ -93,7 +125,8 @@ ArithmeticOperation * ArithmeticOperationAllDeclarationValueSemanticAction(Opera
 	arithmeticOperation->type = type;
 	return arithmeticOperation;
 }
-ArithmeticOperation * ArithmeticOperatioAllnSemanticAction(OperatorType operator, ArithmeticOperation* left, ArithmeticOperation* right, ArithmeticOperationType type){
+
+ArithmeticOperation * ArithmeticOperationAllSemanticAction(OperatorType operator, ArithmeticOperation* left, ArithmeticOperation* right, ArithmeticOperationType type){
 	ArithmeticOperation * arithmeticOperation = calloc(1, sizeof(ArithmeticOperation));
 	arithmeticOperation->operator = operator;
 	arithmeticOperation->leftOperation = left;
@@ -101,6 +134,7 @@ ArithmeticOperation * ArithmeticOperatioAllnSemanticAction(OperatorType operator
 	arithmeticOperation->type = type;
 	return arithmeticOperation;
 }
+
 ArithmeticOperation * ArithmeticOperationLeftDeclarationRightSemanticAction(OperatorType operator, DeclarationValue* left, ArithmeticOperation* right, ArithmeticOperationType type){
 	ArithmeticOperation * arithmeticOperation = calloc(1, sizeof(ArithmeticOperation));
 	arithmeticOperation->operator = operator;
@@ -109,6 +143,7 @@ ArithmeticOperation * ArithmeticOperationLeftDeclarationRightSemanticAction(Oper
 	arithmeticOperation->type = type;
 	return arithmeticOperation;
 }
+
 ArithmeticOperation * ArithmeticOperationRightDeclarationLeftSemanticAction(OperatorType operator, ArithmeticOperation* left, DeclarationValue* right, ArithmeticOperationType type){
 	ArithmeticOperation * arithmeticOperation = calloc(1, sizeof(ArithmeticOperation));
 	arithmeticOperation->operator = operator;
@@ -118,16 +153,25 @@ ArithmeticOperation * ArithmeticOperationRightDeclarationLeftSemanticAction(Oper
 	return arithmeticOperation;
 }
 
-ProgramExpression * WorldProgramExpressionSemanticAction(MainExpression * mainExpression, ProgramType type){
+ArithmeticOperation * ArithmeticOperationInceptionSemanticAction(OperatorType operator, ArithmeticOperation* operation, ArithmeticOperationType type){
+	ArithmeticOperation * arithmeticOperationInception = calloc(1, sizeof(ArithmeticOperation));
+	arithmeticOperationInception->operator = operator;
+	arithmeticOperationInception->arithOp = operation;
+	arithmeticOperationInception->type = type;
+	return arithmeticOperationInception;
+}
+
+ProgramExpression * WorldlessProgramExpressionSemanticAction(MainExpressions * mainExpressions, ProgramType type){
 	ProgramExpression * programExpression = calloc(1, sizeof(ProgramExpression));
-	programExpression->worldlessMainExpression = mainExpression;
+	programExpression->worldlessMainExpression = mainExpressions;
 	programExpression->type = type;
 	return programExpression;
 }
-ProgramExpression * WorldlessProgramExpressionSemanticAction(MainExpression * mainExpression, WorldExpression* worldExpression, ProgramType type){
+
+ProgramExpression * WorldProgramExpressionSemanticAction(MainExpressions * mainExpressions, WorldExpression* worldExpression, ProgramType type){
 	ProgramExpression * programExpression = calloc(1, sizeof(ProgramExpression));
 	programExpression->worldExpression = worldExpression;
-	programExpression->mainExpression = mainExpression;
+	programExpression->mainExpression = mainExpressions;
 	return programExpression;
 }
 
@@ -140,6 +184,7 @@ WorldAssignment * WorldAssignmentDeclarationSemanticAction(Id id, DeclarationVal
 	worldAssignment->type = type;
 	return worldAssignment;
 }
+
 WorldAssignment * WorldAssignmentArithmeticSemanticAction(Id id, ArithmeticOperation* operation, AssignationType type){
 	WorldAssignment * worldAssignment = calloc(1, sizeof(WorldAssignment));
 	_ID * aux = calloc(1, sizeof(_ID));
@@ -343,7 +388,7 @@ GrowExpression * GrowExpressionSemanticAction(Id id){
 	return growExpression;
 }
 
-ForExpression * ForExpressionSemanticAction(Id id, int start, int end, MainExpressions * mainExpressions){
+ForExpression * ForExpressionSemanticAction(Id id, int start, int end, MainExpressions * mainExpressions, ForType type){
 	
 	ForExpression * forExpression = calloc(1, sizeof(ForExpression));
 	
@@ -360,8 +405,26 @@ ForExpression * ForExpressionSemanticAction(Id id, int start, int end, MainExpre
 	forExpression->rangeStart = auxStart;
 	forExpression->rangeEnd = auxEnd;
 	forExpression->mainExpressions = mainExpressions;
+	forExpression->type = type;
 	
 	return forExpression;
+}
+
+ForExpression * ForNoRangeExpressionSemanticAction(Id id, Id forestId, MainExpressions * mainExpressions, ForType type){
+	ForExpression * noRangeFor = calloc(1, sizeof(ForExpression));
+	
+	_ID * aux = calloc(1, sizeof(_ID));
+	aux->idValue = id;
+
+	_ID * auxForest = calloc(1, sizeof(_ID));
+	auxForest->idValue = forestId;
+	
+	noRangeFor->id = aux;
+	noRangeFor->forestId = auxForest;
+	noRangeFor->mainExpressions = mainExpressions;
+	noRangeFor->type = type;
+	
+	return noRangeFor;
 }
 
 ArithmeticAssignation * ArithmeticDeclarationAssignationSemanticAction(Id id, OperatorType operator, DeclarationValue * value, AssignationType type){
@@ -392,6 +455,52 @@ ArithmeticAssignation * ArithmeticOperationAssignationSemanticAction(Id id, Oper
 	arithAssign->type = type;
 	
 	return arithAssign;
+}
+
+ArithmeticAssignation * ArithmeticAttributeDeclarationAssignationSemanticAction(AttributeValue * attributeValue, OperatorType operator, DeclarationValue * value, AssignationType type){
+	ArithmeticAssignation * arithmeticAssignation = calloc(1, sizeof(ArithmeticAssignation));
+	arithmeticAssignation->att = attributeValue;
+	arithmeticAssignation->operator = operator;
+	arithmeticAssignation->value = value;
+	arithmeticAssignation->type = type;
+	return arithmeticAssignation;
+}
+
+ArithmeticAssignation * ArithmeticAttributeOperationAssignationSemanticAction(AttributeValue * attributeValue, OperatorType operator, ArithmeticOperation * arithOp, AssignationType type){
+	ArithmeticAssignation * arithmeticAssignation = calloc(1, sizeof(ArithmeticAssignation));
+	arithmeticAssignation->att = attributeValue;
+	arithmeticAssignation->operator = operator;
+	arithmeticAssignation->arithmeticOperation = arithOp;
+	arithmeticAssignation->type = type;
+	return arithmeticAssignation;
+}
+
+GeneralAssignation * GeneralSingleArithmeticOperationAssignationSemanticAction(Id id, ArithmeticOperation * arithOp, AssignationType type){
+
+	GeneralAssignation * singleArith = calloc(1, sizeof(GeneralAssignation));
+
+	_ID * aux = calloc(1, sizeof(_ID));
+	aux->idValue = id;
+
+	singleArith->id = aux;
+	singleArith->arithmeticOperation = arithOp;
+	singleArith->type = type;
+
+	return singleArith;
+}
+
+GeneralAssignation * GeneralSingleDeclarationAssignationSemanticAction(Id id, DeclarationValue * value, AssignationType type){
+
+	GeneralAssignation * singleDeclare = calloc(1, sizeof(GeneralAssignation));
+
+	_ID * aux = calloc(1, sizeof(_ID));
+	aux->idValue = id;
+
+	singleDeclare->id = aux;
+	singleDeclare->value = value;
+	singleDeclare->type = type;
+
+	return singleDeclare;
 }
 
 GeneralAssignation * GeneralDeclarationAssignationSemanticAction(Id classType, Id id, DeclarationValue * value, AssignationType type){
@@ -429,6 +538,23 @@ GeneralAssignation * GeneralArithmeticOperationAssignationSemanticAction(Id clas
 
 	return generalArithmetic;
 }
+
+GeneralAssignation * GeneralAttributeDeclarationAssignationSemanticAction(AttributeValue * attributeValue, DeclarationValue * value, AssignationType type){
+	GeneralAssignation * generalAssignation = calloc(1, sizeof(GeneralAssignation));
+	generalAssignation->att = attributeValue;
+	generalAssignation->value = value;
+	generalAssignation->type = type;
+	return generalAssignation;
+}
+
+GeneralAssignation * GeneralAttributeArithmeticOperationAssignationSemanticAction(AttributeValue * attributeValue, ArithmeticOperation * arithOp, AssignationType type){
+	GeneralAssignation * generalAssignation = calloc(1, sizeof(GeneralAssignation));
+	generalAssignation->att = attributeValue;
+	generalAssignation->arithmeticOperation = arithOp;
+	generalAssignation->type = type;
+	return generalAssignation;
+}
+
 
 MainExpressions * SimpleMainExpressionSemanticAction(MainExpression * mainExpression, ExpressionType type){
 

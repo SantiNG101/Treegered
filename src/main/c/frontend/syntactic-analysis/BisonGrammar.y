@@ -136,122 +136,120 @@
 program: programExpression																									{ $$ = ExpressionProgramSemanticAction(currentCompilerState(), $1); }
 	;
 
-programExpression: mainExpressions																							{ $$ = NULL;}
-	|		       worldExpression mainExpressions																			{ $$ = NULL;}
+programExpression: mainExpressions																							{ $$ = WorldlessProgramExpressionSemanticAction($1, WORLDLESS);}
+	|		       worldExpression mainExpressions																			{ $$ = WorldProgramExpressionSemanticAction($2, $1, WORLDFULL);}
 	;
 
-mainExpression: treeExpression																								{ $$ = NULL;} 
-	|			forestExpression																							{ $$ = NULL;} 
-	|			growExpression																								{ $$ = NULL;} 
-	|			forExpression																								{ $$ = NULL;} 
-	|			arithmeticAssignation																						{ $$ = NULL;} 
-	|			generalAssignation																							{ $$ = NULL;} 
+mainExpression: treeExpression																								{ $$ = MainExpressionTreeSemanticAction($1, TREE_m);} 
+	|			forestExpression																							{ $$ = MainExpressionForestSemanticAction($1, FOREST_m);} 
+	|			growExpression																								{ $$ = MainExpressionGrowSemanticAction($1, GROW_m);} 
+	|			forExpression																								{ $$ = MainExpressionForSemanticAction($1, FOR_m);} 
+	|			arithmeticAssignation																						{ $$ = MainExpressionArithmeticAssignationSemanticAction($1, ARITHMETIC_m);} 
+	|			generalAssignation																							{ $$ = MainExpressionGeneralSemanticAction($1, GENERAL_ASSIGNATION_m);} 
 	;
 
-mainExpressions: mainExpression																								{ $$ = NULL;}
-	|			 mainExpressions mainExpression																				{ $$ = NULL;}			 
+mainExpressions: mainExpression																								{ $$ = SimpleMainExpressionSemanticAction($1, SIMPLE_e);}
+	|			 mainExpressions mainExpression																				{ $$ = MultipleMainExpressionSemanticAction($1, $2, MULTIPLE_e);}			 
 	;
 
-generalAssignation: ID ID EQUAL declarationValue SEMICOLON		{ $$ = NULL;}
-	|				ID EQUAL declarationValue SEMICOLON			{ $$ = NULL;}
-	|				ID ID EQUAL arithmeticOperation SEMICOLON		{ $$ = NULL;}
-	|				ID EQUAL arithmeticOperation SEMICOLON			{ $$ = NULL;}
-	|				attributeValue ID EQUAL declarationValue SEMICOLON		{ $$ = NULL;}
-	|				attributeValue EQUAL declarationValue SEMICOLON			{ $$ = NULL;}
-	|				attributeValue ID EQUAL arithmeticOperation SEMICOLON		{ $$ = NULL;}
-	|				attributeValue EQUAL arithmeticOperation SEMICOLON			{ $$ = NULL;}
+generalAssignation: ID ID EQUAL declarationValue SEMICOLON																	{ $$ = GeneralDeclarationAssignationSemanticAction($1, $2, $4, ID_BY_VALUE);}
+	|				ID EQUAL declarationValue SEMICOLON																		{ $$ = GeneralSingleDeclarationAssignationSemanticAction($1, $3, ID_BY_VALUE);}
+	|				ID ID EQUAL arithmeticOperation SEMICOLON																{ $$ = GeneralArithmeticOperationAssignationSemanticAction($1, $2, $4, ID_BY_OPP);}
+	|				ID EQUAL arithmeticOperation SEMICOLON																	{ $$ = GeneralSingleArithmeticOperationAssignationSemanticAction($1, $3, ID_BY_OPP);}
+	|				attributeValue EQUAL declarationValue SEMICOLON															{ $$ = GeneralAttributeDeclarationAssignationSemanticAction($1, $3, ATT_BY_VALUE);}
+	|				attributeValue EQUAL arithmeticOperation SEMICOLON														{ $$ = GeneralAttributeArithmeticOperationAssignationSemanticAction($1, $3, ATT_BY_OPP);}
 	;
 
-arithmeticAssignation: ID ADD_EQ declarationValue SEMICOLON		{ $$ = NULL;}
-	|				   ID SUB_EQ declarationValue SEMICOLON		{ $$ = NULL;}
-	|				   ID MUL_EQ declarationValue SEMICOLON		{ $$ = NULL;}
-	|				   ID DIV_EQ declarationValue SEMICOLON		{ $$ = NULL;}
-	|				   ID ADD_EQ arithmeticOperation SEMICOLON		{ $$ = NULL;}
-	|				   ID SUB_EQ arithmeticOperation SEMICOLON		{ $$ = NULL;}
-	|				   ID MUL_EQ arithmeticOperation SEMICOLON		{ $$ = NULL;}
-	|				   ID DIV_EQ arithmeticOperation SEMICOLON		{ $$ = NULL;}
-	|				   attributeValue ADD_EQ declarationValue SEMICOLON		{ $$ = NULL;}
-	|				   attributeValue SUB_EQ declarationValue SEMICOLON		{ $$ = NULL;}
-	|				   attributeValue MUL_EQ declarationValue SEMICOLON		{ $$ = NULL;}
-	|				   attributeValue DIV_EQ declarationValue SEMICOLON		{ $$ = NULL;}
-	|				   attributeValue ADD_EQ arithmeticOperation SEMICOLON		{ $$ = NULL;}
-	|				   attributeValue SUB_EQ arithmeticOperation SEMICOLON		{ $$ = NULL;}
-	|				   attributeValue MUL_EQ arithmeticOperation SEMICOLON		{ $$ = NULL;}
-	|				   attributeValue DIV_EQ arithmeticOperation SEMICOLON		{ $$ = NULL;}
+arithmeticAssignation: ID ADD_EQ declarationValue SEMICOLON																	{ $$ = ArithmeticDeclarationAssignationSemanticAction($1, ADD_o, $3, ID_BY_VALUE);}
+	|				   ID SUB_EQ declarationValue SEMICOLON																	{ $$ = ArithmeticDeclarationAssignationSemanticAction($1, SUB_o, $3, ID_BY_VALUE);}
+	|				   ID MUL_EQ declarationValue SEMICOLON																	{ $$ = ArithmeticDeclarationAssignationSemanticAction($1, MUL_o, $3, ID_BY_VALUE);}
+	|				   ID DIV_EQ declarationValue SEMICOLON																	{ $$ = ArithmeticDeclarationAssignationSemanticAction($1, DIV_o, $3, ID_BY_VALUE);}
+	|				   ID ADD_EQ arithmeticOperation SEMICOLON																{ $$ = ArithmeticOperationAssignationSemanticAction($1, ADD_o, $3, ID_BY_OPP);}
+	|				   ID SUB_EQ arithmeticOperation SEMICOLON																{ $$ = ArithmeticOperationAssignationSemanticAction($1, SUB_o, $3, ID_BY_OPP);}
+	|				   ID MUL_EQ arithmeticOperation SEMICOLON																{ $$ = ArithmeticOperationAssignationSemanticAction($1, MUL_o, $3, ID_BY_OPP);}
+	|				   ID DIV_EQ arithmeticOperation SEMICOLON																{ $$ = ArithmeticOperationAssignationSemanticAction($1, DIV_o, $3, ID_BY_OPP);}
+	|				   attributeValue ADD_EQ declarationValue SEMICOLON														{ $$ = ArithmeticAttributeDeclarationAssignationSemanticAction($1, ADD_o, $3, ATT_BY_VALUE);;}
+	|				   attributeValue SUB_EQ declarationValue SEMICOLON														{ $$ = ArithmeticAttributeDeclarationAssignationSemanticAction($1, SUB_o, $3, ATT_BY_VALUE);;}
+	|				   attributeValue MUL_EQ declarationValue SEMICOLON														{ $$ = ArithmeticAttributeDeclarationAssignationSemanticAction($1, MUL_o, $3, ATT_BY_VALUE);;}
+	|				   attributeValue DIV_EQ declarationValue SEMICOLON														{ $$ = ArithmeticAttributeDeclarationAssignationSemanticAction($1, DIV_o, $3, ATT_BY_VALUE);;}
+	|				   attributeValue ADD_EQ arithmeticOperation SEMICOLON													{ $$ = ArithmeticAttributeOperationAssignationSemanticAction($1, ADD_o, $3, ATT_BY_OPP);}
+	|				   attributeValue SUB_EQ arithmeticOperation SEMICOLON													{ $$ = ArithmeticAttributeOperationAssignationSemanticAction($1, SUB_o, $3, ATT_BY_OPP);}
+	|				   attributeValue MUL_EQ arithmeticOperation SEMICOLON													{ $$ = ArithmeticAttributeOperationAssignationSemanticAction($1, MUL_o, $3, ATT_BY_OPP);}
+	|				   attributeValue DIV_EQ arithmeticOperation SEMICOLON													{ $$ = ArithmeticAttributeOperationAssignationSemanticAction($1, DIV_o, $3, ATT_BY_OPP);}
 	;
 
-forExpression: FOR ID IN OPEN_BRACE INTEGER COMMA INTEGER CLOSE_BRACE OPEN_CURLY_BRACE mainExpression CLOSE_CURLY_BRACE	{$$=NULL;}
-	|		   FOR ID IN ID OPEN_CURLY_BRACE mainExpression CLOSE_CURLY_BRACE			{ $$ = NULL;}
+forExpression: FOR ID IN OPEN_BRACE INTEGER COMMA INTEGER CLOSE_BRACE OPEN_CURLY_BRACE mainExpressions CLOSE_CURLY_BRACE		{ $$ = ForExpressionSemanticAction($2, $5, $7, $10, CLASSIC_ITERATION);}
+	|		   FOR ID IN ID OPEN_CURLY_BRACE mainExpressions CLOSE_CURLY_BRACE												{ $$ = ForNoRangeExpressionSemanticAction($2, $4, $6, FOREST_ITERATION);}
 	;
 
-growExpression: GROW OPEN_PARENTHESIS ID CLOSE_PARENTHESIS SEMICOLON														{ $$ = NULL;}
+growExpression: GROW OPEN_PARENTHESIS ID CLOSE_PARENTHESIS SEMICOLON														{ $$ = GrowExpressionSemanticAction($3);}
 	;
 
-treeExpression: TREE ID WITH OPEN_PARENTHESIS treeAssignments CLOSE_PARENTHESIS SEMICOLON									{ $$ = NULL;}
-	|			TREE ID SEMICOLON																							{ $$ = NULL;}
+treeExpression: TREE ID WITH OPEN_PARENTHESIS treeAssignments CLOSE_PARENTHESIS SEMICOLON									{ $$ = TreeExpressionSemanticAction($2, $5, FULL_t);}
+	|			TREE ID SEMICOLON																							{ $$ = DefaultTreeExpressionSemanticAction($2, EMPTY_t);}
 	;
 
-treeAssignment: ID EQUAL declarationValue																					{ $$ = NULL;}
-	|			ID EQUAL arithmeticOperation																				{ $$ = NULL;}
+treeAssignment: ID EQUAL declarationValue																					{ $$ = DeclarationTreeAssignmentSemanticAction($1, $3, ID_BY_VALUE);}
+	|			ID EQUAL arithmeticOperation																				{ $$ = ArithmeticTreeAssignmentSemanticAction($1, $3, ID_BY_OPP);}
 	;
 
-treeAssignments: treeAssignment																								{ $$ = NULL;}
-    |            treeAssignments COMMA treeAssignment																		{ $$ = NULL;}
+treeAssignments: treeAssignment																								{ $$ = SimpleTreeAssignmentsSemanticAction($1, SIMPLE_ta);}
+    |            treeAssignments COMMA treeAssignment																		{ $$ = MultipleTreeAssignmentsSemanticAction($1, $3, MULTIPLE_ta);}
 	;
 
-forestExpression: FOREST ID WITH OPEN_PARENTHESIS forestAssignments CLOSE_PARENTHESIS SEMICOLON								{ $$ = NULL;}
-	|			  FOREST ID SEMICOLON																						{ $$ = NULL;}
+forestExpression: FOREST ID WITH OPEN_PARENTHESIS forestAssignments CLOSE_PARENTHESIS SEMICOLON								{ $$ = ForestExpressionSemanticAction($2, $5, FULL_f);}
+	|			  FOREST ID SEMICOLON																						{ $$ = DefaultForestExpressionSemanticAction($2, EMPTY_f);}
 	;
 
-forestAssignment: ID EQUAL declarationValue																					{ $$ = NULL;}
-	|			  ID EQUAL arithmeticOperation																				{ $$ = NULL;}
+forestAssignment: ID EQUAL declarationValue																					{ $$ = DeclarationForestAssignmentSemanticAction($1, $3, ID_BY_VALUE);}
+	|			  ID EQUAL arithmeticOperation																				{ $$ = ArithmeticForestAssignmentSemanticAction($1, $3, ID_BY_OPP);}
 	;
 
-forestAssignments: forestAssignment																							{ $$ = NULL;}
-    |              forestAssignments COMMA forestAssignment																	{ $$ = NULL;}
+forestAssignments: forestAssignment																							{ $$ = SimpleForestAssignmentsSemanticAction(ForestAssignment * forestAssignment, ForestAssignType type);}
+    |              forestAssignments COMMA forestAssignment																	{ $$ = MultipleForestAssignmentsSemanticAction(ForestAssignments * forestAssignments, ForestAssignment * forestAssignment, ForestAssignType type);}
 	;
 
-worldExpression: WORLD OPEN_CURLY_BRACE worldAssignments CLOSE_CURLY_BRACE													{$$ = NULL;}
+worldExpression: WORLD OPEN_CURLY_BRACE worldAssignments CLOSE_CURLY_BRACE													{$$ = WorldExpressionSemanticAction(WorldAssignments* worldAssignments);}
 	;
 
-worldAssignment: ID EQUAL declarationValue																					{ $$ = NULL;}
-	|			 ID EQUAL arithmeticOperation																				{ $$ = NULL;}
+worldAssignment: ID EQUAL declarationValue																					{ $$ = WorldAssignmentDeclarationSemanticAction(Id id, DeclarationValue* value, AssignationType type);}
+	|			 ID EQUAL arithmeticOperation																				{ $$ = WorldAssignmentArithmeticSemanticAction(Id id, ArithmeticOperation* operation, AssignationType type);}
 	;
 
-worldAssignments: worldAssignment																							{ $$ = NULL;}
-    |             worldAssignments COMMA worldAssignment																	{ $$ = NULL;}
+worldAssignments: worldAssignment																							{ $$ = SimpleWorldAssignmentsSemanticAction(WorldAssignment * worldAssignment, WorldType wType);}
+    |             worldAssignments COMMA worldAssignment																	{ $$ = MultipleWorldAssignmentsSemanticAction(WorldAssignments * worldAssignments, WorldAssignment * worldAssignment, WorldType wType);}
 	;
 
-arithmeticOperation: declarationValue ADD declarationValue																	{ $$ = NULL;}
-	|				 declarationValue SUB declarationValue																	{ $$ = NULL;}
-	|				 declarationValue MUL declarationValue																	{ $$ = NULL;}
-	|				 declarationValue DIV declarationValue																	{ $$ = NULL;}
-	|				 arithmeticOperation ADD declarationValue																{ $$ = NULL;}
-	|				 arithmeticOperation SUB declarationValue																{ $$ = NULL;}
-	|				 arithmeticOperation MUL declarationValue																{ $$ = NULL;}
-	|				 arithmeticOperation DIV declarationValue																{ $$ = NULL;}
-	|				 declarationValue ADD arithmeticOperation																{ $$ = NULL;}
-	|				 declarationValue SUB arithmeticOperation																{ $$ = NULL;}
-	|				 declarationValue MUL arithmeticOperation																{ $$ = NULL;}
-	|				 declarationValue DIV arithmeticOperation																{ $$ = NULL;}
-	|				 arithmeticOperation ADD arithmeticOperation															{ $$ = NULL;}
-	|				 arithmeticOperation SUB arithmeticOperation															{ $$ = NULL;}
-	|				 arithmeticOperation MUL arithmeticOperation															{ $$ = NULL;}
-	|				 arithmeticOperation DIV arithmeticOperation															{ $$ = NULL;}
-	|				 OPEN_PARENTHESIS arithmeticOperation CLOSE_PARENTHESIS													{ $$ = NULL;}
+arithmeticOperation: declarationValue ADD declarationValue																	{ $$ = ArithmeticOperationAllDeclarationValueSemanticAction(OperatorType operator, DeclarationValue* left, DeclarationValue* right, ArithmeticOperationType type);}
+	|				 declarationValue SUB declarationValue																	{ $$ = ArithmeticOperationAllDeclarationValueSemanticAction(OperatorType operator, DeclarationValue* left, DeclarationValue* right, ArithmeticOperationType type);}
+	|				 declarationValue MUL declarationValue																	{ $$ = ArithmeticOperationAllDeclarationValueSemanticAction(OperatorType operator, DeclarationValue* left, DeclarationValue* right, ArithmeticOperationType type);}
+	|				 declarationValue DIV declarationValue																	{ $$ = ArithmeticOperationAllDeclarationValueSemanticAction(OperatorType operator, DeclarationValue* left, DeclarationValue* right, ArithmeticOperationType type);}
+	|				 arithmeticOperation ADD declarationValue																{ $$ = ArithmeticOperationLeftDeclarationRightSemanticAction(OperatorType operator, DeclarationValue* left, ArithmeticOperation* right, ArithmeticOperationType type);}
+	|				 arithmeticOperation SUB declarationValue																{ $$ = ArithmeticOperationLeftDeclarationRightSemanticAction(OperatorType operator, DeclarationValue* left, ArithmeticOperation* right, ArithmeticOperationType type);}
+	|				 arithmeticOperation MUL declarationValue																{ $$ = ArithmeticOperationLeftDeclarationRightSemanticAction(OperatorType operator, DeclarationValue* left, ArithmeticOperation* right, ArithmeticOperationType type);}
+	|				 arithmeticOperation DIV declarationValue																{ $$ = ArithmeticOperationLeftDeclarationRightSemanticAction(OperatorType operator, DeclarationValue* left, ArithmeticOperation* right, ArithmeticOperationType type);}
+	|				 declarationValue ADD arithmeticOperation																{ $$ = ArithmeticOperationRightDeclarationLeftSemanticAction(OperatorType operator, ArithmeticOperation* left, DeclarationValue* right, ArithmeticOperationType type);}
+	|				 declarationValue SUB arithmeticOperation																{ $$ = ArithmeticOperationRightDeclarationLeftSemanticAction(OperatorType operator, ArithmeticOperation* left, DeclarationValue* right, ArithmeticOperationType type);}
+	|				 declarationValue MUL arithmeticOperation																{ $$ = ArithmeticOperationRightDeclarationLeftSemanticAction(OperatorType operator, ArithmeticOperation* left, DeclarationValue* right, ArithmeticOperationType type);}
+	|				 declarationValue DIV arithmeticOperation																{ $$ = ArithmeticOperationRightDeclarationLeftSemanticAction(OperatorType operator, ArithmeticOperation* left, DeclarationValue* right, ArithmeticOperationType type);}
+	|				 arithmeticOperation ADD arithmeticOperation															{ $$ = AArithmeticOperationAllSemanticAction(OperatorType operator, ArithmeticOperation* left, ArithmeticOperation* right, ArithmeticOperationType type);}
+	|				 arithmeticOperation SUB arithmeticOperation															{ $$ = ArithmeticOperationAllSemanticAction(OperatorType operator, ArithmeticOperation* left, ArithmeticOperation* right, ArithmeticOperationType type);}
+	|				 arithmeticOperation MUL arithmeticOperation															{ $$ = ArithmeticOperationAllSemanticAction(OperatorType operator, ArithmeticOperation* left, ArithmeticOperation* right, ArithmeticOperationType type);}
+	|				 arithmeticOperation DIV arithmeticOperation															{ $$ = ArithmeticOperationAllSemanticAction(OperatorType operator, ArithmeticOperation* left, ArithmeticOperation* right, ArithmeticOperationType type);}
+	|				 OPEN_PARENTHESIS arithmeticOperation CLOSE_PARENTHESIS													{ $$ = ArithmeticOperationInceptionSemanticAction(NONE, ArithmeticOperation* operation, PARENTHESIS);}
 	;
 
-attributeValue:   ID ARROW ID		{ $$ = NULL;}
+attributeValue:   ID ARROW ID																								{ $$ = AttributeValueSemanticAction(Id varId, Id attId, AttributeValueType type);}
 	;
 
-declarationValue: ID		{ $$ = NULL;}
-	|			  STRING	{ $$ = NULL;}
-	|			  TRUE		{ $$ = NULL;}
-	|			  FALSE		{ $$ = NULL;}
-	|			  HEXCOLOR	{ $$ = NULL;}
-	|			  INTEGER	{ $$ = NULL;}
-	|			  attributeValue	{$$ = NULL;}
-	|			  OPEN_PARENTHESIS declarationValue CLOSE_PARENTHESIS	{ $$ = NULL;}
+declarationValue: ID																										{ $$ = DeclarationValueIDSemanticAction(Id id, DeclarationValueType type);}
+	|			  STRING																									{ $$ = DeclarationValueStringSemanticAction(char* string, DeclarationValueType type);}
+	|			  TRUE																										{ $$ = DeclarationValueBooleanSemanticAction(boolean value, DeclarationValueType type);}
+	|			  FALSE																										{ $$ = DeclarationValueBooleanSemanticAction(boolean value, DeclarationValueType type);}
+	|			  HEXCOLOR																									{ $$ = DeclarationValueHexSemanticAction(Hexcolor color, DeclarationValueType type);}
+	|			  INTEGER																									{ $$ = DeclarationValueIntSemanticAction(int integer, DeclarationValueType type);}
+	|			  attributeValue																							{$$ = DeclarationValueAttributeSemanticAction(AttributeValue * attValue, DeclarationValueType type);}
+	|			  OPEN_PARENTHESIS declarationValue CLOSE_PARENTHESIS														{ $$ = DeclarationValueInceptionSemanticAction(DeclarationValue * declarationValue, DeclarationValueType type);}
 	;
 
 %%
