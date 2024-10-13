@@ -20,6 +20,7 @@ typedef enum ForestType ForestType;
 typedef enum MainExpressionType MainExpressionType;
 typedef enum OperatorType OperatorType;
 typedef enum AssignationType AssignationType;
+typedef enum ForType ForType;
 typedef enum ArithmeticOperationType ArithmeticOperationType;
 typedef enum DeclarationValueType DeclarationValueType;
 
@@ -61,6 +62,7 @@ enum MainExpressionType { SIMPLE_m, TREE_m, FOREST_m, GROW_m, FOR_m, ARITHMETIC_
 enum OperatorType {ADD_o, SUB_o, MUL_o, DIV_o};
 enum ArithmeticOperationType {LV_RV, LV_RO, LO_RV, LO_RO};
 enum AssignationType {BY_VALUE, BY_OPP};
+enum ForType{CLASSIC_ITERATION, FOREST_ITERATION};
 enum DeclarationValueType { IDvalue, STRINGvalue, BOOLEANvalue, HEXCOLORvalue, INTEGERvalue};
 
 /* 
@@ -133,9 +135,15 @@ struct ArithmeticAssignation{
 
 struct ForExpression{
     _ID *id;
-    _INTEGER *rangeStart;
-    _INTEGER *rangeEnd;
+    union{
+        struct{
+            _INTEGER *rangeStart;
+            _INTEGER *rangeEnd;
+        };
+        _ID *forestId;
+    };
     MainExpression *mainExpression;
+    ForType type;
 };
 
 struct GrowExpression{

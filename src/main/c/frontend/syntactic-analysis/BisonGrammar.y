@@ -158,6 +158,7 @@ arithmeticAssignation: ID ADD_EQ declarationValue SEMICOLON		{ $$ = NULL;}
 	;
 
 forExpression: FOR ID IN OPEN_BRACE INTEGER COMMA INTEGER CLOSE_BRACE OPEN_CURLY_BRACE mainExpression CLOSE_CURLY_BRACE	{$$=NULL;}
+	|		   FOR ID IN ID OPEN_CURLY_BRACE mainExpression CLOSE_CURLY_BRACE			{ $$ = NULL;}
 	;
 
 growExpression: GROW OPEN_PARENTHESIS ID CLOSE_PARENTHESIS SEMICOLON	{ $$ = NULL;}

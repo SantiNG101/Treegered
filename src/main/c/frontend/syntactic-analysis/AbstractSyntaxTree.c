@@ -147,7 +147,16 @@ void releaseForExpression(ForExpression *forExpression){
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (forExpression != NULL) {
 		release_ID(forExpression->id);
-		if(forExpression->mainExpression != NULL) releaseMainExpression(forExpression->mainExpression);
+		releaseMainExpression(forExpression->mainExpression);
+		switch(forExpression->type){
+			case CLASSIC_ITERATION:
+				release_INTEGER(forExpression->rangeStart);
+				release_INTEGER(forExpression->rangeEnd);
+				break;
+			case FOREST_ITERATION:
+				release_ID(forExpression->forestId);
+				break;
+		}
 		free(forExpression);
 	}
 }
