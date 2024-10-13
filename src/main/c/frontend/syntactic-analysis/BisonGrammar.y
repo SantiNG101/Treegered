@@ -224,12 +224,13 @@ arithmeticOperation: declarationValue ADD declarationValue																	{ $$ 
 	|				 OPEN_PARENTHESIS arithmeticOperation CLOSE_PARENTHESIS													{ $$ = NULL;}
 	;
 
-declarationValue: ID																										{ $$ = NULL;}
-	|			  STRING																									{ $$ = NULL;}
-	|			  TRUE																										{ $$ = NULL;}
-	|			  FALSE																										{ $$ = NULL;}
-	|			  HEXCOLOR																									{ $$ = NULL;}
-	|			  INTEGER																									{ $$ = NULL;}
+declarationValue: ID		{ $$ = NULL;}
+	|			  STRING	{ $$ = NULL;}
+	|			  TRUE		{ $$ = NULL;}
+	|			  FALSE		{ $$ = NULL;}
+	|			  HEXCOLOR	{ $$ = NULL;}
+	|			  INTEGER	{ $$ = NULL;}
+	|			  OPEN_PARENTHESIS declarationValue CLOSE_PARENTHESIS	{ $$ = NULL;}
 	;
 
 %%

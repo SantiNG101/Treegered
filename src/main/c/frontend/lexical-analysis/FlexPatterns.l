@@ -62,7 +62,7 @@
 "forest"                            {return ForestLexemeAction(createLexicalAnalyzerContext());}
 "grow"                              {return GrowLexemeAction(createLexicalAnalyzerContext());}
 
-"'"[[:alnum:]]+"'"                  {return StringLexemeAction(createLexicalAnalyzerContext());}
+"'"([^"\\]*(\\.[^"\\]*)*)+"'"       {return StringLexemeAction(createLexicalAnalyzerContext());}
 "'"([^\\s])"'"                      {return StringLexemeAction(createLexicalAnalyzerContext());}
 
 "true"                              {return BooleanLexemeAction(createLexicalAnalyzerContext(), TRUE);}

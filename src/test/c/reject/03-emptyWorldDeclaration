@@ -1,0 +1,4 @@
+world{
+
+}
+message = 'should fail too';
