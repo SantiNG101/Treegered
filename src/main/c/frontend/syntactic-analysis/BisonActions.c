@@ -135,7 +135,7 @@ ArithmeticOperation * ArithmeticOperationAllSemanticAction(OperatorType operator
 	return arithmeticOperation;
 }
 
-ArithmeticOperation * ArithmeticOperationLeftDeclarationRightSemanticAction(OperatorType operator, DeclarationValue* left, ArithmeticOperation* right, ArithmeticOperationType type){
+ArithmeticOperation * ArithmeticOperationRightDeclarationLeftSemanticAction(OperatorType operator, DeclarationValue* left, ArithmeticOperation* right, ArithmeticOperationType type){
 	ArithmeticOperation * arithmeticOperation = calloc(1, sizeof(ArithmeticOperation));
 	arithmeticOperation->operator = operator;
 	arithmeticOperation->leftValue = left;
@@ -144,7 +144,7 @@ ArithmeticOperation * ArithmeticOperationLeftDeclarationRightSemanticAction(Oper
 	return arithmeticOperation;
 }
 
-ArithmeticOperation * ArithmeticOperationRightDeclarationLeftSemanticAction(OperatorType operator, ArithmeticOperation* left, DeclarationValue* right, ArithmeticOperationType type){
+ArithmeticOperation * ArithmeticOperationLeftDeclarationRightSemanticAction(OperatorType operator, ArithmeticOperation* left, DeclarationValue* right, ArithmeticOperationType type){
 	ArithmeticOperation * arithmeticOperation = calloc(1, sizeof(ArithmeticOperation));
 	arithmeticOperation->operator = operator;
 	arithmeticOperation->leftOperation = left;

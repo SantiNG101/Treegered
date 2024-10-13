@@ -43,9 +43,9 @@ ArithmeticOperation * ArithmeticOperationAllDeclarationValueSemanticAction(Opera
 
 ArithmeticOperation * ArithmeticOperationAllSemanticAction(OperatorType operator, ArithmeticOperation* left, ArithmeticOperation* right, ArithmeticOperationType type);
 
-ArithmeticOperation * ArithmeticOperationLeftDeclarationRightSemanticAction(OperatorType operator, DeclarationValue* left, ArithmeticOperation* right, ArithmeticOperationType type);
+ArithmeticOperation * ArithmeticOperationRightDeclarationLeftSemanticAction(OperatorType operator, DeclarationValue* left, ArithmeticOperation* right, ArithmeticOperationType type);
 
-ArithmeticOperation * ArithmeticOperationRightDeclarationLeftSemanticAction(OperatorType operator, ArithmeticOperation* left, DeclarationValue* right, ArithmeticOperationType type);
+ArithmeticOperation * ArithmeticOperationLeftDeclarationRightSemanticAction(OperatorType operator, ArithmeticOperation* left, DeclarationValue* right, ArithmeticOperationType type);
 
 ArithmeticOperation * ArithmeticOperationInceptionSemanticAction(OperatorType operator, ArithmeticOperation* operation, ArithmeticOperationType type);
 
