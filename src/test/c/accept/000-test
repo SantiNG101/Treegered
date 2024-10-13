@@ -11,8 +11,7 @@ world {
 
 tree t1 with (
 	x = 1, 
-	height = 1, 
-	leaf = '&', 
+	height = 1,
 	color = #FFFFFF, 
 	depth = 1, 
 	density = 1, 
@@ -31,7 +30,10 @@ for k in [0, 1]{
 	res += k;
 }
 
-tree t2 with (x=world->width*(3/4), height=world->height/2);
+tree t2 with (
+    x=world->width*3/4, 
+    height=world->height/2
+);
 
 f1 += t1;
 f1 += t2;

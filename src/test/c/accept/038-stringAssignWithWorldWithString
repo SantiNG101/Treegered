@@ -1,0 +1,5 @@
+world{
+    height = 10,
+    message = 'testing!'
+}
+string str = 'heyo! from testing';

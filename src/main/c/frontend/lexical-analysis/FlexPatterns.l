@@ -35,6 +35,13 @@
 
 "="                                 {return EqualLexemeAction(createLexicalAnalyzerContext());}
 
+"=="                                {return EquivalentLexemeAction(createLexicalAnalyzerContext());}
+"!="                                {return DifferentLexemeAction(createLexicalAnalyzerContext());}
+"<"                                 {return LesserThanLexemeAction(createLexicalAnalyzerContext());}
+"<="                                {return LesserEqualLexemeAction(createLexicalAnalyzerContext());}
+">"                                 {return GreaterThanLexemeAction(createLexicalAnalyzerContext());}
+">="                                {return GreaterEqualLexemeAction(createLexicalAnalyzerContext());}
+
 ","                                 {return CommaLexemeAction(createLexicalAnalyzerContext());}
 ";"                                 {return SemicolonLexemeAction(createLexicalAnalyzerContext());}
 
@@ -55,6 +62,9 @@
 "["                                 {return BraceLexemeAction(createLexicalAnalyzerContext(), OPEN_BRACE);}
 "]"                                 {return BraceLexemeAction(createLexicalAnalyzerContext(), CLOSE_BRACE);}
 
+"if"                                {return ConditionalLexemeAction(createLexicalAnalyzerContext(), IF);}
+"else"                              {return ConditionalLexemeAction(createLexicalAnalyzerContext(), ELSE);}
+
 "for"                               {return ForLexemeAction(createLexicalAnalyzerContext());}
 "in"                                {return InLexemeAction(createLexicalAnalyzerContext());}
 "with"                              {return WithLexemeAction(createLexicalAnalyzerContext());}
@@ -65,7 +75,7 @@
 "grow"                              {return GrowLexemeAction(createLexicalAnalyzerContext());}
 
 "'"([^"\\]*(\\.[^"\\]*)*)+"'"       {return StringLexemeAction(createLexicalAnalyzerContext());}
-"'"([^\\s])"'"                      {return StringLexemeAction(createLexicalAnalyzerContext());}
+"'"([^\\s'\\])"'"                      {return StringLexemeAction(createLexicalAnalyzerContext());}
 
 "true"                              {return BooleanLexemeAction(createLexicalAnalyzerContext(), TRUE);}
 "TRUE"                              {return BooleanLexemeAction(createLexicalAnalyzerContext(), TRUE);}

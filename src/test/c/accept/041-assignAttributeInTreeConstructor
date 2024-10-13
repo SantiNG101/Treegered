@@ -1,0 +1,5 @@
+world{
+    height = 10,
+    message = 'testing!'
+}
+tree t2 with (x=world->height);

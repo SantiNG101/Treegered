@@ -1,0 +1,3 @@
+tree t1;
+int x=1;
+x=t1->height;

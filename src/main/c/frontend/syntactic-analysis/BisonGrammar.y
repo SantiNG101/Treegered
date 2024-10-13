@@ -70,6 +70,13 @@
 
 %token <token> EQUAL
 
+%token <token> EQUIVALENT
+%token <token> DIFFERENT
+%token <token> LESSERTHAN
+%token <token> GREATERTHAN
+%token <token> LESSER_EQUAL
+%token <token> GREATER_EQUAL
+
 %token <token> COMMA
 %token <token> SEMICOLON
 
