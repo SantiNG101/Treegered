@@ -1,0 +1,2 @@
+tree t1;
+t1->height /= 5;

@@ -1,0 +1,2 @@
+string message = 'heyo! from testing';
+message += #000000;

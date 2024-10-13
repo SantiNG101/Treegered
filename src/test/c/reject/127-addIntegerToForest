@@ -1,0 +1,3 @@
+forest f1;
+int t1 = 1;
+f1 += t1;

@@ -1,0 +1,2 @@
+hexcolor f1 = #AA00bb;
+grow(f1);

@@ -1,0 +1,2 @@
+hexcolor leafColor = #FFff33;
+leafColor *= 3;

@@ -1,0 +1,49 @@
+world {
+	height = 100,
+	width = 100, 
+	uneveness = 1,
+	message = 'something'
+}
+
+/*
+	actual comment of treegered
+*/
+
+tree t1 with (
+	x = 1, 
+	height = 1, 
+	leaf = '&', 
+	color = #FFFFFFFF, 
+	depth = 1, 
+	density = 1, 
+	bark = #FFFFFFFF, 
+	snowed = TRUE 
+);
+
+forest f1 with (
+	start = 0, 
+	end = 20 
+);
+
+int res = 0;
+
+for k in [0, 1]{
+	res += k;
+}
+
+tree t2 with (x=world->width*(3/4), height=world->height/2);
+
+f1 += t1;
+f1 += t2;
+
+for t in f1{
+	t->height += 1;
+}
+
+grow(f1);
+
+f1->start += 2;
+
+t1->snowed = FALSE;
+
+grow(f1);
