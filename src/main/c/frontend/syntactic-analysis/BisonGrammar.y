@@ -183,10 +183,10 @@ conditionalClause:  declarationValue EQUIVALENT declarationValue															{
 	|				declarationValue LESSER_EQUAL declarationValue															{$$ = NULL;}
 	|				declarationValue LESSER_EQUAL conditionalClause															{$$ = NULL;}
 	|				conditionalClause LESSER_EQUAL declarationValue															{$$ = NULL;}
-	|				conditionalClause LESSER_EQUAL conditionalClause		{$$ = NULL;}
-	|				declarationValue GREATER_EQUAL declarationValue			{$$ = NULL;}
-	|				declarationValue GREATER_EQUAL conditionalClause		{$$ = NULL;}
-	|				conditionalClause GREATER_EQUAL declarationValue		{$$ = NULL;}
+	|				conditionalClause LESSER_EQUAL conditionalClause														{$$ = NULL;}
+	|				declarationValue GREATER_EQUAL declarationValue															{$$ = NULL;}
+	|				declarationValue GREATER_EQUAL conditionalClause														{$$ = NULL;}
+	|				conditionalClause GREATER_EQUAL declarationValue														{$$ = NULL;}
 	|				conditionalClause GREATER_EQUAL conditionalClause		{$$ = NULL;}
 	|				declarationValue LESSERTHAN declarationValue			{$$ = NULL;}
 	|				declarationValue LESSERTHAN conditionalClause			{$$ = NULL;}
