@@ -163,7 +163,7 @@ ArithmeticOperation * ArithmeticOperationInceptionSemanticAction(OperatorType op
 
 ProgramExpression * WorldlessProgramExpressionSemanticAction(MainExpressions * mainExpressions, ProgramType type){
 	ProgramExpression * programExpression = calloc(1, sizeof(ProgramExpression));
-	programExpression->worldlessMainExpression = mainExpressions;
+	programExpression->worldlessMainExpressions = mainExpressions;
 	programExpression->type = type;
 	return programExpression;
 }
@@ -171,7 +171,7 @@ ProgramExpression * WorldlessProgramExpressionSemanticAction(MainExpressions * m
 ProgramExpression * WorldProgramExpressionSemanticAction(MainExpressions * mainExpressions, WorldExpression* worldExpression, ProgramType type){
 	ProgramExpression * programExpression = calloc(1, sizeof(ProgramExpression));
 	programExpression->worldExpression = worldExpression;
-	programExpression->mainExpression = mainExpressions;
+	programExpression->mainExpressions = mainExpressions;
 	return programExpression;
 }
 

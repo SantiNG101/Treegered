@@ -127,6 +127,7 @@ GeneralAssignation * GeneralAttributeDeclarationAssignationSemanticAction(Attrib
 
 GeneralAssignation * GeneralAttributeArithmeticOperationAssignationSemanticAction(AttributeValue * attributeValue, ArithmeticOperation * arithOp, AssignationType type);
 
+
 ConditionalExpression * IfOnlyConditionalExpression(ConditionalClause * conditionalClause, MainExpressions * mainExpressions, ConditionalType type);
 
 ConditionalExpression * IfElseConditionalExpression(ConditionalClause * conditionalClause, MainExpressions * ifMainExpressions, MainExpressions * elseMainExpressions, ConditionalType type);

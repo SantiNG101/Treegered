@@ -330,10 +330,10 @@ struct WorldExpression {
 
 struct ProgramExpression {
     union {
-        MainExpressions *worldlessMainExpression;
+        MainExpressions *worldlessMainExpressions;
         struct {
             WorldExpression *worldExpression;
-            MainExpressions *mainExpression;
+            MainExpressions *mainExpressions;
         };
     };
 	ProgramType type;
@@ -343,30 +343,62 @@ struct Program {
     ProgramExpression *programExpression;
 };
 
-/* Node recursive destructors.
+/* Node recursive destructors. */
  
-void release_ID(_ID *ID);
-void release_STRING(_STRING * charValue);
-void release_HEXCOLOR(_HEXCOLOR * hexcolorValue);
-void release_INTEGER(_INTEGER *intValue);
-void release_BOOLEAN(_BOOLEAN *booleanValue);
-void releaseProgram(Program * program);
-void releaseProgramExpression(ProgramExpression *programExpression);
-void releaseWorldExpression(WorldExpression *worldExpression);
-void releaseWorldAssignment(WorldAssignment *worldAssignment);
-void releaseDeclarationValue(DeclarationValue *declarationValue);
-void releaseMainExpression(MainExpression *mainExpression);
-void releaseTreeExpression(TreeExpression *treeExpression);
-void releaseTreeAssignment(TreeAssignment *treeAssignment);
-void releaseForestExpression(ForestExpression *forestExpression);
-void releaseForestAssignment(ForestAssignment *forestAssignment);
-void releaseGrowExpression(GrowExpression *growExpression);
-void releaseForExpression(ForExpression *forExpression);
-void releaseArithmeticAssignation(ArithmeticAssignation *arithmeticAssignation);
-void releaseArithmeticOperation(ArithmeticOperation *arithmeticOperation);
-void releaseGeneralAssignation(GeneralAssignation *generalAssignation);
-void releaseAttributeValue(AttributeValue *attributeValue);
+void release_ID(_ID *ID);  /*✅*/
 
-*/
+void release_STRING(_STRING * charValue);  /*✅*/
+
+void release_HEXCOLOR(_HEXCOLOR * hexcolorValue);  /*✅*/
+
+void release_INTEGER(_INTEGER *intValue);  /*✅*/
+
+void release_BOOLEAN(_BOOLEAN *booleanValue);  /*✅*/
+
+void releaseProgram(Program * program); /*✅*/
+
+void releaseProgramExpression(ProgramExpression *programExpression); /*✅*/
+
+void releaseWorldExpression(WorldExpression *worldExpression); /*✅*/
+
+void releaseWorldAssignments(WorldAssignments * worldAssignments); /*✅*/
+
+void releaseWorldAssignment(WorldAssignment *worldAssignment); /*✅*/
+
+void releaseDeclarationValue(DeclarationValue *declarationValue); /*✅*/
+
+void releaseMainExpressions(MainExpressions *mainExpressions);  /*✅*/
+
+void releaseMainExpression(MainExpression *mainExpression); /*✅*/
+
+void releaseTreeExpression(TreeExpression *treeExpression); /*✅*/
+
+void releaseTreeAssignment(TreeAssignment *treeAssignment); /*✅*/
+
+void releaseTreeAssignments(TreeAssignments *treeAssignments); /*✅*/
+
+void releaseForestExpression(ForestExpression *forestExpression);/*✅*/
+
+void releaseForestAssignment(ForestAssignment *forestAssignment);/*✅*/
+
+void releaseForestAssignments(ForestAssignments *forestAssignments);/*✅*/
+
+void releaseGrowExpression(GrowExpression *growExpression); /*✅*/
+
+void releaseForExpression(ForExpression *forExpression); /*✅*/
+
+void releaseArithmeticAssignation(ArithmeticAssignation *arithmeticAssignation); /*✅*/
+
+void releaseArithmeticOperation(ArithmeticOperation *arithmeticOperation); /*✅*/
+
+void releaseGeneralAssignation(GeneralAssignation *generalAssignation); /*✅*/
+
+void releaseConditionalExpression(ConditionalExpression *conditionalExpression); /*✅*/
+
+void releaseConditionalClause(ConditionalClause *conditionalClause); /*✅*/
+
+void releaseAttributeValue(AttributeValue *attributeValue);  /*✅*/
+
+
 
 #endif
