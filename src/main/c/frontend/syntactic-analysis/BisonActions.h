@@ -20,9 +20,6 @@ void shutdownBisonActionsModule();
 
 Program * ExpressionProgramSemanticAction(CompilerState * compilerState, ProgramExpression * expression);
 
-
-typedef struct Program Program;
-
 DeclarationValue * DeclarationValueIDSemanticAction(Id id);
 DeclarationValue * DeclarationValueStringSemanticAction(char* string);
 DeclarationValue * DeclarationValueBooleanSemanticAction(boolean value);
@@ -40,8 +37,8 @@ ProgramExpression * WorldlessProgramExpressionSemanticAction(MainExpression * ma
 WorldAssignment * WorldAssignmentDeclarationSemanticAction(Id id, DeclarationValue* value, AssignationType type);
 WorldAssignment * WorldAssignmentArithmeticSemanticAction(Id id, ArithmeticOperation* operation, AssignationType type);
 
-WorldAssignments * SimpleWorldAssignmentsSemanticAction(WorldAssignment * worldAssignment);
-WorldAssignments * MultipleWorldAssignmentsSemanticAction(WorldAssignments * worldAssignments, WorldAssignment * worldAssignment);
+WorldAssignments * SimpleWorldAssignmentsSemanticAction(WorldAssignment * worldAssignment, WorldType wType);
+WorldAssignments * MultipleWorldAssignmentsSemanticAction(WorldAssignments * worldAssignments, WorldAssignment * worldAssignment, WorldType wType);
 
 WorldExpression * WorldExpressionSemanticAction(WorldAssignments* worldAssignments);
 
@@ -67,14 +64,14 @@ GrowExpression * GrowExpressionSemanticAction(Id id);
 
 ForExpression * ForExpressionSemanticAction(Id id, int start, int end, MainExpressions * mainExpressions);
 
-ArithmeticAssignation * ArithmeticDeclarationAssignationSemanticAction(Id id, OperatorType operator, DeclarationValue value, AssignationType type);
+ArithmeticAssignation * ArithmeticDeclarationAssignationSemanticAction(Id id, OperatorType operator, DeclarationValue * value, AssignationType type);
 ArithmeticAssignation * ArithmeticOperationAssignationSemanticAction(Id id, OperatorType operator, ArithmeticOperation * arithOp, AssignationType type);
 
 GeneralAssignation * GeneralDeclarationAssignationSemanticAction(Id classType, Id id, DeclarationValue * value, AssignationType type);
 GeneralAssignation * GeneralArithmeticOperationAssignationSemanticAction(Id classType, Id id, ArithmeticOperation * arithOp, AssignationType type);
 
-MainExpressions * SimpleMainExpressionSemanticAction(MainExpression * mainExpression);
-MainExpressions * MultipleMainExpressionSemanticAction(MainExpressions* mainExpressions, MainExpression * mainExpression);
+MainExpressions * SimpleMainExpressionSemanticAction(MainExpression * mainExpression, ExpressionType type);
+MainExpressions * MultipleMainExpressionSemanticAction(MainExpressions* mainExpressions, MainExpression * mainExpression, ExpressionType type);
 
 MainExpression * MainExpressionTreeSemanticAction(TreeExpression * treeExpression, MainExpressionType type);
 MainExpression * MainExpressionForestSemanticAction(ForestExpression * forestExpression, MainExpressionType type);
