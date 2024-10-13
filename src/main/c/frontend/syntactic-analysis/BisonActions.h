@@ -23,6 +23,8 @@ Program * ExpressionProgramSemanticAction(CompilerState * compilerState, Program
 
 AttributeValue * AttributeValueSemanticAction(Id varId, Id attId, AttributeValueType type);
 
+AttributeValue * AttributeValueWorldSemanticAction(Id attId, AttributeValueType type);
+
 
 DeclarationValue * DeclarationValueIDSemanticAction(Id id, DeclarationValueType type);
 
@@ -126,6 +128,7 @@ GeneralAssignation * GeneralArithmeticOperationAssignationSemanticAction(Id clas
 GeneralAssignation * GeneralAttributeDeclarationAssignationSemanticAction(AttributeValue * attributeValue, DeclarationValue * value, AssignationType type);
 
 GeneralAssignation * GeneralAttributeArithmeticOperationAssignationSemanticAction(AttributeValue * attributeValue, ArithmeticOperation * arithOp, AssignationType type);
+
 
 ConditionalExpression * IfOnlyConditionalExpression(ConditionalClause * conditionalClause, MainExpressions * mainExpressions, ConditionalType type);
 

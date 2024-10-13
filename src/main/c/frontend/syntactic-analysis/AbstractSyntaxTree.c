@@ -16,7 +16,7 @@ void shutdownAbstractSyntaxTreeModule() {
 
 /** PUBLIC FUNCTIONS */
 
-/* void releaseProgram(Program * program) {
+void releaseProgram(Program * program) {
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (program != NULL) {
 		releaseProgramExpression(program->programExpression);
@@ -30,10 +30,10 @@ void releaseProgramExpression(ProgramExpression * expression) {
 		switch(expression->type){
 			case WORLDFULL:
 				releaseWorldExpression(expression->worldExpression);
-				releaseMainExpression(expression->mainExpression);
+				releaseMainExpressions(expression->mainExpressions);
 				break;
 			case WORLDLESS:
-				releaseMainExpression(expression->worldlessMainExpression);
+				releaseMainExpressions(expression->worldlessMainExpressions);
 				break;
 		}
 		free(expression);
@@ -43,10 +43,27 @@ void releaseProgramExpression(ProgramExpression * expression) {
 void releaseWorldExpression(WorldExpression *worldExpression){
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (worldExpression != NULL) {
-		releaseWorldAssignments(worldExpression->)
+		releaseWorldAssignments(worldExpression->worldAssignments);
 		}
 		free(worldExpression);
-	}
+}
+
+void releaseWorldAssignments(WorldAssignments * worldAssignments){
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if (worldAssignments != NULL) {
+		switch (worldAssignments->wType)
+		{
+		case SIMPLE_w:
+			releaseWorldAssignment(worldAssignments->singleWorldAssignment);
+			break;
+		
+		case MULTIPLE_w:
+			releaseWorldAssignment(worldAssignments->multipleWorldAssignment);
+			releaseWorldAssignments(worldAssignments->worldAssignments);
+			break;
+		}
+		}
+		free(worldAssignments);
 }
 
 void releaseWorldAssignment(WorldAssignment *worldAssignment){
@@ -68,16 +85,27 @@ void releaseWorldAssignment(WorldAssignment *worldAssignment){
 void releaseForestExpression(ForestExpression *forestExpression){
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (forestExpression != NULL) {
-		switch(forestExpression->type){
-			case MULTIPLE_f:
-				releaseForestAssignment(forestExpression->simpleForestAssignment);
-				releaseForestExpression(forestExpression->forestExpression);
-				break;
-			case SIMPLE_f:
-				releaseForestAssignment(forestExpression->multipleForestAssignment);
-				break;
-		}
+		release_ID(forestExpression->id);
+		releaseForestAssignments(forestExpression->forestAssignments);
 		free(forestExpression);
+	}
+}
+
+void releaseForestAssignments(ForestAssignments * forestAssignments){
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if (forestAssignments != NULL) {
+		switch (forestAssignments->type)
+		{
+		case SIMPLE_fa:
+			releaseForestAssignment(forestAssignments->singleForestAssignment);
+			break;
+		
+		case MULTIPLE_fa:
+			releaseForestAssignment(forestAssignments->multipleForestAssignment);
+			releaseForestAssignments(forestAssignments->forestAssignments);
+			break;
+		}
+		free(forestAssignments);
 	}
 }
 
@@ -100,17 +128,27 @@ void releaseForestAssignment(ForestAssignment *forestAssignment){
 void releaseTreeExpression(TreeExpression *treeExpression){
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (treeExpression != NULL) {
-		switch(treeExpression->type){
-			case MULTIPLE_t:
-				releaseTreeAssignment(treeExpression->simpleTreeAssignment);
-				releaseTreeExpression(treeExpression->treeExpression);
-				break;
-			case SIMPLE_t:
-				releaseTreeAssignment(treeExpression->multipleTreeAssignment);
-				break;
-		}
-		free(treeExpression);
+		release_ID(treeExpression->id);
+		releaseTreeAssignments(treeExpression->treeAssignments);
 	}
+		free(treeExpression);
+}
+
+void releaseTreeAssignments(TreeAssignments *treeAssignments){
+		logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+		if(treeAssignments != NULL){
+			switch (treeAssignments->type){
+			case SIMPLE_ta:
+				releaseTreeAssignment(treeAssignments->singleTreeAssignment);
+				break;
+			
+			case MULTIPLE_ta:
+				releaseTreeAssignment(treeAssignments->multipleTreeAssignment);
+				releaseTreeAssignments(treeAssignments->treeAssignments);
+				break;
+			}
+		}
+		free(treeAssignments);
 }
 
 void releaseTreeAssignment(TreeAssignment *treeAssignment){
@@ -129,6 +167,7 @@ void releaseTreeAssignment(TreeAssignment *treeAssignment){
 	}
 }
 
+
 void releaseGrowExpression(GrowExpression *growExpression){
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (growExpression != NULL) {
@@ -141,7 +180,7 @@ void releaseForExpression(ForExpression *forExpression){
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (forExpression != NULL) {
 		release_ID(forExpression->id);
-		releaseMainExpression(forExpression->mainExpression);
+		releaseMainExpressions(forExpression->mainExpressions);
 		switch(forExpression->type){
 			case CLASSIC_ITERATION:
 				release_INTEGER(forExpression->rangeStart);
@@ -207,6 +246,24 @@ void releaseGeneralAssignation(GeneralAssignation *generalAssignation){
 	}
 }
 
+void releaseMainExpressions(MainExpressions *mainExpressions){
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if(mainExpressions != NULL){
+		switch (mainExpressions->type)
+		{
+		case SIMPLE_e:
+			releaseMainExpression(mainExpressions->singleMainExpression);
+			break;
+		
+		case MULTIPLE_e:
+			releaseMainExpression(mainExpressions->multipleMainExpression);
+			releaseMainExpressions(mainExpressions->mainExpressions);
+			break;
+		}
+		free(mainExpressions);
+	}
+}
+
 void releaseMainExpression(MainExpression *mainExpression){
 logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (mainExpression != NULL) {
@@ -229,8 +286,8 @@ logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 			case TREE_m:
 				releaseTreeExpression(mainExpression->treeExpression);
 				break;
-			case SIMPLE_m:
-				release_ID(mainExpression->id);
+			case CONDITIONAL_m:
+				releaseConditionalExpression(mainExpression->conditionalExpression);
 				break;
 		}
 		free(mainExpression);
@@ -333,29 +390,66 @@ void releaseArithmeticOperation(ArithmeticOperation *arithmeticOperation){
 	}
 }
 
+void releaseConditionalExpression(ConditionalExpression *conditionalExpression){
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if(conditionalExpression != NULL){
+		releaseConditionalClause(conditionalExpression->conditionalClause);
+		releaseMainExpressions(conditionalExpression->ifMainExpressions);
+		releaseMainExpressions(conditionalExpression->elseMainExpressions);
+		free(conditionalExpression);
+	}
+}
+
+void releaseConditionalClause(ConditionalClause *conditionalClause){
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if(conditionalClause != NULL){
+		switch (conditionalClause->conditionalType)
+		{
+		case V_V:
+			releaseDeclarationValue(conditionalClause->leftValue);
+			releaseDeclarationValue(conditionalClause->rightValue);
+			break;
+		
+		case V_C:
+			releaseDeclarationValue(conditionalClause->leftValueDeclare);
+			releaseConditionalClause(conditionalClause->rightConditionalClause);
+			break;
+
+		case C_V:
+			releaseConditionalClause(conditionalClause->rightConditionalClause);
+			releaseDeclarationValue(conditionalClause->rightValueDeclare);
+			break;
+		
+		case C_C:
+			releaseConditionalClause(conditionalClause->leftConditional);
+			releaseConditionalClause(conditionalClause->rightConditional);
+			break;
+		
+		case PARENTHESIS_c:
+			releaseConditionalClause(conditionalClause->conditionalClause);
+			break;
+
+		free(conditionalClause);
+		}
+	}
+}
+
+
 void releaseAttributeValue(AttributeValue *attributeValue){
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (attributeValue != NULL) {
+		switch (attributeValue->type){
+		case IDatt:
+			release_ID(attributeValue->variableID);
+			release_ID(attributeValue->attributeID);
+			break;
+		
+		case WORLDatt:
+			release_ID(attributeValue->attribute);
+			break;
+		}
 		release_ID(attributeValue->variableID);
 		release_ID(attributeValue->attribute);
-		switch(attributeValue->type){
-			case IDatt:
-				release_ID(attributeValue->idValue);
-				break;
-			case STRINGatt:
-				release_STRING(attributeValue->charValue);
-				break;
-			case BOOLEANatt:
-				release_BOOLEAN(attributeValue->booleanValue);
-				break;
-			case HEXCOLORatt:
-				release_HEXCOLOR(attributeValue->hexcolorValue);
-				break;
-			case INTEGERatt:
-				release_INTEGER(attributeValue->intValue);
-				break;
-		}
 		free(attributeValue);
 	}
 }
- */

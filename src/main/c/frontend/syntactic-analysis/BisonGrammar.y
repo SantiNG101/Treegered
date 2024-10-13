@@ -294,7 +294,7 @@ arithmeticOperation: declarationValue ADD declarationValue																	{ $$ 
 	;
 
 attributeValue:   ID ARROW ID																								{ $$ = AttributeValueSemanticAction($1, $3, IDatt);}
-	|			  WORLD ARROW ID {$$ = NULL;}
+	|			  WORLD ARROW ID																							{ $$ = AttributeValueWorldSemanticAction($3, WORLDatt);}
 	;
 
 declarationValue: ID																										{ $$ = DeclarationValueIDSemanticAction($1, IDvalue);}

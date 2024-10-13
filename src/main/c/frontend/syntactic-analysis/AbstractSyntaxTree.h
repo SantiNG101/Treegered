@@ -84,7 +84,7 @@ enum ConditionalType{IF_c, ELSE_c};
 enum ConditionalClauseType{PARENTHESIS_c, V_V, V_C, C_V, C_C}; //distinguish left and rights between declarationValues and conditionalClauses
 enum ComparissonType{NONE_c, EQUIVALENT_c, DIFFERENT_c, LESSER_EQUAL_c, GREATER_EQUAL_c, LESSERTHAN_c, GREATERTHAN_c};
 enum DeclarationValueType { IDvalue, STRINGvalue, BOOLEANvalue, HEXCOLORvalue, INTEGERvalue, ATTvalue, DECLARATIONvalue};
-enum AttributeValueType { IDatt, STRINGatt, BOOLEANatt, HEXCOLORatt, INTEGERatt};
+enum AttributeValueType { IDatt, STRINGatt, BOOLEANatt, HEXCOLORatt, INTEGERatt, WORLDatt};
 
 /* 
 	Structs for the ast
@@ -124,8 +124,14 @@ struct DeclarationValue{
 };
 
 struct AttributeValue{
-    _ID *variableID;
-    _ID *attribute;
+    union{
+        struct{
+            _ID *variableID;
+            _ID *attributeID;
+        };
+        _ID *attribute;
+    };
+    
     AttributeValueType type;
 };
 
@@ -330,10 +336,10 @@ struct WorldExpression {
 
 struct ProgramExpression {
     union {
-        MainExpressions *worldlessMainExpression;
+        MainExpressions *worldlessMainExpressions;
         struct {
             WorldExpression *worldExpression;
-            MainExpressions *mainExpression;
+            MainExpressions *mainExpressions;
         };
     };
 	ProgramType type;
@@ -343,30 +349,62 @@ struct Program {
     ProgramExpression *programExpression;
 };
 
-/* Node recursive destructors.
+/* Node recursive destructors. */
  
-void release_ID(_ID *ID);
-void release_STRING(_STRING * charValue);
-void release_HEXCOLOR(_HEXCOLOR * hexcolorValue);
-void release_INTEGER(_INTEGER *intValue);
-void release_BOOLEAN(_BOOLEAN *booleanValue);
-void releaseProgram(Program * program);
-void releaseProgramExpression(ProgramExpression *programExpression);
-void releaseWorldExpression(WorldExpression *worldExpression);
-void releaseWorldAssignment(WorldAssignment *worldAssignment);
-void releaseDeclarationValue(DeclarationValue *declarationValue);
-void releaseMainExpression(MainExpression *mainExpression);
-void releaseTreeExpression(TreeExpression *treeExpression);
-void releaseTreeAssignment(TreeAssignment *treeAssignment);
-void releaseForestExpression(ForestExpression *forestExpression);
-void releaseForestAssignment(ForestAssignment *forestAssignment);
-void releaseGrowExpression(GrowExpression *growExpression);
-void releaseForExpression(ForExpression *forExpression);
-void releaseArithmeticAssignation(ArithmeticAssignation *arithmeticAssignation);
-void releaseArithmeticOperation(ArithmeticOperation *arithmeticOperation);
-void releaseGeneralAssignation(GeneralAssignation *generalAssignation);
-void releaseAttributeValue(AttributeValue *attributeValue);
+void release_ID(_ID *ID);  /*✅*/
 
-*/
+void release_STRING(_STRING * charValue);  /*✅*/
+
+void release_HEXCOLOR(_HEXCOLOR * hexcolorValue);  /*✅*/
+
+void release_INTEGER(_INTEGER *intValue);  /*✅*/
+
+void release_BOOLEAN(_BOOLEAN *booleanValue);  /*✅*/
+
+void releaseProgram(Program * program); /*✅*/
+
+void releaseProgramExpression(ProgramExpression *programExpression); /*✅*/
+
+void releaseWorldExpression(WorldExpression *worldExpression); /*✅*/
+
+void releaseWorldAssignments(WorldAssignments * worldAssignments); /*✅*/
+
+void releaseWorldAssignment(WorldAssignment *worldAssignment); /*✅*/
+
+void releaseDeclarationValue(DeclarationValue *declarationValue); /*✅*/
+
+void releaseMainExpressions(MainExpressions *mainExpressions);  /*✅*/
+
+void releaseMainExpression(MainExpression *mainExpression); /*✅*/
+
+void releaseTreeExpression(TreeExpression *treeExpression); /*✅*/
+
+void releaseTreeAssignment(TreeAssignment *treeAssignment); /*✅*/
+
+void releaseTreeAssignments(TreeAssignments *treeAssignments); /*✅*/
+
+void releaseForestExpression(ForestExpression *forestExpression);/*✅*/
+
+void releaseForestAssignment(ForestAssignment *forestAssignment);/*✅*/
+
+void releaseForestAssignments(ForestAssignments *forestAssignments);/*✅*/
+
+void releaseGrowExpression(GrowExpression *growExpression); /*✅*/
+
+void releaseForExpression(ForExpression *forExpression); /*✅*/
+
+void releaseArithmeticAssignation(ArithmeticAssignation *arithmeticAssignation); /*✅*/
+
+void releaseArithmeticOperation(ArithmeticOperation *arithmeticOperation); /*✅*/
+
+void releaseGeneralAssignation(GeneralAssignation *generalAssignation); /*✅*/
+
+void releaseConditionalExpression(ConditionalExpression *conditionalExpression); /*✅*/
+
+void releaseConditionalClause(ConditionalClause *conditionalClause); /*✅*/
+
+void releaseAttributeValue(AttributeValue *attributeValue);  /*✅*/
+
+
 
 #endif

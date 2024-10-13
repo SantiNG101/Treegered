@@ -57,8 +57,24 @@ AttributeValue * AttributeValueSemanticAction(Id varId, Id attId, AttributeValue
 
 	_ID * aux2 = calloc(1, sizeof(_ID));
 	aux1->idValue = attId;
+
 	attributeValue->attribute = aux2;
+	attributeValue->type = type;
+	
 	return attributeValue;
+}
+
+AttributeValue * AttributeValueWorldSemanticAction(Id attId, AttributeValueType type){
+	
+	AttributeValue * worldAttributeValue = calloc(1, sizeof(AttributeValue));
+
+	_ID * aux = calloc(1, sizeof(_ID));
+	aux->idValue = attId;
+
+	worldAttributeValue->attribute = aux;
+	worldAttributeValue->type = type;
+
+	return worldAttributeValue;
 }
 
 DeclarationValue * DeclarationValueIDSemanticAction(Id id, DeclarationValueType type){
@@ -163,7 +179,7 @@ ArithmeticOperation * ArithmeticOperationInceptionSemanticAction(OperatorType op
 
 ProgramExpression * WorldlessProgramExpressionSemanticAction(MainExpressions * mainExpressions, ProgramType type){
 	ProgramExpression * programExpression = calloc(1, sizeof(ProgramExpression));
-	programExpression->worldlessMainExpression = mainExpressions;
+	programExpression->worldlessMainExpressions = mainExpressions;
 	programExpression->type = type;
 	return programExpression;
 }
@@ -171,7 +187,7 @@ ProgramExpression * WorldlessProgramExpressionSemanticAction(MainExpressions * m
 ProgramExpression * WorldProgramExpressionSemanticAction(MainExpressions * mainExpressions, WorldExpression* worldExpression, ProgramType type){
 	ProgramExpression * programExpression = calloc(1, sizeof(ProgramExpression));
 	programExpression->worldExpression = worldExpression;
-	programExpression->mainExpression = mainExpressions;
+	programExpression->mainExpressions = mainExpressions;
 	return programExpression;
 }
 
