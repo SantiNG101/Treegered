@@ -1,0 +1,4 @@
+int res = 0;
+for i in [true, 5] {
+    res += i;
+}

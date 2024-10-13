@@ -15,8 +15,8 @@ void shutdownAbstractSyntaxTreeModule() {
 }
 
 /** PUBLIC FUNCTIONS */
-/*
-void releaseProgram(Program * program) {
+
+/* void releaseProgram(Program * program) {
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (program != NULL) {
 		releaseProgramExpression(program->programExpression);
@@ -43,14 +43,7 @@ void releaseProgramExpression(ProgramExpression * expression) {
 void releaseWorldExpression(WorldExpression *worldExpression){
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (worldExpression != NULL) {
-		switch(worldExpression->type){
-			case MULTIPLE_w:
-				releaseWorldAssignment(worldExpression->simpleWorldAssignment);
-				releaseWorldExpression(worldExpression->worldExpression);
-				break;
-			case SIMPLE_w:
-				releaseWorldAssignment(worldExpression->multipleWorldAssignment);
-				break;
+		releaseWorldAssignments(worldExpression->)
 		}
 		free(worldExpression);
 	}
@@ -365,4 +358,4 @@ void releaseAttributeValue(AttributeValue *attributeValue){
 		free(attributeValue);
 	}
 }
-*/
+ */

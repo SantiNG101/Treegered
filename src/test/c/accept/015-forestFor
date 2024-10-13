@@ -1,0 +1,6 @@
+forest f1;
+tree t1;
+f1 += t1;
+for t in f1{
+    t->height += 2;
+}

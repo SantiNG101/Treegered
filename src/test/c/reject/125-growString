@@ -1,0 +1,2 @@
+string f1 = 'true';
+grow(f1);

@@ -1,0 +1,2 @@
+tree t1;
+grow(t1);

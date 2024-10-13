@@ -1,2 +1,0 @@
-if(TRUE == TRUE) {tree t1;}
-else{tree t2;}

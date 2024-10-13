@@ -1,2 +1,0 @@
-int hola = 2 + 3;
-hola = 5 * 7;

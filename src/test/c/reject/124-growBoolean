@@ -1,0 +1,2 @@
+boolean f1 = TRUE;
+grow(f1);
