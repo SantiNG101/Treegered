@@ -49,6 +49,7 @@ Program * ExpressionProgramSemanticAction(CompilerState * compilerState, Program
 /*ADDED*/
 
 AttributeValue * AttributeValueSemanticAction(Id varId, Id attId, AttributeValueType type){
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	AttributeValue * attributeValue = calloc(1, sizeof(AttributeValue));
 
 	_ID * aux1 = calloc(1, sizeof(_ID));
@@ -60,12 +61,12 @@ AttributeValue * AttributeValueSemanticAction(Id varId, Id attId, AttributeValue
 
 	attributeValue->attribute = aux2;
 	attributeValue->type = type;
-	
+
 	return attributeValue;
 }
 
 AttributeValue * AttributeValueWorldSemanticAction(Id attId, AttributeValueType type){
-	
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	AttributeValue * worldAttributeValue = calloc(1, sizeof(AttributeValue));
 
 	_ID * aux = calloc(1, sizeof(_ID));
@@ -78,6 +79,7 @@ AttributeValue * AttributeValueWorldSemanticAction(Id attId, AttributeValueType 
 }
 
 DeclarationValue * DeclarationValueIDSemanticAction(Id id, DeclarationValueType type){
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	DeclarationValue * declarationValueID = calloc(1, sizeof(DeclarationValue));
 	_ID * aux = calloc(1, sizeof(_ID));
 	aux->idValue = id;
@@ -87,6 +89,7 @@ DeclarationValue * DeclarationValueIDSemanticAction(Id id, DeclarationValueType 
 }
 
 DeclarationValue * DeclarationValueStringSemanticAction(char* string, DeclarationValueType type){
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	DeclarationValue * declarationValueString = calloc(1, sizeof(DeclarationValue));
 	_STRING * aux = calloc(1, sizeof(_STRING));
 	aux->value = string;
@@ -95,6 +98,7 @@ DeclarationValue * DeclarationValueStringSemanticAction(char* string, Declaratio
 	return declarationValueString;
 }
 DeclarationValue * DeclarationValueBooleanSemanticAction(boolean value, DeclarationValueType type){
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	DeclarationValue * declarationValueBoolean = calloc(1, sizeof(DeclarationValue));
 	_BOOLEAN * aux = calloc(1, sizeof(_BOOLEAN));
 	aux->value = value;
@@ -103,6 +107,7 @@ DeclarationValue * DeclarationValueBooleanSemanticAction(boolean value, Declarat
 	return declarationValueBoolean;
 }
 DeclarationValue * DeclarationValueHexSemanticAction(Hexcolor color, DeclarationValueType type){
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	DeclarationValue * declarationValueHex = calloc(1, sizeof(DeclarationValue));
 	_HEXCOLOR * aux = calloc(1, sizeof(_HEXCOLOR));
 	aux->value = color;
@@ -111,6 +116,7 @@ DeclarationValue * DeclarationValueHexSemanticAction(Hexcolor color, Declaration
 	return declarationValueHex;
 }
 DeclarationValue * DeclarationValueIntSemanticAction(int integer, DeclarationValueType type){
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	DeclarationValue * declarationValueInteger = calloc(1, sizeof(DeclarationValue));
 	_INTEGER * aux = calloc(1, sizeof(_INTEGER));
 	aux->value = integer;
@@ -120,6 +126,7 @@ DeclarationValue * DeclarationValueIntSemanticAction(int integer, DeclarationVal
 }
 
 DeclarationValue * DeclarationValueAttributeSemanticAction(AttributeValue * attValue, DeclarationValueType type){
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	DeclarationValue * declarationValueAttribute = calloc(1, sizeof(DeclarationValue));
 	declarationValueAttribute->attValue = attValue;
 	declarationValueAttribute->type = type;
@@ -127,6 +134,7 @@ DeclarationValue * DeclarationValueAttributeSemanticAction(AttributeValue * attV
 }
 
 DeclarationValue * DeclarationValueInceptionSemanticAction(DeclarationValue * declarationValue, DeclarationValueType type){
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	DeclarationValue * declarationValueInception = calloc(1, sizeof(DeclarationValue));
 	declarationValueInception->declareValue = declarationValue;
 	declarationValueInception->type = type;
@@ -134,6 +142,7 @@ DeclarationValue * DeclarationValueInceptionSemanticAction(DeclarationValue * de
 }
 
 ArithmeticOperation * ArithmeticOperationAllDeclarationValueSemanticAction(OperatorType operator, DeclarationValue* left, DeclarationValue* right, ArithmeticOperationType type){
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	ArithmeticOperation * arithmeticOperation = calloc(1, sizeof(ArithmeticOperation));
 	arithmeticOperation->operator = operator;
 	arithmeticOperation->leftValue = left;
@@ -143,6 +152,7 @@ ArithmeticOperation * ArithmeticOperationAllDeclarationValueSemanticAction(Opera
 }
 
 ArithmeticOperation * ArithmeticOperationAllSemanticAction(OperatorType operator, ArithmeticOperation* left, ArithmeticOperation* right, ArithmeticOperationType type){
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	ArithmeticOperation * arithmeticOperation = calloc(1, sizeof(ArithmeticOperation));
 	arithmeticOperation->operator = operator;
 	arithmeticOperation->leftOperation = left;
@@ -152,6 +162,7 @@ ArithmeticOperation * ArithmeticOperationAllSemanticAction(OperatorType operator
 }
 
 ArithmeticOperation * ArithmeticOperationRightDeclarationLeftSemanticAction(OperatorType operator, DeclarationValue* left, ArithmeticOperation* right, ArithmeticOperationType type){
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	ArithmeticOperation * arithmeticOperation = calloc(1, sizeof(ArithmeticOperation));
 	arithmeticOperation->operator = operator;
 	arithmeticOperation->leftValue = left;
@@ -161,6 +172,7 @@ ArithmeticOperation * ArithmeticOperationRightDeclarationLeftSemanticAction(Oper
 }
 
 ArithmeticOperation * ArithmeticOperationLeftDeclarationRightSemanticAction(OperatorType operator, ArithmeticOperation* left, DeclarationValue* right, ArithmeticOperationType type){
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	ArithmeticOperation * arithmeticOperation = calloc(1, sizeof(ArithmeticOperation));
 	arithmeticOperation->operator = operator;
 	arithmeticOperation->leftOperation = left;
@@ -170,6 +182,7 @@ ArithmeticOperation * ArithmeticOperationLeftDeclarationRightSemanticAction(Oper
 }
 
 ArithmeticOperation * ArithmeticOperationInceptionSemanticAction(OperatorType operator, ArithmeticOperation* operation, ArithmeticOperationType type){
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	ArithmeticOperation * arithmeticOperationInception = calloc(1, sizeof(ArithmeticOperation));
 	arithmeticOperationInception->operator = operator;
 	arithmeticOperationInception->arithOp = operation;
@@ -178,6 +191,7 @@ ArithmeticOperation * ArithmeticOperationInceptionSemanticAction(OperatorType op
 }
 
 ProgramExpression * WorldlessProgramExpressionSemanticAction(MainExpressions * mainExpressions, ProgramType type){
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	ProgramExpression * programExpression = calloc(1, sizeof(ProgramExpression));
 	programExpression->worldlessMainExpressions = mainExpressions;
 	programExpression->type = type;
@@ -185,6 +199,7 @@ ProgramExpression * WorldlessProgramExpressionSemanticAction(MainExpressions * m
 }
 
 ProgramExpression * WorldProgramExpressionSemanticAction(MainExpressions * mainExpressions, WorldExpression* worldExpression, ProgramType type){
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	ProgramExpression * programExpression = calloc(1, sizeof(ProgramExpression));
 	programExpression->worldExpression = worldExpression;
 	programExpression->mainExpressions = mainExpressions;
@@ -192,6 +207,7 @@ ProgramExpression * WorldProgramExpressionSemanticAction(MainExpressions * mainE
 }
 
 WorldAssignment * WorldAssignmentDeclarationSemanticAction(Id id, DeclarationValue* value, AssignationType type){
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	WorldAssignment * worldAssignment = calloc(1, sizeof(WorldAssignment));
 	_ID * aux = calloc(1, sizeof(_ID));
 	aux->idValue = id;
@@ -202,6 +218,7 @@ WorldAssignment * WorldAssignmentDeclarationSemanticAction(Id id, DeclarationVal
 }
 
 WorldAssignment * WorldAssignmentArithmeticSemanticAction(Id id, ArithmeticOperation* operation, AssignationType type){
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	WorldAssignment * worldAssignment = calloc(1, sizeof(WorldAssignment));
 	_ID * aux = calloc(1, sizeof(_ID));
 	aux->idValue = id;
@@ -212,7 +229,7 @@ WorldAssignment * WorldAssignmentArithmeticSemanticAction(Id id, ArithmeticOpera
 }
 
 WorldAssignments * SimpleWorldAssignmentsSemanticAction(WorldAssignment * worldAssignment, WorldType wType){
-	
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	WorldAssignments * simpleWorld = calloc(1, sizeof(WorldAssignments));
 	
 	simpleWorld->singleWorldAssignment = worldAssignment;
@@ -222,7 +239,7 @@ WorldAssignments * SimpleWorldAssignmentsSemanticAction(WorldAssignment * worldA
 }
 
 WorldAssignments * MultipleWorldAssignmentsSemanticAction(WorldAssignments * worldAssignments, WorldAssignment * worldAssignment, WorldType wType){
-	
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	WorldAssignments * multiWorld = calloc(1, sizeof(WorldAssignments));
 	
 	multiWorld->multipleWorldAssignment = worldAssignment;
@@ -233,7 +250,7 @@ WorldAssignments * MultipleWorldAssignmentsSemanticAction(WorldAssignments * wor
 }
 
 WorldExpression * WorldExpressionSemanticAction(WorldAssignments* worldAssignments){
-	
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	WorldExpression * worldExp = calloc(1, sizeof(WorldExpression));
 	
 	worldExp->worldAssignments = worldAssignments;
@@ -242,7 +259,7 @@ WorldExpression * WorldExpressionSemanticAction(WorldAssignments* worldAssignmen
 }
 
 ForestAssignment * DeclarationForestAssignmentSemanticAction(Id id, DeclarationValue* value, AssignationType type){
-	
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	ForestAssignment * declareForest = calloc(1, sizeof(ForestAssignment));
 	
 	_ID * aux = calloc(1, sizeof(_ID));
@@ -255,7 +272,7 @@ ForestAssignment * DeclarationForestAssignmentSemanticAction(Id id, DeclarationV
 	return declareForest;
 }
 ForestAssignment * ArithmeticForestAssignmentSemanticAction(Id id, ArithmeticOperation* operation, AssignationType type){
-	
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	ForestAssignment * arithForest = calloc(1, sizeof(ForestAssignment));
 	
 	_ID * aux = calloc(1, sizeof(_ID));
@@ -269,7 +286,7 @@ ForestAssignment * ArithmeticForestAssignmentSemanticAction(Id id, ArithmeticOpe
 }
 
 ForestAssignments * SimpleForestAssignmentsSemanticAction(ForestAssignment * forestAssignment, ForestAssignType type){
-	
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	ForestAssignments * simpleForest = calloc(1, sizeof(ForestAssignments));
 	
 	simpleForest->singleForestAssignment = forestAssignment;
@@ -279,7 +296,7 @@ ForestAssignments * SimpleForestAssignmentsSemanticAction(ForestAssignment * for
 }
 
 ForestAssignments * MultipleForestAssignmentsSemanticAction(ForestAssignments * forestAssignments, ForestAssignment * forestAssignment, ForestAssignType type){
-	
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	ForestAssignments * multiForest = calloc(1, sizeof(ForestAssignments));
 	
 	multiForest->multipleForestAssignment = forestAssignment;
@@ -290,7 +307,7 @@ ForestAssignments * MultipleForestAssignmentsSemanticAction(ForestAssignments * 
 }
 
 ForestExpression * ForestExpressionSemanticAction(Id id, ForestAssignments * forestAssignments, ForestType type){
-	
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	ForestExpression * notDefaultForest = calloc(1, sizeof(ForestExpression));
 	
 	_ID * aux = calloc(1, sizeof(_ID));
@@ -304,7 +321,7 @@ ForestExpression * ForestExpressionSemanticAction(Id id, ForestAssignments * for
 }
 
 ForestExpression * DefaultForestExpressionSemanticAction(Id id, ForestType type){
-	
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	ForestExpression * defaultForest = calloc(1, sizeof(ForestExpression));
 	
 	_ID * aux = calloc(1, sizeof(_ID));
@@ -317,7 +334,7 @@ ForestExpression * DefaultForestExpressionSemanticAction(Id id, ForestType type)
 }
 
 TreeAssignment * DeclarationTreeAssignmentSemanticAction(Id id, DeclarationValue* value, AssignationType type){
-	
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	TreeAssignment * declarationTree = calloc(1, sizeof(TreeAssignment));
 	
 	_ID * aux = calloc(1, sizeof(_ID));
@@ -331,7 +348,7 @@ TreeAssignment * DeclarationTreeAssignmentSemanticAction(Id id, DeclarationValue
 }
 
 TreeAssignment * ArithmeticTreeAssignmentSemanticAction(Id id, ArithmeticOperation* operation, AssignationType type){
-	
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	TreeAssignment * arithmeticTree = calloc(1, sizeof(TreeAssignment));
 	
 	_ID * aux = calloc(1, sizeof(_ID));
@@ -345,7 +362,7 @@ TreeAssignment * ArithmeticTreeAssignmentSemanticAction(Id id, ArithmeticOperati
 }
 
 TreeAssignments * SimpleTreeAssignmentsSemanticAction(TreeAssignment * treeAssignment, TreeAssignType type){
-	
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	TreeAssignments * singleTrees = calloc(1, sizeof(TreeAssignments));
 	
 	singleTrees->singleTreeAssignment = treeAssignment;
@@ -355,7 +372,7 @@ TreeAssignments * SimpleTreeAssignmentsSemanticAction(TreeAssignment * treeAssig
 }
 
 TreeAssignments * MultipleTreeAssignmentsSemanticAction(TreeAssignments * treeAssignments, TreeAssignment * treeAssignment, TreeAssignType type){
-	
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	TreeAssignments * multipleTrees = calloc(1, sizeof(TreeAssignments));
 	
 	multipleTrees->treeAssignments = treeAssignments;
@@ -366,7 +383,7 @@ TreeAssignments * MultipleTreeAssignmentsSemanticAction(TreeAssignments * treeAs
 }
 
 TreeExpression * TreeExpressionSemanticAction(Id id, TreeAssignments * treeAssignments, TreeType type){
-	
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	TreeExpression * treeExpression = calloc(1, sizeof(TreeExpression));
 	
 	_ID * aux = calloc(1, sizeof(_ID));
@@ -380,7 +397,7 @@ TreeExpression * TreeExpressionSemanticAction(Id id, TreeAssignments * treeAssig
 }
 
 TreeExpression * DefaultTreeExpressionSemanticAction(Id id, TreeType type){
-	
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	TreeExpression * defaultTree = calloc(1, sizeof(TreeExpression));
 	
 	_ID * aux = calloc(1, sizeof(_ID));
@@ -393,7 +410,7 @@ TreeExpression * DefaultTreeExpressionSemanticAction(Id id, TreeType type){
 }
 
 GrowExpression * GrowExpressionSemanticAction(Id id){
-	
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	GrowExpression * growExpression = calloc(1, sizeof(GrowExpression));
 	
 	_ID * aux = calloc(1, sizeof(_ID));
@@ -405,7 +422,7 @@ GrowExpression * GrowExpressionSemanticAction(Id id){
 }
 
 ForExpression * ForExpressionSemanticAction(Id id, int start, int end, MainExpressions * mainExpressions, ForType type){
-	
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	ForExpression * forExpression = calloc(1, sizeof(ForExpression));
 	
 	_ID * aux = calloc(1, sizeof(_ID));
@@ -427,6 +444,7 @@ ForExpression * ForExpressionSemanticAction(Id id, int start, int end, MainExpre
 }
 
 ForExpression * ForNoRangeExpressionSemanticAction(Id id, Id forestId, MainExpressions * mainExpressions, ForType type){
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	ForExpression * noRangeFor = calloc(1, sizeof(ForExpression));
 	
 	_ID * aux = calloc(1, sizeof(_ID));
@@ -444,7 +462,7 @@ ForExpression * ForNoRangeExpressionSemanticAction(Id id, Id forestId, MainExpre
 }
 
 ArithmeticAssignation * ArithmeticDeclarationAssignationSemanticAction(Id id, OperatorType operator, DeclarationValue * value, AssignationType type){
-	
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	ArithmeticAssignation * arithDeclare = calloc(1, sizeof(ArithmeticAssignation));
 	
 	_ID * aux = calloc(1, sizeof(_ID));
@@ -459,7 +477,7 @@ ArithmeticAssignation * ArithmeticDeclarationAssignationSemanticAction(Id id, Op
 }
 
 ArithmeticAssignation * ArithmeticOperationAssignationSemanticAction(Id id, OperatorType operator, ArithmeticOperation * arithOp, AssignationType type){
-	
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	ArithmeticAssignation * arithAssign = calloc(1, sizeof(ArithmeticAssignation));
 	
 	_ID * aux = calloc(1, sizeof(_ID));
@@ -474,6 +492,7 @@ ArithmeticAssignation * ArithmeticOperationAssignationSemanticAction(Id id, Oper
 }
 
 ArithmeticAssignation * ArithmeticAttributeDeclarationAssignationSemanticAction(AttributeValue * attributeValue, OperatorType operator, DeclarationValue * value, AssignationType type){
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	ArithmeticAssignation * arithmeticAssignation = calloc(1, sizeof(ArithmeticAssignation));
 	arithmeticAssignation->att = attributeValue;
 	arithmeticAssignation->operator = operator;
@@ -483,6 +502,7 @@ ArithmeticAssignation * ArithmeticAttributeDeclarationAssignationSemanticAction(
 }
 
 ArithmeticAssignation * ArithmeticAttributeOperationAssignationSemanticAction(AttributeValue * attributeValue, OperatorType operator, ArithmeticOperation * arithOp, AssignationType type){
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	ArithmeticAssignation * arithmeticAssignation = calloc(1, sizeof(ArithmeticAssignation));
 	arithmeticAssignation->att = attributeValue;
 	arithmeticAssignation->operator = operator;
@@ -492,7 +512,7 @@ ArithmeticAssignation * ArithmeticAttributeOperationAssignationSemanticAction(At
 }
 
 GeneralAssignation * GeneralSingleArithmeticOperationAssignationSemanticAction(Id id, ArithmeticOperation * arithOp, AssignationType type){
-
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	GeneralAssignation * singleArith = calloc(1, sizeof(GeneralAssignation));
 
 	_ID * aux = calloc(1, sizeof(_ID));
@@ -506,7 +526,7 @@ GeneralAssignation * GeneralSingleArithmeticOperationAssignationSemanticAction(I
 }
 
 GeneralAssignation * GeneralSingleDeclarationAssignationSemanticAction(Id id, DeclarationValue * value, AssignationType type){
-
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	GeneralAssignation * singleDeclare = calloc(1, sizeof(GeneralAssignation));
 
 	_ID * aux = calloc(1, sizeof(_ID));
@@ -520,7 +540,7 @@ GeneralAssignation * GeneralSingleDeclarationAssignationSemanticAction(Id id, De
 }
 
 GeneralAssignation * GeneralDeclarationAssignationSemanticAction(Id classType, Id id, DeclarationValue * value, AssignationType type){
-
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	GeneralAssignation * generalDeclare = calloc(1, sizeof(GeneralAssignation));
 
 	_ID * aux1 = calloc(1, sizeof(_ID));
@@ -538,7 +558,7 @@ GeneralAssignation * GeneralDeclarationAssignationSemanticAction(Id classType, I
 }
 
 GeneralAssignation * GeneralArithmeticOperationAssignationSemanticAction(Id classType, Id id, ArithmeticOperation * arithOp, AssignationType type){
-	
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	GeneralAssignation * generalArithmetic = calloc(1, sizeof(GeneralAssignation));
 	
 	_ID * aux1 = calloc(1, sizeof(_ID));
@@ -556,6 +576,7 @@ GeneralAssignation * GeneralArithmeticOperationAssignationSemanticAction(Id clas
 }
 
 GeneralAssignation * GeneralAttributeDeclarationAssignationSemanticAction(AttributeValue * attributeValue, DeclarationValue * value, AssignationType type){
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	GeneralAssignation * generalAssignation = calloc(1, sizeof(GeneralAssignation));
 	generalAssignation->att = attributeValue;
 	generalAssignation->value = value;
@@ -564,6 +585,7 @@ GeneralAssignation * GeneralAttributeDeclarationAssignationSemanticAction(Attrib
 }
 
 GeneralAssignation * GeneralAttributeArithmeticOperationAssignationSemanticAction(AttributeValue * attributeValue, ArithmeticOperation * arithOp, AssignationType type){
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	GeneralAssignation * generalAssignation = calloc(1, sizeof(GeneralAssignation));
 	generalAssignation->att = attributeValue;
 	generalAssignation->arithmeticOperation = arithOp;
@@ -572,6 +594,7 @@ GeneralAssignation * GeneralAttributeArithmeticOperationAssignationSemanticActio
 }
 
 ConditionalExpression * IfOnlyConditionalExpression(ConditionalClause * conditionalClause, MainExpressions * mainExpressions, ConditionalType type){
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	ConditionalExpression * conditionalExpression = calloc(1, sizeof(ConditionalExpression));
 	conditionalExpression->conditionalClause = conditionalClause;
 	conditionalExpression->ifMainExpressions = mainExpressions;
@@ -580,6 +603,7 @@ ConditionalExpression * IfOnlyConditionalExpression(ConditionalClause * conditio
 }
 
 ConditionalExpression * IfElseConditionalExpression(ConditionalClause * conditionalClause, MainExpressions * ifMainExpressions, MainExpressions * elseMainExpressions, ConditionalType type){
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	ConditionalExpression * conditionalExpression = calloc(1, sizeof(ConditionalExpression));
 	conditionalExpression->conditionalClause = conditionalClause;
 	conditionalExpression->ifMainExpressions = ifMainExpressions;
@@ -589,6 +613,7 @@ ConditionalExpression * IfElseConditionalExpression(ConditionalClause * conditio
 }
 
 ConditionalClause * AllDeclarationConditionalClauseSemanticAction(DeclarationValue * leftValue, DeclarationValue * rightValue, ComparissonType comparissonType, ConditionalClauseType conditionalType){
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	ConditionalClause * conditionalClause = calloc(1, sizeof(ConditionalClause));
 	conditionalClause->leftValue = leftValue;
 	conditionalClause->rightValue = rightValue;
@@ -598,6 +623,7 @@ ConditionalClause * AllDeclarationConditionalClauseSemanticAction(DeclarationVal
 }
 
 ConditionalClause * AllConditionalConditionalClauseSemanticAction(ConditionalClause * leftConditional, ConditionalClause * rightConditional, ComparissonType comparissonType, ConditionalClauseType conditionalType){
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	ConditionalClause * conditionalClause = calloc(1, sizeof(ConditionalClause));
 	conditionalClause->leftConditional = leftConditional;
 	conditionalClause->rightConditional = rightConditional;
@@ -607,7 +633,7 @@ ConditionalClause * AllConditionalConditionalClauseSemanticAction(ConditionalCla
 }
 
 ConditionalClause * LeftDeclarationRightConditionalConditionalClauseSemanticAction(DeclarationValue * leftValue, ConditionalClause * rightConditional, ComparissonType comparissonType, ConditionalClauseType conditionalType){
-		
+	_logSyntacticAnalyzerAction(__FUNCTION__);	
 	ConditionalClause * leftDeclarationClause = calloc(1, sizeof(ConditionalClause));
 	
 	leftDeclarationClause->rightConditionalClause = rightConditional;
@@ -619,7 +645,7 @@ ConditionalClause * LeftDeclarationRightConditionalConditionalClauseSemanticActi
 }
 
 ConditionalClause * LeftConditionalRightDeclarationConditionalClauseSemanticAction(ConditionalClause * leftConditional, DeclarationValue * rightValue, ComparissonType comparissonType, ConditionalClauseType conditionalType){
-		
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	ConditionalClause * leftConditionalClause = calloc(1, sizeof(ConditionalClause));
 	
 	leftConditionalClause->leftConditionalClause = leftConditional;
@@ -631,7 +657,7 @@ ConditionalClause * LeftConditionalRightDeclarationConditionalClauseSemanticActi
 }
 
 ConditionalClause * ConditionalInceptionConditionalClauseSemanticAction(ConditionalClause * conditional, ComparissonType comparissonType, ConditionalClauseType conditionalType){
-	
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	ConditionalClause * inceptionClause = calloc(1, sizeof(ConditionalClause));
 	
 	inceptionClause->conditionalClause = conditional;
@@ -642,7 +668,7 @@ ConditionalClause * ConditionalInceptionConditionalClauseSemanticAction(Conditio
 }
 
 MainExpressions * SimpleMainExpressionSemanticAction(MainExpression * mainExpression, ExpressionType type){
-
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	MainExpressions * simpleMainExpression = calloc(1, sizeof(MainExpressions));
 
 	simpleMainExpression->singleMainExpression = mainExpression;
@@ -652,7 +678,7 @@ MainExpressions * SimpleMainExpressionSemanticAction(MainExpression * mainExpres
 }
 
 MainExpressions * MultipleMainExpressionSemanticAction(MainExpressions* mainExpressions, MainExpression * mainExpression, ExpressionType type){
-
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	MainExpressions * multiMainExpression = calloc(1, sizeof(MainExpressions));
 
 	multiMainExpression->mainExpressions = mainExpressions;
@@ -663,7 +689,7 @@ MainExpressions * MultipleMainExpressionSemanticAction(MainExpressions* mainExpr
 }
 
 MainExpression * MainExpressionTreeSemanticAction(TreeExpression * treeExpression, MainExpressionType type){
-
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	MainExpression * mainExpression = calloc(1, sizeof(MainExpression));
 
 	mainExpression->treeExpression = treeExpression;
@@ -673,7 +699,7 @@ MainExpression * MainExpressionTreeSemanticAction(TreeExpression * treeExpressio
 }
 
 MainExpression * MainExpressionForestSemanticAction(ForestExpression * forestExpression, MainExpressionType type){
-
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	MainExpression * mainExpression = calloc(1, sizeof(MainExpression));
 
 	mainExpression->forestExpression = forestExpression;
@@ -683,7 +709,7 @@ MainExpression * MainExpressionForestSemanticAction(ForestExpression * forestExp
 }
 
 MainExpression * MainExpressionGrowSemanticAction(GrowExpression * growExpression, MainExpressionType type){
-
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	MainExpression * mainExpression = calloc(1, sizeof(MainExpression));
 
 	mainExpression->growExpression = growExpression;
@@ -693,7 +719,7 @@ MainExpression * MainExpressionGrowSemanticAction(GrowExpression * growExpressio
 }
 
 MainExpression * MainExpressionForSemanticAction(ForExpression * forExpression, MainExpressionType type){
-
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	MainExpression * mainExpression = calloc(1, sizeof(MainExpression));
 
 	mainExpression->forExpression = forExpression;
@@ -703,7 +729,7 @@ MainExpression * MainExpressionForSemanticAction(ForExpression * forExpression, 
 }
 
 MainExpression * MainExpressionArithmeticAssignationSemanticAction(ArithmeticAssignation * arithmeticAssignation, MainExpressionType type){
-
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	MainExpression * mainExpression = calloc(1, sizeof(MainExpression));
 
 	mainExpression->arithmeticAssignation = arithmeticAssignation;
@@ -713,7 +739,7 @@ MainExpression * MainExpressionArithmeticAssignationSemanticAction(ArithmeticAss
 }
 
 MainExpression * MainExpressionGeneralSemanticAction(GeneralAssignation * generalAssignation, MainExpressionType type){
-
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	MainExpression * mainExpression = calloc(1, sizeof(MainExpression));
 
 	mainExpression->generalAssignation = generalAssignation;
@@ -723,7 +749,7 @@ MainExpression * MainExpressionGeneralSemanticAction(GeneralAssignation * genera
 }
 
 MainExpression * MainExpressionConditionalSemanticAction(ConditionalExpression * conditionalExpression, MainExpressionType type){
-	
+	_logSyntacticAnalyzerAction(__FUNCTION__);
 	MainExpression * mainExpression = calloc(1, sizeof(MainExpression));
 
 	mainExpression->conditionalExpression = conditionalExpression;
