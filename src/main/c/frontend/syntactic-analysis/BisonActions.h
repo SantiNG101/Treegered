@@ -110,7 +110,6 @@ ArithmeticAssignation * ArithmeticDeclarationAssignationSemanticAction(Id id, Op
 
 ArithmeticAssignation * ArithmeticOperationAssignationSemanticAction(Id id, OperatorType operator, ArithmeticOperation * arithOp, AssignationType type);
 
-//TODO
 ArithmeticAssignation * ArithmeticAttributeDeclarationAssignationSemanticAction(AttributeValue * attributeValue, OperatorType operator, DeclarationValue * value, AssignationType type);
 
 ArithmeticAssignation * ArithmeticAttributeOperationAssignationSemanticAction(AttributeValue * attributeValue, OperatorType operator, ArithmeticOperation * arithOp, AssignationType type);
