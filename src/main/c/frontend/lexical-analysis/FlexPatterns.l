@@ -74,7 +74,7 @@
 "forest"                            {return ForestLexemeAction(createLexicalAnalyzerContext());}
 "grow"                              {return GrowLexemeAction(createLexicalAnalyzerContext());}
 
-"'"([^"\\]*(\\.[^"\\]*)*)+"'"       {return StringLexemeAction(createLexicalAnalyzerContext());}
+"'"([^"'\\]*(\\.[^"'\\]*)*)+"'"       {return StringLexemeAction(createLexicalAnalyzerContext());}
 "'"([^\\s'\\])"'"                      {return StringLexemeAction(createLexicalAnalyzerContext());}
 
 "true"                              {return BooleanLexemeAction(createLexicalAnalyzerContext(), TRUE);}
@@ -86,7 +86,7 @@
 
 [[:digit:]]+						{ return IntegerLexemeAction(createLexicalAnalyzerContext()); }
 
-[[:alpha:][:alnum:]*]+              {return IdLexemeAction(createLexicalAnalyzerContext());}
+[[:alpha:][:alnum:]]*              {return IdLexemeAction(createLexicalAnalyzerContext());}
 
 [[:space:]]+						{ IgnoredLexemeAction(createLexicalAnalyzerContext()); }
 .									{ return UnknownLexemeAction(createLexicalAnalyzerContext()); }
