@@ -16,12 +16,17 @@ void shutdownAbstractSyntaxTreeModule();
 typedef enum ProgramType ProgramType;
 typedef enum WorldType WorldType;
 typedef enum TreeType TreeType;
+typedef enum TreeAssignType TreeAssignType;
 typedef enum ForestType ForestType;
+typedef enum ForestAssignType ForestAssignType;
 typedef enum MainExpressionType MainExpressionType;
+typedef enum ExpressionType ExpressionType;
 typedef enum OperatorType OperatorType;
 typedef enum AssignationType AssignationType;
+typedef enum ForType ForType;
 typedef enum ArithmeticOperationType ArithmeticOperationType;
 typedef enum DeclarationValueType DeclarationValueType;
+typedef enum AttributeValueType AttributeValueType;
 
 typedef struct _ID _ID;
 typedef struct _HEXCOLOR _HEXCOLOR;
@@ -34,16 +39,21 @@ typedef struct Program Program;
 typedef struct ProgramExpression ProgramExpression;
 typedef struct WorldExpression WorldExpression;
 typedef struct WorldAssignment WorldAssignment;
+typedef struct WorldAssignments WorldAssignments;
 typedef struct MainExpression MainExpression;
+typedef struct MainExpressions MainExpressions;
 typedef struct TreeExpression TreeExpression;
 typedef struct TreeAssignment TreeAssignment;
+typedef struct TreeAssignments TreeAssignments;
 typedef struct ForestExpression ForestExpression;
 typedef struct ForestAssignment ForestAssignment;
+typedef struct ForestAssignments ForestAssignments;
 typedef struct GrowExpression GrowExpression;
 typedef struct ForExpression ForExpression;
 typedef struct ArithmeticAssignation ArithmeticAssignation;
 typedef struct ArithmeticOperation ArithmeticOperation;
 typedef struct GeneralAssignation GeneralAssignation;
+typedef struct AttributeValue AttributeValue;
 
 
 /**
@@ -55,13 +65,18 @@ typedef struct GeneralAssignation GeneralAssignation;
 */
 enum ProgramType { WORLDLESS, WORLDFULL };
 enum WorldType { SIMPLE_w, MULTIPLE_w };
-enum TreeType { EMPTY_t, SIMPLE_t, MULTIPLE_t };
-enum ForestType { EMPTY_f, SIMPLE_f, MULTIPLE_f };
+enum TreeType { EMPTY_t, FULL_t };
+enum TreeAssignType {SIMPLE_ta, MULTIPLE_ta};
+enum ForestType { EMPTY_f, FULL_f };
+enum ForestAssignType {SIMPLE_fa, MULTIPLE_fa};
 enum MainExpressionType { SIMPLE_m, TREE_m, FOREST_m, GROW_m, FOR_m, ARITHMETIC_m, GENERAL_ASSIGNATION_m};
-enum OperatorType {ADD_o, SUB_o, MUL_o, DIV_o};
-enum ArithmeticOperationType {LV_RV, LV_RO, LO_RV, LO_RO};
-enum AssignationType {BY_VALUE, BY_OPP};
-enum DeclarationValueType { IDvalue, STRINGvalue, BOOLEANvalue, HEXCOLORvalue, INTEGERvalue};
+enum ExpressionType {SIMPLE_e, MULTIPLE_e};
+enum OperatorType {ADD_o, SUB_o, MUL_o, DIV_o, NONE};
+enum ArithmeticOperationType {LV_RV, LV_RO, LO_RV, LO_RO, PARENTHESIS};
+enum AssignationType {ID_BY_VALUE, ID_BY_OPP, ATT_BY_VALUE, ATT_BY_OPP};
+enum ForType{CLASSIC_ITERATION, FOREST_ITERATION};
+enum DeclarationValueType { IDvalue, STRINGvalue, BOOLEANvalue, HEXCOLORvalue, INTEGERvalue, ATTvalue};
+enum AttributeValueType { IDatt, STRINGatt, BOOLEANatt, HEXCOLORatt, INTEGERatt};
 
 /* 
 	Structs for the ast
@@ -94,13 +109,26 @@ struct DeclarationValue{
         _BOOLEAN *booleanValue;
         _HEXCOLOR *hexcolorValue;
         _INTEGER *intValue;
+        AttributeValue *attValue;
+		DeclarationValue * declareValue;
     };
     DeclarationValueType type;
 };
 
+struct AttributeValue{
+    _ID *variableID;
+    _ID *attribute;
+    AttributeValueType type;
+};
+
 struct GeneralAssignation{
-    _ID *classType;
-    _ID *id;
+    union{
+        struct{
+            _ID *id;
+            _ID *classType;
+        };
+        AttributeValue *att;
+    };
     union{
         DeclarationValue *value;
         ArithmeticOperation *arithmeticOperation;
@@ -110,19 +138,31 @@ struct GeneralAssignation{
 
 struct ArithmeticOperation{
     OperatorType operator;
-    union{
-        DeclarationValue *leftValue;
-        ArithmeticOperation *leftOperation;
-    };
-    union{
-        DeclarationValue *rightValue;
-        ArithmeticOperation *rightOperation;
-    };
+
+	union{
+
+	ArithmeticOperation * arithOp;
+
+	struct{
+    		union{
+        		DeclarationValue *leftValue;
+        		ArithmeticOperation *leftOperation;
+    		};
+    		union{
+        		DeclarationValue *rightValue;
+       			ArithmeticOperation *rightOperation;
+    		};
+		};
+
+	};
     ArithmeticOperationType type;
 };
 
 struct ArithmeticAssignation{
-    _ID *id;
+    union{
+        _ID *id;
+        AttributeValue *att;
+    };
     OperatorType operator;
     union{
         DeclarationValue *value;
@@ -133,9 +173,15 @@ struct ArithmeticAssignation{
 
 struct ForExpression{
     _ID *id;
-    _INTEGER *rangeStart;
-    _INTEGER *rangeEnd;
-    MainExpression *mainExpression;
+    union{
+        struct{
+            _INTEGER *rangeStart;
+            _INTEGER *rangeEnd;
+        };
+        _ID *forestId;
+    };
+    MainExpressions *mainExpressions;
+    ForType type;
 };
 
 struct GrowExpression{
@@ -151,17 +197,23 @@ struct ForestAssignment{
     AssignationType type;
 };
 
+struct ForestAssignments{
+	union{
+		ForestAssignment * singleForestAssignment;
+		struct{
+			ForestAssignment * multipleForestAssignment;
+			ForestAssignments * forestAssignments;
+		};
+	};
+	ForestAssignType type;
+};
+
 struct ForestExpression{
     _ID *id;
-    union{
-        ForestAssignment *simpleForestAssignment;
-        struct{
-            ForestAssignment *multipleForestAssignment;
-            ForestExpression *forestExpression;
-        };
-    };
+	ForestAssignments * forestAssignments;
     ForestType type;
 };
+
 
 struct TreeAssignment{
     _ID *id;
@@ -172,21 +224,25 @@ struct TreeAssignment{
     AssignationType type;
 };
 
+struct TreeAssignments{
+	union{
+		TreeAssignment * singleTreeAssignment;
+		struct{
+			TreeAssignment * multipleTreeAssignment;
+			TreeAssignments * treeAssignments;
+		};
+	};
+	TreeAssignType type;
+};
+
 struct TreeExpression{
     _ID *id;
-    union{
-        TreeAssignment *simpleTreeAssignment;
-        struct{
-            TreeAssignment *multipleTreeAssignment;
-            TreeExpression *treeExpression;
-        };
-    };
+	TreeAssignments * treeAssignments;
     TreeType type;
 };
 
 struct MainExpression {
     union{
-        _ID *id;
         TreeExpression *treeExpression;
         ForestExpression *forestExpression;
         GrowExpression *growExpression;
@@ -197,32 +253,47 @@ struct MainExpression {
     MainExpressionType type;
 };
 
+struct MainExpressions {
+	union{
+		MainExpression * singleMainExpression;
+		struct{
+			MainExpression * multipleMainExpression;
+			MainExpressions * mainExpressions;
+		};
+	};
+	ExpressionType type;
+};
+
 struct WorldAssignment{
     _ID *id;
     union{
-        DeclarationValue *value;
-        ArithmeticOperation *arithmeticOperation;
+		DeclarationValue *value;
+		ArithmeticOperation *arithmeticOperation;
     };
     AssignationType type;
 };
 
+struct WorldAssignments{
+	union{
+		WorldAssignment * singleWorldAssignment;
+		struct{
+			WorldAssignment * multipleWorldAssignment;
+			WorldAssignments * worldAssignments;
+		};
+	};
+    WorldType wType;
+};
+
 struct WorldExpression {
-	union {
-        WorldAssignment *simpleWorldAssignment;
-        struct {
-            WorldAssignment *multipleWorldAssignment;
-            WorldExpression *worldExpression;
-        };
-    };
-	WorldType type;
+	WorldAssignments * worldAssignments;
 };
 
 struct ProgramExpression {
     union {
-        MainExpression *worldlessMainExpression;
+        MainExpressions *worldlessMainExpression;
         struct {
             WorldExpression *worldExpression;
-            MainExpression *mainExpression;
+            MainExpressions *mainExpression;
         };
     };
 	ProgramType type;
@@ -232,9 +303,8 @@ struct Program {
     ProgramExpression *programExpression;
 };
 
-/**
- * Node recursive destructors.
- */
+/* Node recursive destructors.
+ 
 void release_ID(_ID *ID);
 void release_STRING(_STRING * charValue);
 void release_HEXCOLOR(_HEXCOLOR * hexcolorValue);
@@ -255,5 +325,8 @@ void releaseForExpression(ForExpression *forExpression);
 void releaseArithmeticAssignation(ArithmeticAssignation *arithmeticAssignation);
 void releaseArithmeticOperation(ArithmeticOperation *arithmeticOperation);
 void releaseGeneralAssignation(GeneralAssignation *generalAssignation);
+void releaseAttributeValue(AttributeValue *attributeValue);
+
+*/
 
 #endif

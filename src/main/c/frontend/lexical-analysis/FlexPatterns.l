@@ -31,6 +31,8 @@
 <MULTILINE_COMMENT>[^*]+			{ IgnoredLexemeAction(createLexicalAnalyzerContext()); }
 <MULTILINE_COMMENT>.				{ IgnoredLexemeAction(createLexicalAnalyzerContext()); }
 
+"->"                                {return ArrowLexemeAction(createLexicalAnalyzerContext());}
+
 "="                                 {return EqualLexemeAction(createLexicalAnalyzerContext());}
 
 "=="                                {return EquivalentLexemeAction(createLexicalAnalyzerContext());}

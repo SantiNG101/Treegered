@@ -1,0 +1,3 @@
+for k in [0, 10]{
+    tree n with ( x = k,  depth = 0, color = #ff0000, density = k,  height = 10, mon=5, leaf='#');
+}
