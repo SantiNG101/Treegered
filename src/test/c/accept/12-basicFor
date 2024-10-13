@@ -1,4 +1,0 @@
-int res = 0;
-for i in [1, 5] {
-    res += i;
-}

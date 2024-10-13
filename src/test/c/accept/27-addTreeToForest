@@ -1,3 +1,0 @@
-forest f1;
-tree t1;
-f1 += t1;

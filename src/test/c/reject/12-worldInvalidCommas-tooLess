@@ -1,5 +1,0 @@
-world{
-    height = 10
-    message = 'testing!'
-}
-int a = 5;
