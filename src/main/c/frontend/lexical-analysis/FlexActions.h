@@ -33,6 +33,8 @@ Token TreeLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token ForestLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token GrowLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 
+Token ArrowLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
+
 Token EqualLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 
 Token CommaLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);

@@ -102,6 +102,13 @@ Token GrowLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
 }
 
 
+Token ArrowLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
+    _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+
+    lexicalAnalyzerContext->semanticValue->token = ARROW;
+    return ARROW;
+}
+
 Token EqualLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
     _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
 
