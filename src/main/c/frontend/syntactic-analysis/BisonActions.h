@@ -127,6 +127,21 @@ GeneralAssignation * GeneralAttributeDeclarationAssignationSemanticAction(Attrib
 
 GeneralAssignation * GeneralAttributeArithmeticOperationAssignationSemanticAction(AttributeValue * attributeValue, ArithmeticOperation * arithOp, AssignationType type);
 
+ConditionalExpression * IfOnlyConditionalExpression(ConditionalClause * conditionalClause, MainExpressions * mainExpressions, ConditionalType type);
+
+ConditionalExpression * IfElseConditionalExpression(ConditionalClause * conditionalClause, MainExpressions * ifMainExpressions, MainExpressions * elseMainExpressions, ConditionalType type);
+
+
+ConditionalClause * AllDeclarationConditionalClauseSemanticAction(DeclarationValue * leftValue, DeclarationValue * rightValue, ComparissonType comparissonType, ConditionalClauseType conditionalType);
+
+ConditionalClause * AllConditionalConditionalClauseSemanticAction(ConditionalClause * leftConditional, ConditionalClause * rightConditional, ComparissonType comparissonType, ConditionalClauseType conditionalType);
+
+ConditionalClause * LeftDeclarationRightConditionalConditionalClauseSemanticAction(DeclarationValue * leftValue, ConditionalClause * rightConditional, ComparissonType comparissonType, ConditionalClauseType conditionalType);
+
+ConditionalClause * LeftConditionalRightDeclarationConditionalClauseSemanticAction(ConditionalClause * leftConditional, DeclarationValue * rightValue, ComparissonType comparissonType, ConditionalClauseType conditionalType);
+
+ConditionalClause * ConditionalInceptionConditionalClauseSemanticAction(ConditionalClause * conditional, ComparissonType comparissonType, ConditionalClauseType conditionalType);
+
 
 MainExpressions * SimpleMainExpressionSemanticAction(MainExpression * mainExpression, ExpressionType type);
 
@@ -144,5 +159,7 @@ MainExpression * MainExpressionForSemanticAction(ForExpression * forExpression, 
 MainExpression * MainExpressionArithmeticAssignationSemanticAction(ArithmeticAssignation * arithmeticAssignation, MainExpressionType type);
 
 MainExpression * MainExpressionGeneralSemanticAction(GeneralAssignation * generalAssignation, MainExpressionType type);
+
+MainExpression * MainExpressionConditionalSemanticAction(ConditionalExpression * conditionalExpression, MainExpressionType type);
 
 #endif

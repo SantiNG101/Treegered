@@ -555,6 +555,75 @@ GeneralAssignation * GeneralAttributeArithmeticOperationAssignationSemanticActio
 	return generalAssignation;
 }
 
+ConditionalExpression * IfOnlyConditionalExpression(ConditionalClause * conditionalClause, MainExpressions * mainExpressions, ConditionalType type){
+	ConditionalExpression * conditionalExpression = calloc(1, sizeof(ConditionalExpression));
+	conditionalExpression->conditionalClause = conditionalClause;
+	conditionalExpression->ifMainExpressions = mainExpressions;
+	conditionalExpression->type = type;
+	return conditionalExpression;
+}
+
+ConditionalExpression * IfElseConditionalExpression(ConditionalClause * conditionalClause, MainExpressions * ifMainExpressions, MainExpressions * elseMainExpressions, ConditionalType type){
+	ConditionalExpression * conditionalExpression = calloc(1, sizeof(ConditionalExpression));
+	conditionalExpression->conditionalClause = conditionalClause;
+	conditionalExpression->ifMainExpressions = ifMainExpressions;
+	conditionalExpression->elseMainExpressions = elseMainExpressions;
+	conditionalExpression->type = type;
+	return conditionalExpression;
+}
+
+ConditionalClause * AllDeclarationConditionalClauseSemanticAction(DeclarationValue * leftValue, DeclarationValue * rightValue, ComparissonType comparissonType, ConditionalClauseType conditionalType){
+	ConditionalClause * conditionalClause = calloc(1, sizeof(ConditionalClause));
+	conditionalClause->leftValue = leftValue;
+	conditionalClause->rightValue = rightValue;
+	conditionalClause->comparissonType = comparissonType;
+	conditionalClause->conditionalType = conditionalType;
+	return conditionalClause;
+}
+
+ConditionalClause * AllConditionalConditionalClauseSemanticAction(ConditionalClause * leftConditional, ConditionalClause * rightConditional, ComparissonType comparissonType, ConditionalClauseType conditionalType){
+	ConditionalClause * conditionalClause = calloc(1, sizeof(ConditionalClause));
+	conditionalClause->leftConditional = leftConditional;
+	conditionalClause->rightConditional = rightConditional;
+	conditionalClause->comparissonType = comparissonType;
+	conditionalClause->conditionalType = conditionalType;
+	return conditionalClause;
+}
+
+ConditionalClause * LeftDeclarationRightConditionalConditionalClauseSemanticAction(DeclarationValue * leftValue, ConditionalClause * rightConditional, ComparissonType comparissonType, ConditionalClauseType conditionalType){
+		
+	ConditionalClause * leftDeclarationClause = calloc(1, sizeof(ConditionalClause));
+	
+	leftDeclarationClause->rightConditionalClause = rightConditional;
+	leftDeclarationClause->leftValueDeclare = leftValue;
+	leftDeclarationClause->comparissonType = comparissonType;
+	leftDeclarationClause->conditionalType = conditionalType;
+
+	return leftDeclarationClause;
+}
+
+ConditionalClause * LeftConditionalRightDeclarationConditionalClauseSemanticAction(ConditionalClause * leftConditional, DeclarationValue * rightValue, ComparissonType comparissonType, ConditionalClauseType conditionalType){
+		
+	ConditionalClause * leftConditionalClause = calloc(1, sizeof(ConditionalClause));
+	
+	leftConditionalClause->leftConditionalClause = leftConditional;
+	leftConditionalClause->rightValueDeclare = rightValue;
+	leftConditionalClause->comparissonType = comparissonType;
+	leftConditionalClause->conditionalType = conditionalType;
+
+	return leftConditionalClause;
+}
+
+ConditionalClause * ConditionalInceptionConditionalClauseSemanticAction(ConditionalClause * conditional, ComparissonType comparissonType, ConditionalClauseType conditionalType){
+	
+	ConditionalClause * inceptionClause = calloc(1, sizeof(ConditionalClause));
+	
+	inceptionClause->conditionalClause = conditional;
+	inceptionClause->comparissonType = comparissonType;
+	inceptionClause->conditionalType = conditionalType;
+
+	return inceptionClause;
+}
 
 MainExpressions * SimpleMainExpressionSemanticAction(MainExpression * mainExpression, ExpressionType type){
 
@@ -632,6 +701,16 @@ MainExpression * MainExpressionGeneralSemanticAction(GeneralAssignation * genera
 	MainExpression * mainExpression = calloc(1, sizeof(MainExpression));
 
 	mainExpression->generalAssignation = generalAssignation;
+	mainExpression->type = type;
+
+	return mainExpression;
+}
+
+MainExpression * MainExpressionConditionalSemanticAction(ConditionalExpression * conditionalExpression, MainExpressionType type){
+	
+	MainExpression * mainExpression = calloc(1, sizeof(MainExpression));
+
+	mainExpression->conditionalExpression = conditionalExpression;
 	mainExpression->type = type;
 
 	return mainExpression;

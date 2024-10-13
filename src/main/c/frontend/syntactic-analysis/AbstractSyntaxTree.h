@@ -130,20 +130,25 @@ struct AttributeValue{
 };
 
 struct ConditionalClause{
-    union{
-	ConditionalClause * conditionalClause;
-	    struct{
-    		union{
+	    union{
+    		struct{
+        		DeclarationValue *leftValueDeclare;
+        		ConditionalClause *rightConditionalClause;
+    		};
+    		struct{
+        		DeclarationValue *rightValueDeclare;
+       			ConditionalClause *leftConditionalClause;
+    		};
+            struct{
         		DeclarationValue *leftValue;
-        		ArithmeticOperation *leftOperation;
+       			DeclarationValue *rightValue;
     		};
-    		union{
-        		DeclarationValue *rightValue;
-       			ArithmeticOperation *rightOperation;
+            struct{
+        		ConditionalClause *leftConditional;
+       			ConditionalClause *rightConditional;
     		};
+			ConditionalClause * conditionalClause;
 		};
-
-	};
     ComparissonType comparissonType;//aca seria para identificar si fue ==, !=, >, etc  USAR NONE PARA EL DE PARENTHESIS   
     ConditionalClauseType conditionalType;//aca para saber si fue (), dvalue > condition, etc
 };

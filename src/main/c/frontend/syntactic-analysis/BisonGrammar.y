@@ -158,7 +158,7 @@ mainExpression: treeExpression																								{ $$ = MainExpressionTreeS
 	|			forExpression																								{ $$ = MainExpressionForSemanticAction($1, FOR_m);} 
 	|			arithmeticAssignation																						{ $$ = MainExpressionArithmeticAssignationSemanticAction($1, ARITHMETIC_m);} 
 	|			generalAssignation																							{ $$ = MainExpressionGeneralSemanticAction($1, GENERAL_ASSIGNATION_m);} 
-	|			conditionalExpression																						{ $$ = NULL;}
+	|			conditionalExpression																						{ $$ = MainExpressionConditionalSemanticAction($1, CONDITIONAL_m);}
 	;
 
 mainExpressions: mainExpression																								{ $$ = SimpleMainExpressionSemanticAction($1, SIMPLE_e);}
@@ -166,37 +166,37 @@ mainExpressions: mainExpression																								{ $$ = SimpleMainExpressi
 	;
 
 conditionalExpression: IF OPEN_PARENTHESIS conditionalClause CLOSE_PARENTHESIS 
-													OPEN_CURLY_BRACE mainExpressions CLOSE_CURLY_BRACE						{ $$ = NULL;}
+													OPEN_CURLY_BRACE mainExpressions CLOSE_CURLY_BRACE						{ $$ = IfOnlyConditionalExpression($3, $6, IF_c);}
 	|				   IF OPEN_PARENTHESIS conditionalClause CLOSE_PARENTHESIS 
 													OPEN_CURLY_BRACE mainExpressions CLOSE_CURLY_BRACE ELSE 
-															OPEN_CURLY_BRACE mainExpressions CLOSE_CURLY_BRACE				{ $$ = NULL;}
+															OPEN_CURLY_BRACE mainExpressions CLOSE_CURLY_BRACE				{ $$ = IfElseConditionalExpression($3, $6, $10, ELSE_c);}
 	;
 
-conditionalClause:  declarationValue EQUIVALENT declarationValue															{$$ = NULL;}
-	|				declarationValue EQUIVALENT conditionalClause															{$$ = NULL;}
-	|				conditionalClause EQUIVALENT declarationValue															{$$ = NULL;}
-	|				conditionalClause EQUIVALENT conditionalClause															{$$ = NULL;}
-	|				declarationValue DIFFERENT declarationValue																{$$ = NULL;}
-	|				declarationValue DIFFERENT conditionalClause															{$$ = NULL;}
-	|				conditionalClause DIFFERENT declarationValue															{$$ = NULL;}
-	|				conditionalClause DIFFERENT conditionalClause															{$$ = NULL;}
-	|				declarationValue LESSER_EQUAL declarationValue															{$$ = NULL;}
-	|				declarationValue LESSER_EQUAL conditionalClause															{$$ = NULL;}
-	|				conditionalClause LESSER_EQUAL declarationValue															{$$ = NULL;}
-	|				conditionalClause LESSER_EQUAL conditionalClause														{$$ = NULL;}
-	|				declarationValue GREATER_EQUAL declarationValue															{$$ = NULL;}
-	|				declarationValue GREATER_EQUAL conditionalClause														{$$ = NULL;}
-	|				conditionalClause GREATER_EQUAL declarationValue														{$$ = NULL;}
-	|				conditionalClause GREATER_EQUAL conditionalClause		{$$ = NULL;}
-	|				declarationValue LESSERTHAN declarationValue			{$$ = NULL;}
-	|				declarationValue LESSERTHAN conditionalClause			{$$ = NULL;}
-	|				conditionalClause LESSERTHAN declarationValue			{$$ = NULL;}
-	|				conditionalClause LESSERTHAN conditionalClause			{$$ = NULL;}
-	|				declarationValue GREATERTHAN declarationValue			{$$ = NULL;}
-	|				declarationValue GREATERTHAN conditionalClause			{$$ = NULL;}
-	|				conditionalClause GREATERTHAN declarationValue			{$$ = NULL;}
-	|				conditionalClause GREATERTHAN conditionalClause			{$$ = NULL;}
-	|				OPEN_PARENTHESIS conditionalClause CLOSE_PARENTHESIS	{$$ = NULL;}
+conditionalClause:  declarationValue EQUIVALENT declarationValue															{ $$ = AllDeclarationConditionalClauseSemanticAction($1, $3, EQUIVALENT_c, V_V);}
+	|				declarationValue EQUIVALENT conditionalClause															{ $$ = LeftDeclarationRightConditionalConditionalClauseSemanticAction($1, $3, EQUIVALENT_c, V_C);}
+	|				conditionalClause EQUIVALENT declarationValue															{ $$ = LeftConditionalRightDeclarationConditionalClauseSemanticAction($1, $3, EQUIVALENT_c, C_V);}
+	|				conditionalClause EQUIVALENT conditionalClause															{ $$ = AllConditionalConditionalClauseSemanticAction($1, $3, EQUIVALENT_c, C_C);}
+	|				declarationValue DIFFERENT declarationValue																{ $$ = AllDeclarationConditionalClauseSemanticAction($1, $3, DIFFERENT_c, V_V);}
+	|				declarationValue DIFFERENT conditionalClause															{ $$ = LeftDeclarationRightConditionalConditionalClauseSemanticAction($1, $3, DIFFERENT_c, V_C);}
+	|				conditionalClause DIFFERENT declarationValue															{ $$ = LeftConditionalRightDeclarationConditionalClauseSemanticAction($1, $3, DIFFERENT_c, C_V);}
+	|				conditionalClause DIFFERENT conditionalClause															{ $$ = AllConditionalConditionalClauseSemanticAction($1, $3, DIFFERENT_c, C_C);}
+	|				declarationValue LESSER_EQUAL declarationValue															{ $$ = AllDeclarationConditionalClauseSemanticAction($1, $3, LESSER_EQUAL_c, V_V);}
+	|				declarationValue LESSER_EQUAL conditionalClause															{ $$ = LeftDeclarationRightConditionalConditionalClauseSemanticAction($1, $3, LESSER_EQUAL_c, V_C);}
+	|				conditionalClause LESSER_EQUAL declarationValue															{ $$ = LeftConditionalRightDeclarationConditionalClauseSemanticAction($1, $3, LESSER_EQUAL_c, C_V);}
+	|				conditionalClause LESSER_EQUAL conditionalClause														{ $$ = AllConditionalConditionalClauseSemanticAction($1, $3, LESSER_EQUAL_c, C_C);}
+	|				declarationValue GREATER_EQUAL declarationValue															{ $$ = AllDeclarationConditionalClauseSemanticAction($1, $3, GREATER_EQUAL_c, V_V);}
+	|				declarationValue GREATER_EQUAL conditionalClause														{ $$ = LeftDeclarationRightConditionalConditionalClauseSemanticAction($1, $3, GREATER_EQUAL_c, V_C);}
+	|				conditionalClause GREATER_EQUAL declarationValue														{ $$ = LeftConditionalRightDeclarationConditionalClauseSemanticAction($1, $3, GREATER_EQUAL_c, C_V);}
+	|				conditionalClause GREATER_EQUAL conditionalClause														{ $$ = AllConditionalConditionalClauseSemanticAction($1, $3, GREATER_EQUAL_c, C_C);}
+	|				declarationValue LESSERTHAN declarationValue															{ $$ = AllDeclarationConditionalClauseSemanticAction($1, $3, LESSERTHAN_c, V_V);}
+	|				declarationValue LESSERTHAN conditionalClause															{ $$ = LeftDeclarationRightConditionalConditionalClauseSemanticAction($1, $3, LESSERTHAN_c, V_C);}
+	|				conditionalClause LESSERTHAN declarationValue															{ $$ = LeftConditionalRightDeclarationConditionalClauseSemanticAction($1, $3, LESSERTHAN_c, C_V);}
+	|				conditionalClause LESSERTHAN conditionalClause															{ $$ = AllConditionalConditionalClauseSemanticAction($1, $3, LESSERTHAN_c, C_C);}
+	|				declarationValue GREATERTHAN declarationValue															{ $$ = AllDeclarationConditionalClauseSemanticAction($1, $3, GREATERTHAN_c, V_V);}
+	|				declarationValue GREATERTHAN conditionalClause															{ $$ = LeftDeclarationRightConditionalConditionalClauseSemanticAction($1, $3, GREATERTHAN_c, V_C);}
+	|				conditionalClause GREATERTHAN declarationValue															{ $$ = LeftConditionalRightDeclarationConditionalClauseSemanticAction($1, $3, GREATERTHAN_c, C_V);}
+	|				conditionalClause GREATERTHAN conditionalClause															{ $$ = AllConditionalConditionalClauseSemanticAction($1, $3, GREATERTHAN_c, C_C);}
+	|				OPEN_PARENTHESIS conditionalClause CLOSE_PARENTHESIS													{ $$ = ConditionalInceptionConditionalClauseSemanticAction($2, NONE_c, PARENTHESIS_c);}
 	;
 
 generalAssignation: ID ID EQUAL declarationValue SEMICOLON																	{ $$ = GeneralDeclarationAssignationSemanticAction($1, $2, $4, ID_BY_VALUE);}
@@ -225,7 +225,7 @@ arithmeticAssignation: ID ADD_EQ declarationValue SEMICOLON																	{ $$
 	|				   attributeValue DIV_EQ arithmeticOperation SEMICOLON													{ $$ = ArithmeticAttributeOperationAssignationSemanticAction($1, DIV_o, $3, ATT_BY_OPP);}
 	;
 
-forExpression: FOR ID IN OPEN_BRACE INTEGER COMMA INTEGER CLOSE_BRACE OPEN_CURLY_BRACE mainExpressions CLOSE_CURLY_BRACE		{ $$ = ForExpressionSemanticAction($2, $5, $7, $10, CLASSIC_ITERATION);}
+forExpression: FOR ID IN OPEN_BRACE INTEGER COMMA INTEGER CLOSE_BRACE OPEN_CURLY_BRACE mainExpressions CLOSE_CURLY_BRACE	{ $$ = ForExpressionSemanticAction($2, $5, $7, $10, CLASSIC_ITERATION);}
 	|		   FOR ID IN ID OPEN_CURLY_BRACE mainExpressions CLOSE_CURLY_BRACE												{ $$ = ForNoRangeExpressionSemanticAction($2, $4, $6, FOREST_ITERATION);}
 	;
 
@@ -256,7 +256,7 @@ forestAssignments: forestAssignment																							{ $$ = SimpleForestAss
     |              forestAssignments COMMA forestAssignment																	{ $$ = MultipleForestAssignmentsSemanticAction($1, $3, MULTIPLE_fa);}
 	;
 
-worldExpression: WORLD OPEN_CURLY_BRACE worldAssignments CLOSE_CURLY_BRACE													{$$ = WorldExpressionSemanticAction($3);}
+worldExpression: WORLD OPEN_CURLY_BRACE worldAssignments CLOSE_CURLY_BRACE													{ $$ = WorldExpressionSemanticAction($3);}
 	;
 
 worldAssignment: ID EQUAL declarationValue																					{ $$ = WorldAssignmentDeclarationSemanticAction($1, $3, ID_BY_VALUE);}
@@ -295,7 +295,7 @@ declarationValue: ID																										{ $$ = DeclarationValueIDSemanticA
 	|			  FALSE																										{ $$ = DeclarationValueBooleanSemanticAction($1, BOOLEANvalue);}
 	|			  HEXCOLOR																									{ $$ = DeclarationValueHexSemanticAction($1, HEXCOLORvalue);}
 	|			  INTEGER																									{ $$ = DeclarationValueIntSemanticAction($1, INTEGERvalue);}
-	|			  attributeValue																							{$$ = DeclarationValueAttributeSemanticAction($1, ATTvalue);}
+	|			  attributeValue																							{ $$ = DeclarationValueAttributeSemanticAction($1, ATTvalue);}
 	|			  OPEN_PARENTHESIS declarationValue CLOSE_PARENTHESIS														{ $$ = DeclarationValueInceptionSemanticAction($2, DECLARATIONvalue);}
 	;
 
