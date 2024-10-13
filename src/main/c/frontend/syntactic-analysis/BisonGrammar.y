@@ -89,6 +89,9 @@
 %token <token> OPEN_BRACE
 %token <token> CLOSE_BRACE
 
+%token <token> IF
+%token <token> ELSE
+
 %token <token> FOR
 %token <token> IN
 %token <token> WITH
@@ -169,17 +172,17 @@ conditionalExpression: IF OPEN_PARENTHESIS conditionalClause CLOSE_PARENTHESIS
 															OPEN_CURLY_BRACE mainExpressions CLOSE_CURLY_BRACE				{ $$ = NULL;}
 	;
 
-conditionalClause:  declarationValue EQUIVALENT declarationValue			{$$ = NULL;}
-	|				declarationValue EQUIVALENT conditionalClause			{$$ = NULL;}
-	|				conditionalClause EQUIVALENT declarationValue			{$$ = NULL;}
-	|				conditionalClause EQUIVALENT conditionalClause			{$$ = NULL;}
-	|				declarationValue DIFFERENT declarationValue				{$$ = NULL;}
-	|				declarationValue DIFFERENT conditionalClause			{$$ = NULL;}
-	|				conditionalClause DIFFERENT declarationValue			{$$ = NULL;}
-	|				conditionalClause DIFFERENT conditionalClause			{$$ = NULL;}
-	|				declarationValue LESSER_EQUAL declarationValue			{$$ = NULL;}
-	|				declarationValue LESSER_EQUAL conditionalClause			{$$ = NULL;}
-	|				conditionalClause LESSER_EQUAL declarationValue			{$$ = NULL;}
+conditionalClause:  declarationValue EQUIVALENT declarationValue															{$$ = NULL;}
+	|				declarationValue EQUIVALENT conditionalClause															{$$ = NULL;}
+	|				conditionalClause EQUIVALENT declarationValue															{$$ = NULL;}
+	|				conditionalClause EQUIVALENT conditionalClause															{$$ = NULL;}
+	|				declarationValue DIFFERENT declarationValue																{$$ = NULL;}
+	|				declarationValue DIFFERENT conditionalClause															{$$ = NULL;}
+	|				conditionalClause DIFFERENT declarationValue															{$$ = NULL;}
+	|				conditionalClause DIFFERENT conditionalClause															{$$ = NULL;}
+	|				declarationValue LESSER_EQUAL declarationValue															{$$ = NULL;}
+	|				declarationValue LESSER_EQUAL conditionalClause															{$$ = NULL;}
+	|				conditionalClause LESSER_EQUAL declarationValue															{$$ = NULL;}
 	|				conditionalClause LESSER_EQUAL conditionalClause		{$$ = NULL;}
 	|				declarationValue GREATER_EQUAL declarationValue			{$$ = NULL;}
 	|				declarationValue GREATER_EQUAL conditionalClause		{$$ = NULL;}
