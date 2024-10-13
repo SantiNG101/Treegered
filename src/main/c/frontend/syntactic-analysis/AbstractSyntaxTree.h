@@ -24,6 +24,9 @@ typedef enum ExpressionType ExpressionType;
 typedef enum OperatorType OperatorType;
 typedef enum AssignationType AssignationType;
 typedef enum ForType ForType;
+typedef enum ConditionalType ConditionalType;
+typedef enum ConditionalClauseType ConditionalClauseType;
+typedef enum ComparissonType ComparissonType;
 typedef enum ArithmeticOperationType ArithmeticOperationType;
 typedef enum DeclarationValueType DeclarationValueType;
 typedef enum AttributeValueType AttributeValueType;
@@ -54,6 +57,8 @@ typedef struct ArithmeticAssignation ArithmeticAssignation;
 typedef struct ArithmeticOperation ArithmeticOperation;
 typedef struct GeneralAssignation GeneralAssignation;
 typedef struct AttributeValue AttributeValue;
+typedef struct ConditionalExpression ConditionalExpression;
+typedef struct ConditionalClause ConditionalClause;
 
 
 /**
@@ -69,12 +74,15 @@ enum TreeType { EMPTY_t, FULL_t };
 enum TreeAssignType {SIMPLE_ta, MULTIPLE_ta};
 enum ForestType { EMPTY_f, FULL_f };
 enum ForestAssignType {SIMPLE_fa, MULTIPLE_fa};
-enum MainExpressionType { SIMPLE_m, TREE_m, FOREST_m, GROW_m, FOR_m, ARITHMETIC_m, GENERAL_ASSIGNATION_m};
+enum MainExpressionType { SIMPLE_m, TREE_m, FOREST_m, GROW_m, FOR_m, ARITHMETIC_m, GENERAL_ASSIGNATION_m, CONDITIONAL_m};
 enum ExpressionType {SIMPLE_e, MULTIPLE_e};
 enum OperatorType {ADD_o, SUB_o, MUL_o, DIV_o, NONE};
 enum ArithmeticOperationType {LV_RV, LV_RO, LO_RV, LO_RO, PARENTHESIS};
 enum AssignationType {ID_BY_VALUE, ID_BY_OPP, ATT_BY_VALUE, ATT_BY_OPP};
 enum ForType{CLASSIC_ITERATION, FOREST_ITERATION};
+enum ConditionalType{IF_c, ELSE_c};
+enum ConditionalClauseType{PARENTHESIS_c, V_V, V_C, C_V, C_C}; //distinguish left and rights between declarationValues and conditionalClauses
+enum ComparissonType{NONE_c, EQUIVALENT_c, DIFFERENT_c, LESSER_EQUAL_c, GREATER_EQUAL_c, LESSERTHAN_c, GREATERTHAN_c};
 enum DeclarationValueType { IDvalue, STRINGvalue, BOOLEANvalue, HEXCOLORvalue, INTEGERvalue, ATTvalue};
 enum AttributeValueType { IDatt, STRINGatt, BOOLEANatt, HEXCOLORatt, INTEGERatt};
 
@@ -119,6 +127,32 @@ struct AttributeValue{
     _ID *variableID;
     _ID *attribute;
     AttributeValueType type;
+};
+
+struct ConditionalClause{
+    union{
+	ConditionalClause * conditionalClause;
+	    struct{
+    		union{
+        		DeclarationValue *leftValue;
+        		ArithmeticOperation *leftOperation;
+    		};
+    		union{
+        		DeclarationValue *rightValue;
+       			ArithmeticOperation *rightOperation;
+    		};
+		};
+
+	};
+    ComparissonType comparissonType;//aca seria para identificar si fue ==, !=, >, etc  USAR NONE PARA EL DE PARENTHESIS   
+    ConditionalClauseType conditionalType;//aca para saber si fue (), dvalue > condition, etc
+};
+
+struct ConditionalExpression{
+    ConditionalClause *conditionalClause;
+    MainExpressions *ifMainExpressions;
+    MainExpressions *elseMainExpressions;//holii, este nullable asi es null si es solo if, o con vaor si hubo un else
+    ConditionalType type;
 };
 
 struct GeneralAssignation{
@@ -249,6 +283,7 @@ struct MainExpression {
         ForExpression *forExpression;
         ArithmeticAssignation *arithmeticAssignation;
         GeneralAssignation *generalAssignation;
+        ConditionalExpression *conditionalExpression;
     };
     MainExpressionType type;
 };
