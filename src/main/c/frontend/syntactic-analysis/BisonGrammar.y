@@ -18,6 +18,7 @@
 
 	/** Non-terminals. */
 	
+	AttributeValue * attributeValue;
 	GeneralAssignation * generalAssignation;
 	ArithmeticOperation * arithmeticOperation;
 	ArithmeticAssignation * arithmeticAssignation;
@@ -57,6 +58,8 @@
 %token <token> TRUE
 %token <token> FALSE
 %token <hexcolor> HEXCOLOR
+
+%token <token> ARROW
 
 %token <token> EQUAL
 
@@ -106,6 +109,7 @@
 %type <arithmeticAssignation> arithmeticAssignation
 %type <arithmeticOperation> arithmeticOperation
 %type <generalAssignation> generalAssignation
+%type <attributeValue> attributeValue
 
 
 /**
@@ -145,6 +149,10 @@ generalAssignation: ID ID EQUAL declarationValue SEMICOLON		{ $$ = NULL;}
 	|				ID EQUAL declarationValue SEMICOLON			{ $$ = NULL;}
 	|				ID ID EQUAL arithmeticOperation SEMICOLON		{ $$ = NULL;}
 	|				ID EQUAL arithmeticOperation SEMICOLON			{ $$ = NULL;}
+	|				attributeValue ID EQUAL declarationValue SEMICOLON		{ $$ = NULL;}
+	|				attributeValue EQUAL declarationValue SEMICOLON			{ $$ = NULL;}
+	|				attributeValue ID EQUAL arithmeticOperation SEMICOLON		{ $$ = NULL;}
+	|				attributeValue EQUAL arithmeticOperation SEMICOLON			{ $$ = NULL;}
 	;
 
 arithmeticAssignation: ID ADD_EQ declarationValue SEMICOLON		{ $$ = NULL;}
@@ -155,6 +163,14 @@ arithmeticAssignation: ID ADD_EQ declarationValue SEMICOLON		{ $$ = NULL;}
 	|				   ID SUB_EQ arithmeticOperation SEMICOLON		{ $$ = NULL;}
 	|				   ID MUL_EQ arithmeticOperation SEMICOLON		{ $$ = NULL;}
 	|				   ID DIV_EQ arithmeticOperation SEMICOLON		{ $$ = NULL;}
+	|				   attributeValue ADD_EQ declarationValue SEMICOLON		{ $$ = NULL;}
+	|				   attributeValue SUB_EQ declarationValue SEMICOLON		{ $$ = NULL;}
+	|				   attributeValue MUL_EQ declarationValue SEMICOLON		{ $$ = NULL;}
+	|				   attributeValue DIV_EQ declarationValue SEMICOLON		{ $$ = NULL;}
+	|				   attributeValue ADD_EQ arithmeticOperation SEMICOLON		{ $$ = NULL;}
+	|				   attributeValue SUB_EQ arithmeticOperation SEMICOLON		{ $$ = NULL;}
+	|				   attributeValue MUL_EQ arithmeticOperation SEMICOLON		{ $$ = NULL;}
+	|				   attributeValue DIV_EQ arithmeticOperation SEMICOLON		{ $$ = NULL;}
 	;
 
 forExpression: FOR ID IN OPEN_BRACE INTEGER COMMA INTEGER CLOSE_BRACE OPEN_CURLY_BRACE mainExpression CLOSE_CURLY_BRACE	{$$=NULL;}
@@ -212,12 +228,16 @@ arithmeticOperation: declarationValue ADD declarationValue					{ $$ = NULL;}
 	|				OPEN_PARENTHESIS arithmeticOperation CLOSE_PARENTHESIS			{ $$ = NULL;}
 	;
 
+attributeValue:   ID ARROW ID		{ $$ = NULL;}
+	;
+
 declarationValue: ID		{ $$ = NULL;}
 	|			  STRING	{ $$ = NULL;}
 	|			  TRUE		{ $$ = NULL;}
 	|			  FALSE		{ $$ = NULL;}
 	|			  HEXCOLOR	{ $$ = NULL;}
 	|			  INTEGER	{ $$ = NULL;}
+	|			  attributeValue	{$$ = NULL;}
 	|			  OPEN_PARENTHESIS declarationValue CLOSE_PARENTHESIS	{ $$ = NULL;}
 	;
 

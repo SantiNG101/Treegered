@@ -60,10 +60,10 @@ void releaseWorldAssignment(WorldAssignment *worldAssignment){
 	if (worldAssignment != NULL) {
 		release_ID(worldAssignment->id);
 		switch(worldAssignment->type){
-			case BY_VALUE:
+			case ID_BY_VALUE:
 				releaseDeclarationValue(worldAssignment->value);
 				break;
-			case BY_OPP:
+			case ID_BY_OPP:
 				releaseArithmeticOperation(worldAssignment->arithmeticOperation);
 				break;
 		}
@@ -92,10 +92,10 @@ void releaseForestAssignment(ForestAssignment *forestAssignment){
 	if (forestAssignment != NULL) {
 		release_ID(forestAssignment->id);
 		switch(forestAssignment->type){
-			case BY_VALUE:
+			case ID_BY_VALUE:
 				releaseDeclarationValue(forestAssignment->value);
 				break;
-			case BY_OPP:
+			case ID_BY_OPP:
 				releaseArithmeticOperation(forestAssignment->arithmeticOperation);
 				break;
 		}
@@ -124,10 +124,10 @@ void releaseTreeAssignment(TreeAssignment *treeAssignment){
 	if (treeAssignment != NULL) {
 		release_ID(treeAssignment->id);
 		switch(treeAssignment->type){
-			case BY_VALUE:
+			case ID_BY_VALUE:
 				releaseDeclarationValue(treeAssignment->value);
 				break;
-			case BY_OPP:
+			case ID_BY_OPP:
 				releaseArithmeticOperation(treeAssignment->arithmeticOperation);
 				break;
 		}
@@ -164,12 +164,21 @@ void releaseForExpression(ForExpression *forExpression){
 void releaseArithmeticAssignation(ArithmeticAssignation *arithmeticAssignation){
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (arithmeticAssignation != NULL) {
-		release_ID(arithmeticAssignation->id);
 		switch(arithmeticAssignation->type){
-			case BY_VALUE:
+			case ID_BY_VALUE:
+				release_ID(arithmeticAssignation->id);
 				releaseDeclarationValue(arithmeticAssignation->value);
 				break;
-			case BY_OPP:
+			case ID_BY_OPP:
+				release_ID(arithmeticAssignation->id);
+				releaseArithmeticOperation(arithmeticAssignation->arithmeticOperation);
+				break;
+			case ATT_BY_VALUE:
+				releaseAttributeValue(arithmeticAssignation->att);
+				releaseDeclarationValue(arithmeticAssignation->value);
+				break;
+			case ATT_BY_OPP:
+				releaseAttributeValue(arithmeticAssignation->att);
 				releaseArithmeticOperation(arithmeticAssignation->arithmeticOperation);
 				break;
 		}
@@ -180,13 +189,23 @@ void releaseArithmeticAssignation(ArithmeticAssignation *arithmeticAssignation){
 void releaseGeneralAssignation(GeneralAssignation *generalAssignation){
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (generalAssignation != NULL) {
-		release_ID(generalAssignation->id);
-		release_ID(generalAssignation->classType);
 		switch(generalAssignation->type){
-			case BY_VALUE:
+			case ID_BY_VALUE:
+				release_ID(generalAssignation->classType);
+				release_ID(generalAssignation->id);
 				releaseDeclarationValue(generalAssignation->value);
 				break;
-			case BY_OPP:
+			case ID_BY_OPP:
+				release_ID(generalAssignation->classType);
+				release_ID(generalAssignation->id);
+				releaseArithmeticOperation(generalAssignation->arithmeticOperation);
+				break;
+			case ATT_BY_VALUE:
+				releaseAttributeValue(generalAssignation->att);
+				releaseDeclarationValue(generalAssignation->value);
+				break;
+			case ATT_BY_OPP:
+				releaseAttributeValue(generalAssignation->att);
 				releaseArithmeticOperation(generalAssignation->arithmeticOperation);
 				break;
 		}
@@ -287,6 +306,9 @@ void releaseDeclarationValue(DeclarationValue *declarationValue){
 			case INTEGERvalue:
 				release_INTEGER(declarationValue->intValue);
 				break;
+			case ATTvalue:
+				releaseAttributeValue(declarationValue->attValue);
+				break;
 		}
 		free(declarationValue);
 	}
@@ -314,5 +336,31 @@ void releaseArithmeticOperation(ArithmeticOperation *arithmeticOperation){
 				break;
 		}
 		free(arithmeticOperation);
+	}
+}
+
+void releaseAttributeValue(AttributeValue *attributeValue){
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if (attributeValue != NULL) {
+		release_ID(attributeValue->variableID);
+		release_ID(attributeValue->attribute);
+		switch(attributeValue->type){
+			case IDatt:
+				release_ID(attributeValue->idValue);
+				break;
+			case STRINGatt:
+				release_STRING(attributeValue->charValue);
+				break;
+			case BOOLEANatt:
+				release_BOOLEAN(attributeValue->booleanValue);
+				break;
+			case HEXCOLORatt:
+				release_HEXCOLOR(attributeValue->hexcolorValue);
+				break;
+			case INTEGERatt:
+				release_INTEGER(attributeValue->intValue);
+				break;
+		}
+		free(attributeValue);
 	}
 }

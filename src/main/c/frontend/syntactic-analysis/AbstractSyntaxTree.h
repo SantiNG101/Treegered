@@ -23,6 +23,7 @@ typedef enum AssignationType AssignationType;
 typedef enum ForType ForType;
 typedef enum ArithmeticOperationType ArithmeticOperationType;
 typedef enum DeclarationValueType DeclarationValueType;
+typedef enum AttributeValueType AttributeValueType;
 
 typedef struct _ID _ID;
 typedef struct _HEXCOLOR _HEXCOLOR;
@@ -45,6 +46,7 @@ typedef struct ForExpression ForExpression;
 typedef struct ArithmeticAssignation ArithmeticAssignation;
 typedef struct ArithmeticOperation ArithmeticOperation;
 typedef struct GeneralAssignation GeneralAssignation;
+typedef struct AttributeValue AttributeValue;
 
 
 /**
@@ -61,9 +63,10 @@ enum ForestType { EMPTY_f, SIMPLE_f, MULTIPLE_f };
 enum MainExpressionType { SIMPLE_m, TREE_m, FOREST_m, GROW_m, FOR_m, ARITHMETIC_m, GENERAL_ASSIGNATION_m};
 enum OperatorType {ADD_o, SUB_o, MUL_o, DIV_o};
 enum ArithmeticOperationType {LV_RV, LV_RO, LO_RV, LO_RO};
-enum AssignationType {BY_VALUE, BY_OPP};
+enum AssignationType {ID_BY_VALUE, ID_BY_OPP, ATT_BY_VALUE, ATT_BY_OPP};
 enum ForType{CLASSIC_ITERATION, FOREST_ITERATION};
-enum DeclarationValueType { IDvalue, STRINGvalue, BOOLEANvalue, HEXCOLORvalue, INTEGERvalue};
+enum DeclarationValueType { IDvalue, STRINGvalue, BOOLEANvalue, HEXCOLORvalue, INTEGERvalue, ATTvalue};
+enum AttributeValueType { IDatt, STRINGatt, BOOLEANatt, HEXCOLORatt, INTEGERatt};
 
 /* 
 	Structs for the ast
@@ -96,13 +99,32 @@ struct DeclarationValue{
         _BOOLEAN *booleanValue;
         _HEXCOLOR *hexcolorValue;
         _INTEGER *intValue;
+        AttributeValue *attValue;
     };
     DeclarationValueType type;
 };
 
+struct AttributeValue{
+    _ID *variableID;
+    _ID *attribute;
+    union{
+        _ID *idValue;
+        _STRING *charValue;
+        _BOOLEAN *booleanValue;
+        _HEXCOLOR *hexcolorValue;
+        _INTEGER *intValue;
+    };
+    AttributeValueType type;
+};
+
 struct GeneralAssignation{
-    _ID *classType;
-    _ID *id;
+    union{
+        struct{
+            _ID *id;
+            _ID *classType;
+        };
+        AttributeValue *att;
+    };
     union{
         DeclarationValue *value;
         ArithmeticOperation *arithmeticOperation;
@@ -124,7 +146,10 @@ struct ArithmeticOperation{
 };
 
 struct ArithmeticAssignation{
-    _ID *id;
+    union{
+        _ID *id;
+        AttributeValue *att;
+    };
     OperatorType operator;
     union{
         DeclarationValue *value;
@@ -263,5 +288,6 @@ void releaseForExpression(ForExpression *forExpression);
 void releaseArithmeticAssignation(ArithmeticAssignation *arithmeticAssignation);
 void releaseArithmeticOperation(ArithmeticOperation *arithmeticOperation);
 void releaseGeneralAssignation(GeneralAssignation *generalAssignation);
+void releaseAttributeValue(AttributeValue *attributeValue);
 
 #endif
