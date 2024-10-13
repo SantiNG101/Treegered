@@ -19,6 +19,8 @@
 
 	/** Non-terminals. */
 	
+	ConditionalClause * conditionalClause;
+	ConditionalExpression * conditionalExpression;
 	AttributeValue * attributeValue;
 	GeneralAssignation * generalAssignation;
 	ArithmeticOperation * arithmeticOperation;
@@ -119,7 +121,8 @@
 %type <arithmeticOperation> arithmeticOperation
 %type <generalAssignation> generalAssignation
 %type <attributeValue> attributeValue
-
+%type <conditionalExpression> conditionalExpression
+%type <conditionalClause> conditionalClause
 
 /**
  * Precedence and associativity.
@@ -128,6 +131,12 @@
  */
 %left ADD SUB
 %left MUL DIV
+%left EQUIVALENT 
+%left DIFFERENT 
+%left LESSER_EQUAL 
+%left GREATER_EQUAL 
+%left LESSERTHAN
+%left GREATERTHAN
 
 %%
 
@@ -146,10 +155,45 @@ mainExpression: treeExpression																								{ $$ = MainExpressionTreeS
 	|			forExpression																								{ $$ = MainExpressionForSemanticAction($1, FOR_m);} 
 	|			arithmeticAssignation																						{ $$ = MainExpressionArithmeticAssignationSemanticAction($1, ARITHMETIC_m);} 
 	|			generalAssignation																							{ $$ = MainExpressionGeneralSemanticAction($1, GENERAL_ASSIGNATION_m);} 
+	|			conditionalExpression																						{ $$ = NULL;}
 	;
 
 mainExpressions: mainExpression																								{ $$ = SimpleMainExpressionSemanticAction($1, SIMPLE_e);}
 	|			 mainExpressions mainExpression																				{ $$ = MultipleMainExpressionSemanticAction($1, $2, MULTIPLE_e);}			 
+	;
+
+conditionalExpression: IF OPEN_PARENTHESIS conditionalClause CLOSE_PARENTHESIS 
+													OPEN_CURLY_BRACE mainExpressions CLOSE_CURLY_BRACE						{ $$ = NULL;}
+	|				   IF OPEN_PARENTHESIS conditionalClause CLOSE_PARENTHESIS 
+													OPEN_CURLY_BRACE mainExpressions CLOSE_CURLY_BRACE ELSE 
+															OPEN_CURLY_BRACE mainExpressions CLOSE_CURLY_BRACE				{ $$ = NULL;}
+	;
+
+conditionalClause:  declarationValue EQUIVALENT declarationValue			{$$ = NULL;}
+	|				declarationValue EQUIVALENT conditionalClause			{$$ = NULL;}
+	|				conditionalClause EQUIVALENT declarationValue			{$$ = NULL;}
+	|				conditionalClause EQUIVALENT conditionalClause			{$$ = NULL;}
+	|				declarationValue DIFFERENT declarationValue				{$$ = NULL;}
+	|				declarationValue DIFFERENT conditionalClause			{$$ = NULL;}
+	|				conditionalClause DIFFERENT declarationValue			{$$ = NULL;}
+	|				conditionalClause DIFFERENT conditionalClause			{$$ = NULL;}
+	|				declarationValue LESSER_EQUAL declarationValue			{$$ = NULL;}
+	|				declarationValue LESSER_EQUAL conditionalClause			{$$ = NULL;}
+	|				conditionalClause LESSER_EQUAL declarationValue			{$$ = NULL;}
+	|				conditionalClause LESSER_EQUAL conditionalClause		{$$ = NULL;}
+	|				declarationValue GREATER_EQUAL declarationValue			{$$ = NULL;}
+	|				declarationValue GREATER_EQUAL conditionalClause		{$$ = NULL;}
+	|				conditionalClause GREATER_EQUAL declarationValue		{$$ = NULL;}
+	|				conditionalClause GREATER_EQUAL conditionalClause		{$$ = NULL;}
+	|				declarationValue LESSERTHAN declarationValue			{$$ = NULL;}
+	|				declarationValue LESSERTHAN conditionalClause			{$$ = NULL;}
+	|				conditionalClause LESSERTHAN declarationValue			{$$ = NULL;}
+	|				conditionalClause LESSERTHAN conditionalClause			{$$ = NULL;}
+	|				declarationValue GREATERTHAN declarationValue			{$$ = NULL;}
+	|				declarationValue GREATERTHAN conditionalClause			{$$ = NULL;}
+	|				conditionalClause GREATERTHAN declarationValue			{$$ = NULL;}
+	|				conditionalClause GREATERTHAN conditionalClause			{$$ = NULL;}
+	|				OPEN_PARENTHESIS conditionalClause CLOSE_PARENTHESIS	{$$ = NULL;}
 	;
 
 generalAssignation: ID ID EQUAL declarationValue SEMICOLON																	{ $$ = GeneralDeclarationAssignationSemanticAction($1, $2, $4, ID_BY_VALUE);}
