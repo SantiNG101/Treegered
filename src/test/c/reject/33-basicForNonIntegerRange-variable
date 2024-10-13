@@ -1,0 +1,5 @@
+int res = 0;
+boolean t = true;
+for i in [true, 5] {
+    res += i;
+}
