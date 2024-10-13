@@ -84,7 +84,7 @@ enum ConditionalType{IF_c, ELSE_c};
 enum ConditionalClauseType{PARENTHESIS_c, V_V, V_C, C_V, C_C}; //distinguish left and rights between declarationValues and conditionalClauses
 enum ComparissonType{NONE_c, EQUIVALENT_c, DIFFERENT_c, LESSER_EQUAL_c, GREATER_EQUAL_c, LESSERTHAN_c, GREATERTHAN_c};
 enum DeclarationValueType { IDvalue, STRINGvalue, BOOLEANvalue, HEXCOLORvalue, INTEGERvalue, ATTvalue, DECLARATIONvalue};
-enum AttributeValueType { IDatt, STRINGatt, BOOLEANatt, HEXCOLORatt, INTEGERatt};
+enum AttributeValueType { IDatt, STRINGatt, BOOLEANatt, HEXCOLORatt, INTEGERatt, WORLDatt};
 
 /* 
 	Structs for the ast
@@ -124,8 +124,14 @@ struct DeclarationValue{
 };
 
 struct AttributeValue{
-    _ID *variableID;
-    _ID *attribute;
+    union{
+        struct{
+            _ID *variableID;
+            _ID *attributeID;
+        };
+        _ID *attribute;
+    };
+    
     AttributeValueType type;
 };
 

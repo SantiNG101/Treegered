@@ -23,6 +23,8 @@ Program * ExpressionProgramSemanticAction(CompilerState * compilerState, Program
 
 AttributeValue * AttributeValueSemanticAction(Id varId, Id attId, AttributeValueType type);
 
+AttributeValue * AttributeValueWorldSemanticAction(Id attId, AttributeValueType type);
+
 
 DeclarationValue * DeclarationValueIDSemanticAction(Id id, DeclarationValueType type);
 

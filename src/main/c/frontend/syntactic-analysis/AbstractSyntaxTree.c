@@ -438,6 +438,16 @@ void releaseConditionalClause(ConditionalClause *conditionalClause){
 void releaseAttributeValue(AttributeValue *attributeValue){
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (attributeValue != NULL) {
+		switch (attributeValue->type){
+		case IDatt:
+			release_ID(attributeValue->variableID);
+			release_ID(attributeValue->attributeID);
+			break;
+		
+		case WORLDatt:
+			release_ID(attributeValue->attribute);
+			break;
+		}
 		release_ID(attributeValue->variableID);
 		release_ID(attributeValue->attribute);
 		free(attributeValue);

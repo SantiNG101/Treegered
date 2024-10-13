@@ -57,8 +57,24 @@ AttributeValue * AttributeValueSemanticAction(Id varId, Id attId, AttributeValue
 
 	_ID * aux2 = calloc(1, sizeof(_ID));
 	aux1->idValue = attId;
+
 	attributeValue->attribute = aux2;
+	attributeValue->type = type;
+	
 	return attributeValue;
+}
+
+AttributeValue * AttributeValueWorldSemanticAction(Id attId, AttributeValueType type){
+	
+	AttributeValue * worldAttributeValue = calloc(1, sizeof(AttributeValue));
+
+	_ID * aux = calloc(1, sizeof(_ID));
+	aux->idValue = attId;
+
+	worldAttributeValue->attribute = aux;
+	worldAttributeValue->type = type;
+
+	return worldAttributeValue;
 }
 
 DeclarationValue * DeclarationValueIDSemanticAction(Id id, DeclarationValueType type){
