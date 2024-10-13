@@ -109,6 +109,48 @@ Token EqualLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
     return EQUAL;
 }
 
+Token EquivalentLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
+    _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+
+    lexicalAnalyzerContext->semanticValue->token = EQUIVALENT;
+    return EQUIVALENT;
+}
+
+Token DifferentLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
+    _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+
+    lexicalAnalyzerContext->semanticValue->token = DIFFERENT;
+    return DIFFERENT;
+}
+
+Token LesserThanLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
+    _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+
+    lexicalAnalyzerContext->semanticValue->token = LESSERTHAN;
+    return LESSERTHAN;
+}
+
+Token GreaterThanLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
+    _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+
+    lexicalAnalyzerContext->semanticValue->token = GREATERTHAN;
+    return GREATERTHAN;
+}
+
+Token GreaterEqualLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
+    _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+
+    lexicalAnalyzerContext->semanticValue->token = GREATER_EQUAL;
+    return GREATER_EQUAL;
+}
+
+Token LesserEqualLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
+    _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+
+    lexicalAnalyzerContext->semanticValue->token = LESSER_EQUAL;
+    return LESSER_EQUAL;
+}
+
 
 Token CommaLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
     _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
@@ -148,6 +190,13 @@ Token CurlyBraceLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext,
 
 Token BraceLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext,
                         Token token) {
+    _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+    lexicalAnalyzerContext->semanticValue->token = token;
+    return token;
+}
+
+Token ConditionalLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext,
+                              Token token) {
     _logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
     lexicalAnalyzerContext->semanticValue->token = token;
     return token;

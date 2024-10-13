@@ -60,6 +60,13 @@
 
 %token <token> EQUAL
 
+%token <token> EQUIVALENT
+%token <token> DIFFERENT
+%token <token> LESSERTHAN
+%token <token> GREATERTHAN
+%token <token> LESSER_EQUAL
+%token <token> GREATER_EQUAL
+
 %token <token> COMMA
 %token <token> SEMICOLON
 
@@ -79,6 +86,8 @@
 %token <token> OPEN_BRACE
 %token <token> CLOSE_BRACE
 
+%token <token> IF
+%token <token> ELSE
 %token <token> FOR
 %token <token> IN
 %token <token> WITH

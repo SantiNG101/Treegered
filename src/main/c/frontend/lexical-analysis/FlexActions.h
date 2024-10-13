@@ -27,13 +27,19 @@ void IgnoredLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token UnknownLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 
 
-
 Token WorldLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token TreeLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token ForestLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token GrowLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 
 Token EqualLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
+
+Token EquivalentLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
+Token DifferentLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
+Token LesserThanLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
+Token GreaterThanLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
+Token GreaterEqualLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
+Token LesserEqualLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 
 Token CommaLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token SemicolonLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
@@ -45,6 +51,8 @@ Token ParenthesisLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, To
 Token CurlyBraceLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
 Token BraceLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
 
+Token ConditionalLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext,
+                              Token token);
 Token ForLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token InLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token WithLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
