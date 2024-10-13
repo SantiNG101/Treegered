@@ -170,11 +170,6 @@ struct ArithmeticAssignation{
 
 struct ForExpression{
     _ID *id;
-<<<<<<< HEAD
-    _INTEGER *rangeStart;
-    _INTEGER *rangeEnd;
-    MainExpressions *mainExpressions;
-=======
     union{
         struct{
             _INTEGER *rangeStart;
@@ -182,9 +177,8 @@ struct ForExpression{
         };
         _ID *forestId;
     };
-    MainExpression *mainExpression;
+    MainExpressions *mainExpressions;
     ForType type;
->>>>>>> missingExpressions
 };
 
 struct GrowExpression{

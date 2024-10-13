@@ -148,26 +148,10 @@ mainExpression: treeExpression																								{ $$ = NULL;}
 	|			generalAssignation																							{ $$ = NULL;} 
 	;
 
-<<<<<<< HEAD
 mainExpressions: mainExpression																								{ $$ = NULL;}
 	|			 mainExpressions mainExpression																				{ $$ = NULL;}			 
 	;
 
-generalAssignation: ID ID EQUAL declarationValue SEMICOLON																	{ $$ = NULL;}
-	|				ID EQUAL declarationValue SEMICOLON																		{ $$ = NULL;}
-	|				ID ID EQUAL arithmeticOperation SEMICOLON																{ $$ = NULL;}
-	|				ID EQUAL arithmeticOperation SEMICOLON																	{ $$ = NULL;}
-	;
-
-arithmeticAssignation: ID ADD_EQ declarationValue SEMICOLON																	{ $$ = NULL;}
-	|				   ID SUB_EQ declarationValue SEMICOLON																	{ $$ = NULL;}
-	|				   ID MUL_EQ declarationValue SEMICOLON																	{ $$ = NULL;}
-	|				   ID DIV_EQ declarationValue SEMICOLON																	{ $$ = NULL;}
-	|				   ID ADD_EQ arithmeticOperation SEMICOLON																{ $$ = NULL;}
-	|				   ID SUB_EQ arithmeticOperation SEMICOLON																{ $$ = NULL;}
-	|				   ID MUL_EQ arithmeticOperation SEMICOLON																{ $$ = NULL;}
-	|				   ID DIV_EQ arithmeticOperation SEMICOLON																{ $$ = NULL;}
-=======
 generalAssignation: ID ID EQUAL declarationValue SEMICOLON		{ $$ = NULL;}
 	|				ID EQUAL declarationValue SEMICOLON			{ $$ = NULL;}
 	|				ID ID EQUAL arithmeticOperation SEMICOLON		{ $$ = NULL;}
@@ -198,10 +182,6 @@ arithmeticAssignation: ID ADD_EQ declarationValue SEMICOLON		{ $$ = NULL;}
 
 forExpression: FOR ID IN OPEN_BRACE INTEGER COMMA INTEGER CLOSE_BRACE OPEN_CURLY_BRACE mainExpression CLOSE_CURLY_BRACE	{$$=NULL;}
 	|		   FOR ID IN ID OPEN_CURLY_BRACE mainExpression CLOSE_CURLY_BRACE			{ $$ = NULL;}
->>>>>>> missingExpressions
-	;
-
-forExpression: FOR ID IN OPEN_BRACE INTEGER COMMA INTEGER CLOSE_BRACE OPEN_CURLY_BRACE mainExpressions CLOSE_CURLY_BRACE	{ $$ = NULL;}
 	;
 
 growExpression: GROW OPEN_PARENTHESIS ID CLOSE_PARENTHESIS SEMICOLON														{ $$ = NULL;}
