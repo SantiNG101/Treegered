@@ -74,7 +74,7 @@ enum TreeType { EMPTY_t, FULL_t };
 enum TreeAssignType {SIMPLE_ta, MULTIPLE_ta};
 enum ForestType { EMPTY_f, FULL_f };
 enum ForestAssignType {SIMPLE_fa, MULTIPLE_fa};
-enum MainExpressionType { SIMPLE_m, TREE_m, FOREST_m, GROW_m, FOR_m, ARITHMETIC_m, GENERAL_ASSIGNATION_m, CONDITIONAL_m};
+enum MainExpressionType { TREE_m, FOREST_m, GROW_m, FOR_m, ARITHMETIC_m, GENERAL_ASSIGNATION_m, CONDITIONAL_m};
 enum ExpressionType {SIMPLE_e, MULTIPLE_e};
 enum OperatorType {ADD_o, SUB_o, MUL_o, DIV_o, NONE};
 enum ArithmeticOperationType {LV_RV, LV_RO, LO_RV, LO_RO, PARENTHESIS};

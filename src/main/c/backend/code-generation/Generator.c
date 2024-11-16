@@ -5,142 +5,213 @@
 const char _indentationCharacter = ' ';
 const char _indentationSize = 4;
 static Logger * _logger = NULL;
+FILE * file = NULL;
 
 void initializeGeneratorModule() {
 	_logger = createLogger("Generator");
+	initTable();
+	file = fopen("treegered.txt", "w");
 }
 
 void shutdownGeneratorModule() {
 	if (_logger != NULL) {
 		destroyLogger(_logger);
+		fclose(file);
+		freeTable();
 	}
 }
 
 /** PRIVATE FUNCTIONS */
 
-//static const char _expressionTypeToCharacter(const ExpressionType type);
-//static void _generateConstant(const unsigned int indentationLevel, Constant * constant);
-static void _generateEpilogue(const int value);
-//static void _generateExpression(const unsigned int indentationLevel, Expression * expression);
-//static void _generateFactor(const unsigned int indentationLevel, Factor * factor);
-static void _generateProgram(Program * program);
+//TODO reemplazar
+static int indentPlaceholder = 1;
+
+static void _generateEpilogue(void);
 static void _generatePrologue(void);
 static char * _indentation(const unsigned int indentationLevel);
-static void _output(const unsigned int indentationLevel, const char * const format, ...);
+static void _output(FILE * file, const unsigned int indentationLevel, const char * const format, ...);
+
+static void _generateProgram(Program * program);
+static void _generateProgramExpression(ProgramExpression * programExpression);
 
 /**
- * Converts and expression type to the proper character of the operation
- * involved, or returns '\0' if that's not possible.
- *
-static const char _expressionTypeToCharacter(const ExpressionType type) {
-	switch (type) {
-		case ADDITION: return '+';
-		case DIVISION: return '/';
-		case MULTIPLICATION: return '*';
-		case SUBTRACTION: return '-';
-		default:
-			logError(_logger, "The specified expression type cannot be converted into character: %d", type);
-			return '\0';
-	}
-}*/
-
-/**
- * Generates the output of a constant.
- *
-static void _generateConstant(const unsigned int indentationLevel, Constant * constant) {
-	_output(indentationLevel, "%s", "[ $C$, circle, draw, black!20\n");
-	_output(1 + indentationLevel, "%s%d%s", "[ $", constant->value, "$, circle, draw ]\n");
-	_output(indentationLevel, "%s", "]\n");
-}*/
-
-/**
- * Creates the epilogue of the generated output, that is, the final lines that
- * completes a valid Latex document.
+ * Creates the epilogue of the generated output.
  */
-static void _generateEpilogue(const int value) {
-	/*
-	_output(0, "%s%d%s",
-		"            [ $", value, "$, circle, draw, blue ]\n"
-		"        ]\n"
-		"    \\end{forest}\n"
-		"\\end{document}\n\n"
+static void _generateEpilogue(void) {
+	_output(file, 0, "%s",
+		"            bie\n"
 	);
-	*/
 }
 
-/**
- * Generates the output of an expression.
- *
-static void _generateExpression(const unsigned int indentationLevel, Expression * expression) {
-	_output(indentationLevel, "%s", "[ $E$, circle, draw, black!20\n");
-	switch (expression->type) {
-		case ADDITION:
-		case DIVISION:
-		case MULTIPLICATION:
-		case SUBTRACTION:
-			_generateExpression(1 + indentationLevel, expression->leftExpression);
-			_output(1 + indentationLevel, "%s%c%s", "[ $", _expressionTypeToCharacter(expression->type), "$, circle, draw, purple ]\n");
-			_generateExpression(1 + indentationLevel, expression->rightExpression);
-			break;
-		case FACTOR:
-			_generateFactor(1 + indentationLevel, expression->factor);
-			break;
-		default:
-			logError(_logger, "The specified expression type is unknown: %d", expression->type);
-			break;
-	}
-	_output(indentationLevel, "%s", "]\n");
-}*/
+static void _generateConditionalExpression(){
 
-/**
- * Generates the output of a factor.
- *
-static void _generateFactor(const unsigned int indentationLevel, Factor * factor) {
-	_output(indentationLevel, "%s", "[ $F$, circle, draw, black!20\n");
-	switch (factor->type) {
-		case CONSTANT:
-			_generateConstant(1 + indentationLevel, factor->constant);
-			break;
-		case EXPRESSION:
-			_output(1 + indentationLevel, "%s", "[ $($, circle, draw, purple ]\n");
-			_generateExpression(1 + indentationLevel, factor->expression);
-			_output(1 + indentationLevel, "%s", "[ $)$, circle, draw, purple ]\n");
-			break;
-		default:
-			logError(_logger, "The specified factor type is unknown: %d", factor->type);
-			break;
+}
+
+static void _generateGeneralAssignation(){
+
+}
+
+static void _generateArithmeticAssignation(){
+
+}
+
+static void _generateForExpression(){
+
+}
+
+static void _generateGrowExpression(){
+
+}
+
+static void _generateForestExpression(){
+
+}
+
+static void _generateTreeAssignment(TreeAssignment * treeAssignment){
+	if(treeAssignment->type == ID_BY_VALUE){
+		
 	}
-	_output(indentationLevel, "%s", "]\n");
-}*/
+	else if(treeAssignment->type == ID_BY_OPP){
+
+	}
+	else if(treeAssignment->type == ATT_BY_VALUE){
+
+	}
+	else if(treeAssignment->type == ATT_BY_OPP){
+
+	}
+	else{
+		logError(_logger, "Unknown AssignType: %d\n", treeAssignment->type);
+	}
+}
+
+static void _generateTreeAssignments(TreeAssignments * treeAssignments){
+	if(treeAssignments->type == SIMPLE_ta){
+		_generateTreeAssignment(treeAssignments->singleTreeAssignment);
+	}
+	else if(treeAssignments->type == MULTIPLE_ta){
+		_generateTreeAssignment(treeAssignments->multipleTreeAssignment);
+		_generateTreeAssignments(treeAssignments->treeAssignments);
+	}
+	else{
+		logError(_logger, "Unknown TreeAssignType: %d\n", treeAssignments->type);
+	}
+}
+
+static void _generateTreeExpression(TreeExpression * treeExpression){
+	if(treeExpression->type == EMPTY_t){
+		_addToTable(treeExpression->id, TREECLASS, NULL);//TODO como completo atributos default
+	}
+	else if(treeExpression->type == FULL_t){
+		_generateTreeAssignments(treeExpression->treeAssignments);
+	}
+	else{
+		logError(_logger, "Unknown TreeExpressionType: %d\n", treeExpression->type);
+	}
+}
+
+static void _generateMainExpression(MainExpression * mainExpression){
+	if(mainExpression->type == TREE_m){
+		
+	}
+	else if(mainExpression->type == FOREST_m){
+
+	}
+	else if(mainExpression->type == GROW_m){
+
+	}
+	else if(mainExpression->type == FOR_m){
+
+	}
+	else if(mainExpression->type == ARITHMETIC_m){
+
+	}
+	else if(mainExpression->type == GENERAL_ASSIGNATION_m){
+
+	}
+	else if(mainExpression->type == CONDITIONAL_m){
+
+	}
+	else{
+		logError(_logger, "Unknown MainExpressionType: %d\n", mainExpression->type);
+	}
+}
+
+static void _generateMainExpressions(MainExpressions * mainExpressions){
+	if(mainExpressions->type == SIMPLE_e){
+		_generateMainExpression(mainExpressions->singleMainExpression);
+	}
+	else if(mainExpressions->type == MULTIPLE_e){
+		_generateMainExpression(mainExpressions->multipleMainExpression);
+		_generateMainExpressions(mainExpressions->mainExpressions);
+	}
+	else{
+		logError(_logger, "Unknown ExpressionType: %d\n", mainExpressions->type);		
+	}
+}
+
+static void _generateWorldAssignment(WorldAssignment * worldAssignment){
+	if(worldAssignment->type == ID_BY_VALUE){
+
+	}
+	else if(worldAssignment->type == ID_BY_OPP){
+		
+	}
+	else if(worldAssignment->type == ATT_BY_VALUE){
+		
+	}
+	else if(worldAssignment->type == ATT_BY_OPP){
+
+	}
+	else{
+		logError(_logger, "Unknown AssignationType: %d\n", worldAssignment->type);
+	}
+}
+
+static void _generateWorldAssignments(WorldAssignments * worldAssignments){
+	if(worldAssignments->type == SIMPLE_w){
+		_generateWorldAssignment(worldAssignments->singleWorldAssignment);
+	}
+	else if(worldAssignments->type == MULTIPLE_w){
+		_generateWorldAssignment(worldAssignments->multipleWorldAssignment);
+		_generateWorldAssignments(worldAssignments->worldAssignments);
+	}
+	else{
+		logError(_logger, "Unknown WorldType: %d\n", worldAssignments->type);		
+	}
+}
+
+static void _generateWorldExpression(WorldExpression * worldExpression){
+	_generateWorldAssignments(indentationLevel, worldExpression->worldAssignments);
+}
+
+static void _generateProgramExpression(ProgramExpression * programExpression){
+	if(programExpression->type == WORLDLESS){
+		_generateMainExpressions(programExpression->worldlessMainExpressions);
+	}
+	else if(programExpression->type == WORLDFULL){
+		_generateWorldExpression(programExpression->worldExpression);
+		_generateMainExpressions(programExpression->mainExpressions);
+	}
+	else{
+		logError(_logger, "Unknown ProgramType: %d\n", programExpression->type);
+	}
+}
 
 /**
  * Generates the output of the program.
  */
 static void _generateProgram(Program * program) {
-	//_generateExpression(3, program->expression);
+	_generateProgramExpression(program->_programExpression);
 }
 
 /**
- * Creates the prologue of the generated output, a Latex document that renders
- * a tree thanks to the Forest package.
- *
- * @see https://ctan.dcc.uchile.cl/graphics/pgf/contrib/forest/forest-doc.pdf
+ * Creates the prologue of the generated output.
  */
 static void _generatePrologue(void) {
-	/*
-	_output(0, "%s",
-		"\\documentclass{standalone}\n\n"
-		"\\usepackage[utf8]{inputenc}\n"
-		"\\usepackage[T1]{fontenc}\n"
-		"\\usepackage{amsmath}\n"
-		"\\usepackage{forest}\n"
-		"\\usepackage{microtype}\n\n"
-		"\\begin{document}\n"
-		"    \\centering\n"
-		"    \\begin{forest}\n"
-		"        [ \\text{$=$}, circle, draw, purple\n"
+	_output(file, 0, "%s",
+		"prologue heyo\n"
 	);
-	*/
 }
 
 /**
@@ -155,8 +226,11 @@ static char * _indentation(const unsigned int level) {
  * allows to see the output even close to a failure, because it drops the
  * buffering.
  */
-static void _output(const unsigned int indentationLevel, const char * const format, ...) {
-	/*
+static void _output(FILE * file, const unsigned int indentationLevel, const char * const format, ...) {
+	if (file == NULL) {
+        perror("Error opening file");
+        return;
+	}
 	va_list arguments;
 	va_start(arguments, format);
 	char * indentation = _indentation(indentationLevel);
@@ -166,17 +240,14 @@ static void _output(const unsigned int indentationLevel, const char * const form
 	free(effectiveFormat);
 	free(indentation);
 	va_end(arguments);
-	*/
 }
 
 /** PUBLIC FUNCTIONS */
 
 void generate(CompilerState * compilerState) {
-	/*
 	logDebugging(_logger, "Generating final output...");
 	_generatePrologue();
 	_generateProgram(compilerState->abstractSyntaxtTree);
 	_generateEpilogue(compilerState->value);
 	logDebugging(_logger, "Generation is done.");
-	*/
 }
