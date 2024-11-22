@@ -1,4 +1,8 @@
 #include "Generator.h"
+#include "../symbol-table/table.h"
+
+#define INTCLASS 600
+#define TREECLASS 610
 
 /* MODULE INTERNAL STATE */
 
@@ -33,6 +37,10 @@ static void _output(FILE * file, const unsigned int indentationLevel, const char
 
 static void _generateProgram(Program * program);
 static void _generateProgramExpression(ProgramExpression * programExpression);
+static void _generateMainExpressions(MainExpressions * mainExpressions);
+static void _generateMainExpression(MainExpression * mainExpression);
+static void _generateGeneralAssignation(GeneralAssignation * generalAssignation);
+
 
 /**
  * Creates the epilogue of the generated output.
@@ -45,38 +53,21 @@ static void _generateEpilogue(void) {
 
 static void _generateGeneralAssignation(GeneralAssignation * generalAssignation){
 	//TODO complete commented ones
-	if(generalAssignation->type == ID_BY_VALUE_DECLARE){
-		//int res = addToTable(generalAssignation->idDeclared->idValue, generalAssignation->classType->idValue, generalAssignation->value);
-		//if(if == ERROR_MAP) logError(_logger, "%s already exists!\n", generalAssignation->idDeclared->idValue);
-		//if(if != TRUE) logError(_logger, "Error declaring %s\n", generalAssignation->idDeclared->idValue);
+	if(generalAssignation->type == ID_BY_VALUE_DECLARE){//TODO asumo INT or ahora
+		int res = addToTable(generalAssignation->idDeclared->idValue, INTCLASS, generalAssignation->value->intValue);
+		if(res == ERROR_MAP) logError(_logger, "%s already exists!\n", generalAssignation->idDeclared->idValue);
+		if(res != true) logError(_logger, "Error declaring %s\n", generalAssignation->idDeclared->idValue);
 	}
 	else if(generalAssignation->type == ID_BY_OPP_DECLARE){
 		//TODO add operation resolution
 	}
-	if(generalAssignation->type == ID_BY_VALUE){
+	else if(generalAssignation->type == ID_BY_VALUE){
 		int type = getType(generalAssignation->id->idValue);
 		if(type != ERROR_MAP){
-			switch (generalAssignation->value->type){
-				case (IDvalue):
-					//_ID value = (generalAssignation->value)->idValue;
-					break;
-				case (STRINGvalue):
-					//_STRING value = generalAssignation->value->charValue;
-					break;
-				case (BOOLEANvalue):
-					//_BOOLEAN value = generalAssignation->value->booleanValue;
-					break;
-				case (HEXCOLORvalue):
-					//_HEXCOLOR value = generalAssignation->value->hexcolorValue;
-					break;
-				case (INTEGERvalue):
-					//_INTEGER value = generalAssignation->value->intValue;
-					break;
-			}
-			if(updateToTable(generalAssignation->id->idValue, type, generalAssignation->value->idValue->idValue) != true)
+			if(updateToTable(generalAssignation->id->idValue, type, generalAssignation->value->intValue->value) != true)
 				logError(_logger, "Error declaring %s\n", generalAssignation->idDeclared->idValue);
 		}
-		else logError(_logger, "%s is undeclared\n", generalAssignation->idDeclared->idValue);
+		else logError(_logger, "variable %s is undeclared\n", generalAssignation->idDeclared->idValue);
 	}
 	else if(generalAssignation->type == ID_BY_OPP){
 		//
@@ -87,9 +78,7 @@ static void _generateGeneralAssignation(GeneralAssignation * generalAssignation)
 	else if(generalAssignation->type == ATT_BY_OPP){
 		//
 	}
-	else{
-		logError(_logger, "Unknown AssignationType: %d\n", generalAssignation->type);
-	}
+	else logError(_logger, "Unknown AssignationType: %d\n", generalAssignation->type);
 }
 
 static void _generateMainExpression(MainExpression * mainExpression){
@@ -192,11 +181,10 @@ static void _output(FILE * file, const unsigned int indentationLevel, const char
 }
 
 /** PUBLIC FUNCTIONS */
-
 void generate(CompilerState * compilerState) {
 	logDebugging(_logger, "Generating final output...");
 	_generatePrologue();
 	_generateProgram(compilerState->abstractSyntaxtTree);
-	_generateEpilogue();
+	_generateEpilogue(compilerState->value);
 	logDebugging(_logger, "Generation is done.");
 }

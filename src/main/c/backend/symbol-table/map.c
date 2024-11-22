@@ -10,13 +10,13 @@ int _hashCode(char * key, long mod) {
 }
 
 boolean _mapSet(Map * map, char * key, Value value, int index, int startingIndex) {
-  if (index == startingIndex) return FALSE;
+  if (index == startingIndex) return false;
   if (map->map[index].key != NULL) 
     return _mapSet(map, key, value, index+1%map->capacity, startingIndex);
   map->map[index].key = key;
   map->map[index].value = value;
   map->size++;
-  return TRUE;
+  return true;
 }
 
 void _mapPrint(Map * map) {
@@ -27,12 +27,12 @@ void _mapPrint(Map * map) {
 }
 
 boolean _mapDelete(Map * map, char * key, int index, int startingIndex) {
-  if (index == startingIndex || map->map[index].key == NULL) return FALSE;
+  if (index == startingIndex || map->map[index].key == NULL) return false;
   if (strcmp(map->map[index].key, key) != 0)
     return _mapDelete(map, key, index+1%map->capacity, startingIndex);
   map->map[index].key = NULL;
   map->size--;
-  return TRUE;
+  return true;
 }
 
 Value _mapGet(Map * map, char * key, int index, int startingIndex) {
@@ -60,7 +60,7 @@ void mapFree(Map * map) {
 }
 
 boolean mapSet(Map * map, char * key, Value value) {
-  if (key == NULL || *key == '\0' || map->size == map->capacity) return FALSE;
+  if (key == NULL || *key == '\0' || map->size == map->capacity) return false;
   int hash = _hashCode(key, map->capacity);
   if (map->map[hash].key != NULL) {
     return _mapSet(map, key, value, hash+1%map->capacity, hash);
@@ -68,17 +68,17 @@ boolean mapSet(Map * map, char * key, Value value) {
   map->map[hash].key = key;
   map->map[hash].value = value;
   map->size++;
-  return TRUE;
+  return true;
 }
 
 boolean mapDelete(Map * map, char * key) {
-  if (key == NULL || *key == '\0' || map->size == 0) return FALSE;
+  if (key == NULL || *key == '\0' || map->size == 0) return false;
   int hash = _hashCode(key, map->capacity);
   if (strcmp(map->map[hash].key, key) != 0)
     return _mapDelete(map, key, hash+1%map->capacity, hash);
   map->map[hash].key = NULL;
   map->size--;
-  return TRUE;
+  return true;
 }
 
 Value mapGet(Map * map, char * key) {

@@ -43,6 +43,10 @@ const int main(const int count, const char ** arguments) {
 		//if (computationResult.succeed) {
 		//	compilerState.value = computationResult.value;
 			generate(&compilerState);
+			if(compilerState.succeed == FAILED){
+				logError(logger, "The generation phase rejects the input program.");
+				compilationStatus = FAILED;
+			}
 		//}
 		//else {
 		//	logError(logger, "The computation phase rejects the input program.");
@@ -51,7 +55,7 @@ const int main(const int count, const char ** arguments) {
 		// ...end of the Backend. -----------------------------------------------------------------
 		// ----------------------------------------------------------------------------------------
 		logDebugging(logger, "Releasing AST resources...");
-		//releaseProgram(program);
+		releaseProgram(program);
 	}
 	else {
 		logError(logger, "The syntactic-analysis phase rejects the input program.");
