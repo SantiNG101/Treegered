@@ -2,6 +2,11 @@
 #define MAP_H
 #define ERROR_MAP -2
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "../../shared/Type.h"
+
 typedef struct Value{
   int type;
   char * initialization;
@@ -18,11 +23,9 @@ typedef struct Map{
   long size;
 } Map;
 
-typedef enum {TRUE, FALSE} bool;
-
 Map * mapInit(long capacity);
-bool mapSet(Map * map, char * key, Value value);
-bool mapDelete(Map * map, char * key);
+boolean mapSet(Map * map, char * key, Value value);
+boolean mapDelete(Map * map, char * key);
 Value mapGet(Map * map, char * key);
 void mapFree(Map * map);
 void _mapPrint(Map * map);

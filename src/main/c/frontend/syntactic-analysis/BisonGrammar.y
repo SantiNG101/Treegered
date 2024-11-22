@@ -206,9 +206,9 @@ conditionalClause:  declarationValue EQUIVALENT declarationValue															{
 	|				OPEN_PARENTHESIS conditionalClause CLOSE_PARENTHESIS													{ $$ = ConditionalInceptionConditionalClauseSemanticAction($2, NONE_c, PARENTHESIS_c);}
 	;
 
-generalAssignation: ID ID EQUAL declarationValue SEMICOLON																	{ $$ = GeneralDeclarationAssignationSemanticAction($1, $2, $4, ID_BY_VALUE);}
+generalAssignation: ID ID EQUAL declarationValue SEMICOLON																	{ $$ = GeneralDeclarationAssignationSemanticAction($1, $2, $4, ID_BY_VALUE_DECLARE);}
 	|				ID EQUAL declarationValue SEMICOLON																		{ $$ = GeneralSingleDeclarationAssignationSemanticAction($1, $3, ID_BY_VALUE);}
-	|				ID ID EQUAL arithmeticOperation SEMICOLON																{ $$ = GeneralArithmeticOperationAssignationSemanticAction($1, $2, $4, ID_BY_OPP);}
+	|				ID ID EQUAL arithmeticOperation SEMICOLON																{ $$ = GeneralArithmeticOperationAssignationSemanticAction($1, $2, $4, ID_BY_OPP_DECLARE);}
 	|				ID EQUAL arithmeticOperation SEMICOLON																	{ $$ = GeneralSingleArithmeticOperationAssignationSemanticAction($1, $3, ID_BY_OPP);}
 	|				attributeValue EQUAL declarationValue SEMICOLON															{ $$ = GeneralAttributeDeclarationAssignationSemanticAction($1, $3, ATT_BY_VALUE);}
 	|				attributeValue EQUAL arithmeticOperation SEMICOLON														{ $$ = GeneralAttributeArithmeticOperationAssignationSemanticAction($1, $3, ATT_BY_OPP);}

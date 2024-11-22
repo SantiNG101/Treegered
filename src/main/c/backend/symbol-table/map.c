@@ -1,7 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "map.h"
 
 /* PRIVATE FUNCTIONS */
@@ -13,7 +9,7 @@ int _hashCode(char * key, long mod) {
     return h % mod;
 }
 
-bool _mapSet(Map * map, char * key, Value value, int index, int startingIndex) {
+boolean _mapSet(Map * map, char * key, Value value, int index, int startingIndex) {
   if (index == startingIndex) return FALSE;
   if (map->map[index].key != NULL) 
     return _mapSet(map, key, value, index+1%map->capacity, startingIndex);
@@ -30,7 +26,7 @@ void _mapPrint(Map * map) {
   }
 }
 
-bool _mapDelete(Map * map, char * key, int index, int startingIndex) {
+boolean _mapDelete(Map * map, char * key, int index, int startingIndex) {
   if (index == startingIndex || map->map[index].key == NULL) return FALSE;
   if (strcmp(map->map[index].key, key) != 0)
     return _mapDelete(map, key, index+1%map->capacity, startingIndex);
@@ -63,7 +59,7 @@ void mapFree(Map * map) {
   free(map);
 }
 
-bool mapSet(Map * map, char * key, Value value) {
+boolean mapSet(Map * map, char * key, Value value) {
   if (key == NULL || *key == '\0' || map->size == map->capacity) return FALSE;
   int hash = _hashCode(key, map->capacity);
   if (map->map[hash].key != NULL) {
@@ -75,7 +71,7 @@ bool mapSet(Map * map, char * key, Value value) {
   return TRUE;
 }
 
-bool mapDelete(Map * map, char * key) {
+boolean mapDelete(Map * map, char * key) {
   if (key == NULL || *key == '\0' || map->size == 0) return FALSE;
   int hash = _hashCode(key, map->capacity);
   if (strcmp(map->map[hash].key, key) != 0)

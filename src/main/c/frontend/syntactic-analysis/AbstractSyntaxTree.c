@@ -223,13 +223,21 @@ void releaseGeneralAssignation(GeneralAssignation *generalAssignation){
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (generalAssignation != NULL) {
 		switch(generalAssignation->type){
-			case ID_BY_VALUE:
+			case ID_BY_VALUE_DECLARE:
 				release_ID(generalAssignation->classType);
+				release_ID(generalAssignation->idDeclared);
+				releaseDeclarationValue(generalAssignation->value);
+				break;
+			case ID_BY_OPP_DECLARE:
+				release_ID(generalAssignation->classType);
+				release_ID(generalAssignation->idDeclared);
+				releaseArithmeticOperation(generalAssignation->arithmeticOperation);
+				break;
+			case ID_BY_VALUE:
 				release_ID(generalAssignation->id);
 				releaseDeclarationValue(generalAssignation->value);
 				break;
 			case ID_BY_OPP:
-				release_ID(generalAssignation->classType);
 				release_ID(generalAssignation->id);
 				releaseArithmeticOperation(generalAssignation->arithmeticOperation);
 				break;

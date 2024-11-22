@@ -550,7 +550,7 @@ GeneralAssignation * GeneralDeclarationAssignationSemanticAction(Id classType, I
 	aux2->idValue = id;
 
 	generalDeclare->classType = aux1;
-	generalDeclare->id = aux2;
+	generalDeclare->idDeclared = aux2;
 	generalDeclare->value = value;
 	generalDeclare->type = type;
 
@@ -568,7 +568,7 @@ GeneralAssignation * GeneralArithmeticOperationAssignationSemanticAction(Id clas
 	aux2->idValue = id;
 
 	generalArithmetic->classType = aux1;
-	generalArithmetic->id = aux2;
+	generalArithmetic->idDeclared = aux2;
 	generalArithmetic->arithmeticOperation = arithOp;
 	generalArithmetic->type = type;
 

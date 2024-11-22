@@ -9,7 +9,7 @@ FILE * file = NULL;
 
 void initializeGeneratorModule() {
 	_logger = createLogger("Generator");
-	//initTable();
+	initTable();
 	file = fopen("treegered.txt", "w");
 }
 
@@ -17,7 +17,7 @@ void shutdownGeneratorModule() {
 	if (_logger != NULL) {
 		destroyLogger(_logger);
 		fclose(file);
-		//freeTable();
+		freeTable();
 	}
 }
 
@@ -43,24 +43,115 @@ static void _generateEpilogue(void) {
 	);
 }
 
-/*static void _generateProgramExpression(ProgramExpression * programExpression){
+static void _generateGeneralAssignation(GeneralAssignation * generalAssignation){
+	//TODO complete commented ones
+	if(generalAssignation->type == ID_BY_VALUE_DECLARE){
+		//int res = addToTable(generalAssignation->idDeclared->idValue, generalAssignation->classType->idValue, generalAssignation->value);
+		//if(if == ERROR_MAP) logError(_logger, "%s already exists!\n", generalAssignation->idDeclared->idValue);
+		//if(if != TRUE) logError(_logger, "Error declaring %s\n", generalAssignation->idDeclared->idValue);
+	}
+	else if(generalAssignation->type == ID_BY_OPP_DECLARE){
+		//TODO add operation resolution
+	}
+	if(generalAssignation->type == ID_BY_VALUE){
+		int type = getType(generalAssignation->id->idValue);
+		if(type != ERROR_MAP){
+			switch (generalAssignation->value->type){
+				case (IDvalue):
+					//_ID value = (generalAssignation->value)->idValue;
+					break;
+				case (STRINGvalue):
+					//_STRING value = generalAssignation->value->charValue;
+					break;
+				case (BOOLEANvalue):
+					//_BOOLEAN value = generalAssignation->value->booleanValue;
+					break;
+				case (HEXCOLORvalue):
+					//_HEXCOLOR value = generalAssignation->value->hexcolorValue;
+					break;
+				case (INTEGERvalue):
+					//_INTEGER value = generalAssignation->value->intValue;
+					break;
+			}
+			if(updateToTable(generalAssignation->id->idValue, type, generalAssignation->value->idValue->idValue) != true)
+				logError(_logger, "Error declaring %s\n", generalAssignation->idDeclared->idValue);
+		}
+		else logError(_logger, "%s is undeclared\n", generalAssignation->idDeclared->idValue);
+	}
+	else if(generalAssignation->type == ID_BY_OPP){
+		//
+	}
+	else if(generalAssignation->type == ATT_BY_VALUE){
+		//
+	}
+	else if(generalAssignation->type == ATT_BY_OPP){
+		//
+	}
+	else{
+		logError(_logger, "Unknown AssignationType: %d\n", generalAssignation->type);
+	}
+}
+
+static void _generateMainExpression(MainExpression * mainExpression){
+	//TODO complete commented ones
+	if(mainExpression->type == TREE_m){
+		//_generateTreeExpression(mainExpression->treeExpression);
+	}
+	else if(mainExpression->type == FOREST_m){
+		//_generateForestExpression(mainExpression->forestExpression);
+	}
+	else if(mainExpression->type == GROW_m){
+		//_generateGrowExpression(mainExpression->growExpression);
+	}
+	else if(mainExpression->type == FOR_m){
+		//_generateForExpression(mainExpression->forExpression);
+	}
+	else if(mainExpression->type == ARITHMETIC_m){
+		//_generateArithmeticAssignation(mainExpression->arithmeticAssignation);
+	}
+	else if(mainExpression->type == GENERAL_ASSIGNATION_m){
+		_generateGeneralAssignation(mainExpression->generalAssignation);
+	}
+	else if(mainExpression->type == CONDITIONAL_m){
+		//_generateConditionalExpression(mainExpression->conditionalExpression);
+	}
+	else{
+		logError(_logger, "Unknown MainExpressionType: %d\n", mainExpression->type);
+	}
+}
+
+static void _generateMainExpressions(MainExpressions * mainExpressions){
+	if(mainExpressions->type == SIMPLE_e){
+		_generateMainExpression(mainExpressions->singleMainExpression);
+	}
+	else if(mainExpressions->type == MULTIPLE_e){
+		_generateMainExpression(mainExpressions->multipleMainExpression);
+		_generateMainExpressions(mainExpressions->mainExpressions);
+	}
+	else{
+		logError(_logger, "Unknown ExpressionType: %d\n", mainExpressions->type);		
+	}
+}
+
+static void _generateProgramExpression(ProgramExpression * programExpression){
+	//TODO complete commented ones
 	if(programExpression->type == WORLDLESS){
 		_generateMainExpressions(programExpression->worldlessMainExpressions);
 	}
 	else if(programExpression->type == WORLDFULL){
-		_generateWorldExpression(programExpression->worldExpression);
+		//_generateWorldExpression(programExpression->worldExpression);
 		_generateMainExpressions(programExpression->mainExpressions);
 	}
 	else{
 		logError(_logger, "Unknown ProgramType: %d\n", programExpression->type);
 	}
-}*/
+}
 
 /**
  * Generates the output of the program.
  */
 static void _generateProgram(Program * program) {
-	//_generateProgramExpression(program->_programExpression);
+	_generateProgramExpression(program->programExpression);
 }
 
 /**

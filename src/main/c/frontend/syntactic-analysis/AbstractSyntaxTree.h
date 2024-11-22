@@ -78,7 +78,7 @@ enum MainExpressionType { TREE_m, FOREST_m, GROW_m, FOR_m, ARITHMETIC_m, GENERAL
 enum ExpressionType {SIMPLE_e, MULTIPLE_e};
 enum OperatorType {ADD_o, SUB_o, MUL_o, DIV_o, NONE};
 enum ArithmeticOperationType {LV_RV, LV_RO, LO_RV, LO_RO, PARENTHESIS};
-enum AssignationType {ID_BY_VALUE, ID_BY_OPP, ATT_BY_VALUE, ATT_BY_OPP};
+enum AssignationType {ID_BY_VALUE_DECLARE, ID_BY_OPP_DECLARE, ID_BY_VALUE, ID_BY_OPP, ATT_BY_VALUE, ATT_BY_OPP};
 enum ForType{CLASSIC_ITERATION, FOREST_ITERATION};
 enum ConditionalType{IF_c, ELSE_c};
 enum ConditionalClauseType{PARENTHESIS_c, V_V, V_C, C_V, C_C}; //distinguish left and rights between declarationValues and conditionalClauses
@@ -168,8 +168,9 @@ struct ConditionalExpression{
 
 struct GeneralAssignation{
     union{
+        _ID *id;
         struct{
-            _ID *id;
+            _ID *idDeclared;
             _ID *classType;
         };
         AttributeValue *att;

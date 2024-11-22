@@ -5,6 +5,7 @@
 #include "../../shared/CompilerState.h"
 #include "../../shared/Logger.h"
 #include "../../shared/String.h"
+#include "../symbol-table/table.h"
 #include <stdarg.h>
 #include <stdio.h>
 
