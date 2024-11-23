@@ -44,8 +44,8 @@ void releaseWorldExpression(WorldExpression *worldExpression){
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (worldExpression != NULL) {
 		releaseWorldAssignments(worldExpression->worldAssignments);
-		}
 		free(worldExpression);
+	}
 }
 
 void releaseWorldAssignments(WorldAssignments * worldAssignments){
@@ -62,8 +62,8 @@ void releaseWorldAssignments(WorldAssignments * worldAssignments){
 			releaseWorldAssignments(worldAssignments->worldAssignments);
 			break;
 		}
-		}
 		free(worldAssignments);
+	}
 }
 
 void releaseWorldAssignment(WorldAssignment *worldAssignment){
@@ -130,8 +130,8 @@ void releaseTreeExpression(TreeExpression *treeExpression){
 	if (treeExpression != NULL) {
 		release_ID(treeExpression->id);
 		releaseTreeAssignments(treeExpression->treeAssignments);
-	}
 		free(treeExpression);
+	}
 }
 
 void releaseTreeAssignments(TreeAssignments *treeAssignments){
@@ -147,8 +147,8 @@ void releaseTreeAssignments(TreeAssignments *treeAssignments){
 				releaseTreeAssignments(treeAssignments->treeAssignments);
 				break;
 			}
-		}
 		free(treeAssignments);
+		}
 }
 
 void releaseTreeAssignment(TreeAssignment *treeAssignment){
@@ -375,6 +375,9 @@ void releaseDeclarationValue(DeclarationValue *declarationValue){
 			case ATTvalue:
 				releaseAttributeValue(declarationValue->attValue);
 				break;
+			case DECLARATIONvalue:
+				releaseDeclarationValue(declarationValue->declareValue);
+				break;
 		}
 		free(declarationValue);
 	}
@@ -399,6 +402,9 @@ void releaseArithmeticOperation(ArithmeticOperation *arithmeticOperation){
 			case LO_RO:
 				releaseArithmeticOperation(arithmeticOperation->leftOperation);
 				releaseArithmeticOperation(arithmeticOperation->rightOperation);
+				break;
+			case PARENTHESIS:
+				releaseArithmeticOperation(arithmeticOperation->arithOp);
 				break;
 		}
 		free(arithmeticOperation);
@@ -463,8 +469,6 @@ void releaseAttributeValue(AttributeValue *attributeValue){
 			release_ID(attributeValue->attribute);
 			break;
 		}
-		release_ID(attributeValue->variableID);
-		release_ID(attributeValue->attribute);
 		free(attributeValue);
 	}
 }

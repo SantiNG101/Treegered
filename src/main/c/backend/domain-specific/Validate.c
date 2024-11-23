@@ -168,10 +168,8 @@ ComputationResult computeWorldExpression(WorldExpression * worldExpression){
 ComputationResult computeProgramExpression(ProgramExpression * programExpression) {
 	switch (programExpression->type) {
 		case WORLDLESS:
-            logError(_logger,"WORLDLESS\n");
             return computeMainExpressions(programExpression->mainExpressions);
 		case WORLDFULL:
-            logError(_logger,"WORLDFULL\n");
 			ComputationResult worldExpression = computeWorldExpression(programExpression->worldExpression);
 			ComputationResult mainExpressions = computeMainExpressions(programExpression->mainExpressions);
 			if(worldExpression.succeed && mainExpressions.succeed) return worldExpression;

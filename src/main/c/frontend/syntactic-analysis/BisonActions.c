@@ -66,7 +66,7 @@ AttributeValue * AttributeValueSemanticAction(Id varId, Id attId, AttributeValue
 	_ID * aux2 = calloc(1, sizeof(_ID));
 	aux1->idValue = attId;
 
-	attributeValue->attribute = aux2;
+	attributeValue->attributeID = aux2;
 	attributeValue->type = type;
 
 	return attributeValue;
