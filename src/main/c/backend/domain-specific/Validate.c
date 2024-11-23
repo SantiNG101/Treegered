@@ -76,46 +76,92 @@ ComputationResult subtract(const int minuend, const int subtract) {
 
 /** MAIN FUNCTIONS */
 
+ComputationResult computeDeclarationValue(DeclarationValue * declarationValue){
+    //TODO
+}
+
+ComputationResult computeAttributeValue(AttributeValue * attributeValue){
+    //TODO
+}
+
+ComputationResult computeArithmeticOperation(ArithmeticOperation * arithmeticOperation){
+    //TODO
+}
+
+ComputationResult computeConditionalClause(ConditionalClause * conditionalClause){
+    //TODO
+}
+
+ComputationResult computeConditionalExpression(ConditionalExpression * conditionalExpression){
+    //TODO
+}
+
 ComputationResult computeGeneralAssignation(GeneralAssignation * generalAssignation){
     switch (generalAssignation->type){
         case ID_BY_VALUE_TYPE://TODO
-            
         case ID_BY_OPP_TYPE:
-        case ID_BY_VALUE://TODO ALL
+        case ID_BY_VALUE:
         case ID_BY_OPP:
         case ATT_BY_VALUE:
-        case ATT_BY_OPP://TODO placeholder sacar
-            ComputationResult computationResult = {
-                .succeed = true,
-                .value = 0
-            };
-            return computationResult;
+        case ATT_BY_OPP:
         default:
             logError(_logger, "Unknown AssignationType: %d\n", generalAssignation->type);
             return _invalidComputation();
     }
 }
 
+ComputationResult computeArithmeticAssignation(ArithmeticAssignation * arithmeticAssignation){
+    //TODO
+}
+
+ComputationResult computeForExpression(ForExpression * forExpression){
+    //TODO
+}
+
+ComputationResult computeGrowExpression(GrowExpression * growExpression){
+    //TODO
+}
+
+ComputationResult computeForestAssignment(ForestAssignment * forestAssignment){
+    //TODO
+}
+
+ComputationResult computeForestAssignments(ForestAssignments * forestAssignments){
+    //TODO
+}
+
+ComputationResult computeForestExpression(ForestExpression * forestExpression){
+    //TODO
+}
+
+ComputationResult computeTreeAssignment(TreeAssignment * treeAssignment){
+    //TODO
+}
+
+ComputationResult computeTreeAssignments(TreeAssignments * treeAssignments){
+    //TODO
+}
+
+ComputationResult computeTreeExpression(TreeExpression * treeExpression){
+    //TODO
+}
+
 ComputationResult computeMainExpression(MainExpression * mainExpression){
     switch (mainExpression->type){
-        case TREE_m://TODO ALL
+        case TREE_m:
+            return computeTreeExpression(mainExpression->treeExpression);
         case FOREST_m:
+            return computeForestExpression(mainExpression->forestExpression);
         case GROW_m:
+            return computeGrowExpression(mainExpression->growExpression);
         case FOR_m:
-        case ARITHMETIC_m://TODO placeholder sacar
-            ComputationResult computationResult = {
-                .succeed = true,
-                .value = 0
-            };
-            return computationResult;
+            return computeForExpression(mainExpression->forExpression);
+        case ARITHMETIC_m:r
+            return computeArithmeticAssignation(mainExpression->arithmeticAssignation);
         case GENERAL_ASSIGNATION_m:
             return computeGeneralAssignation(mainExpression->generalAssignation);
-        case CONDITIONAL_m://TODO placeholder sacar
-            ComputationResult computationResult2 = {
-                .succeed = true,
-                .value = 0
-            };
-            return computationResult2;
+        case CONDITIONAL_m:
+            return computeConditionalExpression(mainExpression->conditionalExpression);
         default:
             logError(_logger, "Unknown MainExpressionType: %d\n", mainExpression->type);
             return _invalidComputation();
@@ -138,12 +184,15 @@ ComputationResult computeMainExpressions(MainExpressions * mainExpressions){
 }
 
 ComputationResult computeWorldAssignment(WorldAssignment * worldAssignment){
-//TODO placeholder sacar
-    ComputationResult computationResult = {
-		.succeed = true,
-		.value = 0
-	};
-	return computationResult;
+    switch (worldAssignment->type){
+        case ID_BY_VALUE:
+            //TODO check que el ID sea de un worldAtt, luego sobrescribir en la tabla de simbolos con el valor
+        case ID_BY_OPP:
+            //TODO check que el ID sea de un worldAtt, luego sobrescribir en la tabla de simbolos con el valor
+        default:
+            logError(_logger, "Unknown AssignationType: %d\n", worldAssignment->type);
+			return _invalidComputation();
+    }
 }
 
 ComputationResult computeWorldAssignments(WorldAssignments * worldAssignments){

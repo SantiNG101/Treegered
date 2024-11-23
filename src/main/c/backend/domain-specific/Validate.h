@@ -37,11 +37,35 @@ ComputationResult subtract(const int minuend, const int subtract);
  * Computes the full treegered program input.
  */
 ComputationResult computeProgramExpression(ProgramExpression * programExpression);
+
 ComputationResult computeWorldExpression(WorldExpression * worldExpression);
 ComputationResult computeWorldAssignments(WorldAssignments * worldAssignments);
 ComputationResult computeWorldAssignment(WorldAssignment * worldAssignment);
+
 ComputationResult computeMainExpressions(MainExpressions * mainExpressions);
 ComputationResult computeMainExpression(MainExpression * mainExpression);
+
+ComputationResult computeTreeExpression(TreeExpression * treeExpression);
+ComputationResult computeTreeAssignments(TreeAssignments * treeAssignments);
+ComputationResult computeTreeAssignment(TreeAssignment * treeAssignment);
+
+ComputationResult computeForestExpression(ForestExpression * forestExpression);
+ComputationResult computeForestAssignments(ForestAssignments * forestAssignments);
+ComputationResult computeForestAssignment(ForestAssignment * forestAssignment);
+
+ComputationResult computeGrowExpression(GrowExpression * growExpression);
+
+ComputationResult computeForExpression(ForExpression * forExpression);
+
+ComputationResult computeArithmeticAssignation(ArithmeticAssignation * arithmeticAssignation);
+ComputationResult computeArithmeticOperation(ArithmeticOperation * arithmeticOperation);
+
 ComputationResult computeGeneralAssignation(GeneralAssignation * generalAssignation);
+
+ComputationResult computeConditionalExpression(ConditionalExpression * conditionalExpression);
+ComputationResult computeConditionalClause(ConditionalClause * conditionalClause);
+
+ComputationResult computeAttributeValue(AttributeValue * attributeValue);
+ComputationResult computeDeclarationValue(DeclarationValue * declarationValue);
 
 #endif
