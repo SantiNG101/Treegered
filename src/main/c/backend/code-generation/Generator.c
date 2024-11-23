@@ -134,6 +134,7 @@ static void _generateMainExpressions(MainExpressions * mainExpressions){
 }
 
 static void _generateWorldAssignment(WorldAssignment * worldAssignment){
+	logError(_logger, "worldAssign\n");
 	//scope WORLD
 	if(worldAssignment->type == ID_BY_VALUE){
 		logError(_logger, "heyo\n");
@@ -181,10 +182,11 @@ static void _generateProgramExpression(ProgramExpression * programExpression){
 	addToTable("message", STRCLASS, DEFAULT_WORLD_MESSAGE);
 
 	if(programExpression->type == WORLDLESS){
-		logError(_logger, "nope\n");
+		logError(_logger, "worldless\n");
 		_generateMainExpressions(programExpression->worldlessMainExpressions);
 	}
 	else if(programExpression->type == WORLDFULL){
+		logError(_logger, "worldfull\n");
 		_generateWorldExpression(programExpression->worldExpression);
 		_generateMainExpressions(programExpression->mainExpressions);
 	}
