@@ -20,6 +20,7 @@ const int main(const int count, const char ** arguments) {
 	initializeBisonActionsModule();
 	initializeSyntacticAnalyzerModule();
 	initializeAbstractSyntaxTreeModule();
+	initializeValidateModule();
 	initializeGeneratorModule();
 
 	// Logs the arguments of the application.
@@ -61,6 +62,7 @@ const int main(const int count, const char ** arguments) {
 
 	logDebugging(logger, "Releasing modules resources...");
 	shutdownGeneratorModule();
+	shutdownValidateModule();
 	shutdownAbstractSyntaxTreeModule();
 	shutdownSyntacticAnalyzerModule();
 	shutdownBisonActionsModule();

@@ -168,7 +168,7 @@ ComputationResult computeWorldExpression(WorldExpression * worldExpression){
 ComputationResult computeProgramExpression(ProgramExpression * programExpression) {
 	switch (programExpression->type) {
 		case WORLDLESS:
-            return computeMainExpressions(programExpression->mainExpressions);
+            return computeMainExpressions(programExpression->worldlessMainExpressions);
 		case WORLDFULL:
 			ComputationResult worldExpression = computeWorldExpression(programExpression->worldExpression);
 			ComputationResult mainExpressions = computeMainExpressions(programExpression->mainExpressions);
