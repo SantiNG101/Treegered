@@ -9,7 +9,12 @@
 
 typedef struct Value{
   int type;
-  char * initialization;
+  union{
+    int intValue;
+    char* stringValue;
+    Hexcolor hexValue;
+    boolean boolValue;
+  }
 } Value;
 
 typedef struct Entry{
@@ -28,6 +33,5 @@ boolean mapSet(Map * map, char * key, Value value);
 boolean mapDelete(Map * map, char * key);
 Value mapGet(Map * map, char * key);
 void mapFree(Map * map);
-void _mapPrint(Map * map);
 
 #endif

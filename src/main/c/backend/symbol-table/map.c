@@ -19,13 +19,6 @@ boolean _mapSet(Map * map, char * key, Value value, int index, int startingIndex
   return true;
 }
 
-void _mapPrint(Map * map) {
-  printf("Map:\n");
-  for(int i=0;i<map->capacity;i++) {
-    printf("{Key: %s; Value: {%d,%s}}\n", map->map[i].key, map->map[i].value.type, map->map[i].value.initialization);
-  }
-}
-
 boolean _mapDelete(Map * map, char * key, int index, int startingIndex) {
   if (index == startingIndex || map->map[index].key == NULL) return false;
   if (strcmp(map->map[index].key, key) != 0)

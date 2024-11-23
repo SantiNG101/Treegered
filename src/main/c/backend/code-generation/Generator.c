@@ -2,7 +2,14 @@
 #include "../symbol-table/table.h"
 
 #define INTCLASS 600
+#define STRCLASS 601
 #define TREECLASS 610
+
+/* WORLD DEFAULTS */
+int DEFAULT_WORLD_HEIGHT =    100;
+int DEFAULT_WORLD_WIDTH  =    100;
+int DEFAULT_WORLD_UNEVENESS = 0;
+char* DEFAULT_WORLD_MESSAGE = "";
 
 /* MODULE INTERNAL STATE */
 
@@ -37,6 +44,9 @@ static void _output(FILE * file, const unsigned int indentationLevel, const char
 
 static void _generateProgram(Program * program);
 static void _generateProgramExpression(ProgramExpression * programExpression);
+static void _generateWorldExpression(WorldExpression * worldExpression);
+static void _generateWorldAssignments(WorldAssignments * worldAssignments);
+static void _generateWorldAssignment(WorldAssignment * worldAssignment);
 static void _generateMainExpressions(MainExpressions * mainExpressions);
 static void _generateMainExpression(MainExpression * mainExpression);
 static void _generateGeneralAssignation(GeneralAssignation * generalAssignation);
@@ -122,13 +132,56 @@ static void _generateMainExpressions(MainExpressions * mainExpressions){
 	}
 }
 
+static void _generateWorldAssignment(WorldAssignment * worldAssignment){
+	if(worldAssignment->type == ID_BY_VALUE){
+		//TODO chequear todo ok y seria lo mismo q en general
+	}
+	else if(worldAssignment->type == ID_BY_OPP){
+		//TODO get OPP result?
+		//TODO set in table
+	}
+	else if(worldAssignment->type == ATT_BY_VALUE){
+		//TODO set in table, ademas como chequeas que sea un attributo valido del world?
+	}
+	else if(worldAssignment->type == ATT_BY_OPP){
+		//TODO get OPP result?
+		//TODO set in table
+	}
+	else{
+		logError(_logger, "Unknown AssignationType: %d\n", worldAssignment->type);
+	}
+}
+
+static void _generateWorldAssignments(WorldAssignments * worldAssignments){
+	if(worldAssignments->wType == SIMPLE_w){
+		_generateWorldAssignment(worldAssignments->singleWorldAssignment);
+	}
+	else if(worldAssignments->wType == MULTIPLE_w){
+		_generateWorldAssignment(worldAssignments->multipleWorldAssignment);
+		_generateWorldAssignments(worldAssignments->worldAssignments);
+	}
+	else{
+		logError(_logger, "Unknown WorldType: %d\n", worldAssignments->wType);		
+	}
+}
+
+static void _generateWorldExpression(WorldExpression * worldExpression){
+	_generateWorldAssignments(indentationLevel, worldExpression->worldAssignments);
+}
+
 static void _generateProgramExpression(ProgramExpression * programExpression){
 	//TODO complete commented ones
+	//setup default world TODO:capaz con scope?
+	addToTable("world->height", INTCLASS, DEFAULT_WORLD_HEIGHT);
+	addToTable("world->width", INTCLASS, DEFAULT_WORLD_WIDTH);
+	addToTable("world->uneveness", INTCLASS, DEFAULT_WORLD_UNEVENESS);
+	addToTable("world->message", STRCLASS, DEFAULT_WORLD_MESSAGE);
+
 	if(programExpression->type == WORLDLESS){
 		_generateMainExpressions(programExpression->worldlessMainExpressions);
 	}
 	else if(programExpression->type == WORLDFULL){
-		//_generateWorldExpression(programExpression->worldExpression);
+		_generateWorldExpression(programExpression->worldExpression);
 		_generateMainExpressions(programExpression->mainExpressions);
 	}
 	else{
@@ -185,6 +238,6 @@ void generate(CompilerState * compilerState) {
 	logDebugging(_logger, "Generating final output...");
 	_generatePrologue();
 	_generateProgram(compilerState->abstractSyntaxtTree);
-	_generateEpilogue(compilerState->value);
+	_generateEpilogue();
 	logDebugging(_logger, "Generation is done.");
 }

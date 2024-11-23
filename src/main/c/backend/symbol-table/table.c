@@ -24,27 +24,23 @@ int getType(char * id) {
   Value v = mapGet(symbolTable, id);
   return v.type;
 }
-
-boolean _addToTable(char * id, int type, char * init) {
+//TODO ints only, change later
+boolean _addToTable(char * id, int type, int init) {
   _CHECK_INITIALIZATION_;
   Value value = (Value) {type, init};
   return mapSet(symbolTable, id, value);
 }
 
-boolean updateToTable(char * id, int type, char * init) {
+boolean updateToTable(char * id, int type, int init) {
   if (!checkExistance(id)) return ERROR_MAP;
   return _addToTable(id, type, init);
 }
 
-boolean addToTable(char * id, int type, char * init) {
+boolean addToTable(char * id, int type, int init) {
   if (checkExistance(id)) return ERROR_MAP;
   return _addToTable(id, type, init);
 }
 
 void freeTable() {
   mapFree(symbolTable);
-}
-
-void printTable() {
-  _mapPrint(symbolTable);
 }

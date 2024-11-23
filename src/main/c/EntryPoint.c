@@ -43,10 +43,6 @@ const int main(const int count, const char ** arguments) {
 		//if (computationResult.succeed) {
 		//	compilerState.value = computationResult.value;
 			generate(&compilerState);
-			if(compilerState.succeed == FAILED){
-				logError(logger, "The generation phase rejects the input program.");
-				compilationStatus = FAILED;
-			}
 		//}
 		//else {
 		//	logError(logger, "The computation phase rejects the input program.");
