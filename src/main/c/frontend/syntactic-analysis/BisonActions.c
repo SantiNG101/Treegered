@@ -48,6 +48,13 @@ Program * ExpressionProgramSemanticAction(CompilerState * compilerState, Program
 
 /*ADDED*/
 
+type * TypeSemanticAction(Class class) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	type * _type = calloc(1, sizeof(type));
+	_type->class = class;
+	return _type;
+}
+
 AttributeValue * AttributeValueSemanticAction(Id varId, Id attId, AttributeValueType type){
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	AttributeValue * attributeValue = calloc(1, sizeof(AttributeValue));
@@ -539,36 +546,30 @@ GeneralAssignation * GeneralSingleDeclarationAssignationSemanticAction(Id id, De
 	return singleDeclare;
 }
 
-GeneralAssignation * GeneralDeclarationAssignationSemanticAction(Id classType, Id id, DeclarationValue * value, AssignationType type){
+GeneralAssignation * GeneralDeclarationAssignationSemanticAction(type * classType, Id id, DeclarationValue * value, AssignationType type){
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	GeneralAssignation * generalDeclare = calloc(1, sizeof(GeneralAssignation));
-
-	_ID * aux1 = calloc(1, sizeof(_ID));
-	aux1->idValue = classType;
 
 	_ID * aux2 = calloc(1, sizeof(_ID));
 	aux2->idValue = id;
 
-	generalDeclare->classType = aux1;
-	generalDeclare->id = aux2;
+	generalDeclare->classType = classType;
+	generalDeclare->idDeclared = aux2;
 	generalDeclare->value = value;
 	generalDeclare->type = type;
 
 	return generalDeclare;
 }
 
-GeneralAssignation * GeneralArithmeticOperationAssignationSemanticAction(Id classType, Id id, ArithmeticOperation * arithOp, AssignationType type){
+GeneralAssignation * GeneralArithmeticOperationAssignationSemanticAction(type * classType, Id id, ArithmeticOperation * arithOp, AssignationType type){
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	GeneralAssignation * generalArithmetic = calloc(1, sizeof(GeneralAssignation));
-	
-	_ID * aux1 = calloc(1, sizeof(_ID));
-	aux1->idValue = classType;
 
 	_ID * aux2 = calloc(1, sizeof(_ID));
 	aux2->idValue = id;
 
-	generalArithmetic->classType = aux1;
-	generalArithmetic->id = aux2;
+	generalArithmetic->classType = classType;
+	generalArithmetic->idDeclared = aux2;
 	generalArithmetic->arithmeticOperation = arithOp;
 	generalArithmetic->type = type;
 

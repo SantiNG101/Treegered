@@ -21,6 +21,8 @@ void shutdownBisonActionsModule();
 Program * ExpressionProgramSemanticAction(CompilerState * compilerState, ProgramExpression * expression);
 
 
+type * TypeSemanticAction(Class class);
+
 AttributeValue * AttributeValueSemanticAction(Id varId, Id attId, AttributeValueType type);
 
 AttributeValue * AttributeValueWorldSemanticAction(Id attId, AttributeValueType type);
@@ -121,9 +123,9 @@ GeneralAssignation * GeneralSingleDeclarationAssignationSemanticAction(Id id, De
 
 GeneralAssignation * GeneralSingleArithmeticOperationAssignationSemanticAction(Id id, ArithmeticOperation * arithOp, AssignationType type);
 
-GeneralAssignation * GeneralDeclarationAssignationSemanticAction(Id classType, Id id, DeclarationValue * value, AssignationType type);
+GeneralAssignation * GeneralDeclarationAssignationSemanticAction(type * classType, Id id, DeclarationValue * value, AssignationType type);
 
-GeneralAssignation * GeneralArithmeticOperationAssignationSemanticAction(Id classType, Id id, ArithmeticOperation * arithOp, AssignationType type);
+GeneralAssignation * GeneralArithmeticOperationAssignationSemanticAction(type * classType, Id id, ArithmeticOperation * arithOp, AssignationType type);
 
 GeneralAssignation * GeneralAttributeDeclarationAssignationSemanticAction(AttributeValue * attributeValue, DeclarationValue * value, AssignationType type);
 

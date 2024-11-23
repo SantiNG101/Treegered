@@ -16,9 +16,10 @@
 	Id id;
 	Hexcolor hexcolor;
 	boolean bool;
+	Class classType;
 
 	/** Non-terminals. */
-	
+	type * type;
 	ConditionalClause * conditionalClause;
 	ConditionalExpression * conditionalExpression;
 	AttributeValue * attributeValue;
@@ -66,6 +67,11 @@
 %token <bool> FALSE
 %token <hexcolor> HEXCOLOR
 
+%token<classType> INTCLASS
+%token<classType> STRCLASS
+%token<classType> BOOLCLASS
+%token<classType> HEXCOLORCLASS
+
 %token <token> ARROW
 
 %token <token> EQUAL
@@ -111,6 +117,7 @@
 %token <token> UNKNOWN
 
 /** Non-terminals. */
+%type <type> type
 %type <program> program
 %type <programExpression> programExpression
 %type <worldExpression> worldExpression
@@ -206,9 +213,9 @@ conditionalClause:  declarationValue EQUIVALENT declarationValue															{
 	|				OPEN_PARENTHESIS conditionalClause CLOSE_PARENTHESIS													{ $$ = ConditionalInceptionConditionalClauseSemanticAction($2, NONE_c, PARENTHESIS_c);}
 	;
 
-generalAssignation: ID ID EQUAL declarationValue SEMICOLON																	{ $$ = GeneralDeclarationAssignationSemanticAction($1, $2, $4, ID_BY_VALUE);}
+generalAssignation: type ID EQUAL declarationValue SEMICOLON																{ $$ = GeneralDeclarationAssignationSemanticAction($1, $2, $4, ID_BY_VALUE_TYPE);}
 	|				ID EQUAL declarationValue SEMICOLON																		{ $$ = GeneralSingleDeclarationAssignationSemanticAction($1, $3, ID_BY_VALUE);}
-	|				ID ID EQUAL arithmeticOperation SEMICOLON																{ $$ = GeneralArithmeticOperationAssignationSemanticAction($1, $2, $4, ID_BY_OPP);}
+	|				type ID EQUAL arithmeticOperation SEMICOLON																{ $$ = GeneralArithmeticOperationAssignationSemanticAction($1, $2, $4, ID_BY_OPP_TYPE);}
 	|				ID EQUAL arithmeticOperation SEMICOLON																	{ $$ = GeneralSingleArithmeticOperationAssignationSemanticAction($1, $3, ID_BY_OPP);}
 	|				attributeValue EQUAL declarationValue SEMICOLON															{ $$ = GeneralAttributeDeclarationAssignationSemanticAction($1, $3, ATT_BY_VALUE);}
 	|				attributeValue EQUAL arithmeticOperation SEMICOLON														{ $$ = GeneralAttributeArithmeticOperationAssignationSemanticAction($1, $3, ATT_BY_OPP);}
@@ -305,6 +312,12 @@ declarationValue: ID																										{ $$ = DeclarationValueIDSemanticA
 	|			  INTEGER																									{ $$ = DeclarationValueIntSemanticAction($1, INTEGERvalue);}
 	|			  attributeValue																							{ $$ = DeclarationValueAttributeSemanticAction($1, ATTvalue);}
 	|			  OPEN_PARENTHESIS declarationValue CLOSE_PARENTHESIS														{ $$ = DeclarationValueInceptionSemanticAction($2, DECLARATIONvalue);}
+	;
+
+type:			  INTCLASS																									{$$ = TypeSemanticAction($1);}
+	|			  BOOLCLASS																									{$$ = TypeSemanticAction($1);}
+	|			  STRCLASS																									{$$ = TypeSemanticAction($1);}
+	|			  HEXCOLORCLASS																								{$$ = TypeSemanticAction($1);}
 	;
 
 %%

@@ -72,6 +72,22 @@ Token UnknownLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext)
 
 /*ADDED*/
 
+Token ClassLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
+	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+	Token token;
+	if (strcmp(lexicalAnalyzerContext->lexeme, "int") == 0)
+		token = INTCLASS;
+	if (strcmp(lexicalAnalyzerContext->lexeme, "boolean") == 0)
+		token = BOOLCLASS;
+	if (strcmp(lexicalAnalyzerContext->lexeme, "string") == 0)
+		token = STRCLASS;
+	if (strcmp(lexicalAnalyzerContext->lexeme, "hexcolor") == 0)
+		token = HEXCOLORCLASS;
+		
+	lexicalAnalyzerContext->semanticValue->token = token;
+	return token;
+}
+
 Token WorldLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext)
 {
 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);

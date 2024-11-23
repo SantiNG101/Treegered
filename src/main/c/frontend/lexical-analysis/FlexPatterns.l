@@ -62,6 +62,11 @@
 "["                                 {return BraceLexemeAction(createLexicalAnalyzerContext(), OPEN_BRACE);}
 "]"                                 {return BraceLexemeAction(createLexicalAnalyzerContext(), CLOSE_BRACE);}
 
+"int"                               {return ClassLexemeAction(createLexicalAnalyzerContext());}
+"boolean"                           {return ClassLexemeAction(createLexicalAnalyzerContext());}
+"string"                            {return ClassLexemeAction(createLexicalAnalyzerContext());}
+"hexcolor"                          {return ClassLexemeAction(createLexicalAnalyzerContext());}
+
 "if"                                {return ConditionalLexemeAction(createLexicalAnalyzerContext(), IF);}
 "else"                              {return ConditionalLexemeAction(createLexicalAnalyzerContext(), ELSE);}
 

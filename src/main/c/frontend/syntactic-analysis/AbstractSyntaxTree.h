@@ -36,6 +36,7 @@ typedef struct _HEXCOLOR _HEXCOLOR;
 typedef struct _STRING _STRING;
 typedef struct _BOOLEAN _BOOLEAN;
 typedef struct _INTEGER _INTEGER;
+typedef struct type type;
 typedef struct DeclarationValue DeclarationValue;
 typedef struct Program Program;
 
@@ -78,7 +79,7 @@ enum MainExpressionType { SIMPLE_m, TREE_m, FOREST_m, GROW_m, FOR_m, ARITHMETIC_
 enum ExpressionType {SIMPLE_e, MULTIPLE_e};
 enum OperatorType {ADD_o, SUB_o, MUL_o, DIV_o, NONE};
 enum ArithmeticOperationType {LV_RV, LV_RO, LO_RV, LO_RO, PARENTHESIS};
-enum AssignationType {ID_BY_VALUE, ID_BY_OPP, ATT_BY_VALUE, ATT_BY_OPP};
+enum AssignationType {ID_BY_VALUE_TYPE, ID_BY_OPP_TYPE, ID_BY_VALUE, ID_BY_OPP, ATT_BY_VALUE, ATT_BY_OPP};
 enum ForType{CLASSIC_ITERATION, FOREST_ITERATION};
 enum ConditionalType{IF_c, ELSE_c};
 enum ConditionalClauseType{PARENTHESIS_c, V_V, V_C, C_V, C_C}; //distinguish left and rights between declarationValues and conditionalClauses
@@ -108,6 +109,10 @@ struct _BOOLEAN{
 
 struct _INTEGER{
 	int value;
+};
+
+struct type{
+    Class class;
 };
 
 struct DeclarationValue{
@@ -168,10 +173,13 @@ struct ConditionalExpression{
 
 struct GeneralAssignation{
     union{
-        struct{
+        union{
             _ID *id;
-            _ID *classType;
-        };
+            struct{
+                _ID *idDeclared;
+                type *classType;
+            };
+        };        
         AttributeValue *att;
     };
     union{
@@ -351,6 +359,8 @@ struct Program {
 
 /* Node recursive destructors. */
  
+void release_type(type * classType);
+
 void release_ID(_ID *ID);  /*✅*/
 
 void release_STRING(_STRING * charValue);  /*✅*/
