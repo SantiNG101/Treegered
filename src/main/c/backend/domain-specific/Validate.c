@@ -156,7 +156,7 @@ ComputationResult computeMainExpression(MainExpression * mainExpression){
             return computeGrowExpression(mainExpression->growExpression);
         case FOR_m:
             return computeForExpression(mainExpression->forExpression);
-        case ARITHMETIC_m:r
+        case ARITHMETIC_m:
             return computeArithmeticAssignation(mainExpression->arithmeticAssignation);
         case GENERAL_ASSIGNATION_m:
             return computeGeneralAssignation(mainExpression->generalAssignation);
