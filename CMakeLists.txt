@@ -55,6 +55,7 @@ endif ()
 add_executable(Compiler
 	src/main/c/backend/code-generation/Generator.c
 	#src/main/c/backend/domain-specific/Calculator.c
+	src/main/c/backend/domain-specific/Validate.c
 	src/main/c/backend/symbol-table/map.c
 	src/main/c/backend/symbol-table/table.c
 	src/main/c/EntryPoint.c

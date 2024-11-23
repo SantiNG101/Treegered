@@ -195,7 +195,7 @@ static void _generateProgramExpression(ProgramExpression * programExpression){
  * Generates the output of the program.
  */
 static void _generateProgram(Program * program) {
-	_generateProgramExpression(program->programExpression);
+	//_generateProgramExpression(program->programExpression);
 }
 
 /**
