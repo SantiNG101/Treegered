@@ -210,6 +210,7 @@ ProgramExpression * WorldProgramExpressionSemanticAction(MainExpressions * mainE
 	ProgramExpression * programExpression = calloc(1, sizeof(ProgramExpression));
 	programExpression->worldExpression = worldExpression;
 	programExpression->mainExpressions = mainExpressions;
+	programExpression->type = type;
 	return programExpression;
 }
 

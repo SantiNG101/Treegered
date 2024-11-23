@@ -1,4 +1,5 @@
 #include "backend/code-generation/Generator.h"
+#include "backend/domain-specific/Validate.h"
 #include "frontend/lexical-analysis/FlexActions.h"
 #include "frontend/syntactic-analysis/AbstractSyntaxTree.h"
 #include "frontend/syntactic-analysis/BisonActions.h"
@@ -39,7 +40,7 @@ const int main(const int count, const char ** arguments) {
 		// Beginning of the Backend... ------------------------------------------------------------
 		logDebugging(logger, "Computing expression value...");
 		Program * program = compilerState.abstractSyntaxtTree;
-		//ComputationResult computationResult = computeExpression(program->expression);
+		//ComputationResult computationResult = computeProgramExpression(program->programExpression);
 		//if (computationResult.succeed) {
 		//	compilerState.value = computationResult.value;
 			generate(&compilerState);
@@ -51,7 +52,7 @@ const int main(const int count, const char ** arguments) {
 		// ...end of the Backend. -----------------------------------------------------------------
 		// ----------------------------------------------------------------------------------------
 		logDebugging(logger, "Releasing AST resources...");
-		//releaseProgram(program);
+		releaseProgram(program);
 	}
 	else {
 		logError(logger, "The syntactic-analysis phase rejects the input program.");
