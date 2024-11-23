@@ -14,7 +14,7 @@ typedef struct Value{
     char* stringValue;
     Hexcolor hexValue;
     boolean boolValue;
-  }
+  };
 } Value;
 
 typedef struct Entry{

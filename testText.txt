@@ -1,1 +1,5 @@
-int a = 5;
+world{
+    heightt = 10,
+    message = 'testing!'
+}
+a = 5;

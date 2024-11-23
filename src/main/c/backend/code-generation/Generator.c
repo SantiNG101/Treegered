@@ -64,7 +64,7 @@ static void _generateEpilogue(void) {
 static void _generateGeneralAssignation(GeneralAssignation * generalAssignation){
 	//TODO complete commented ones
 	if(generalAssignation->type == ID_BY_VALUE_DECLARE){//TODO asumo INT or ahora
-		int res = addToTable(generalAssignation->idDeclared->idValue, INTCLASS, generalAssignation->value->intValue);
+		int res = addToTable(generalAssignation->idDeclared->idValue, INTCLASS, generalAssignation->value->intValue->value);
 		if(res == ERROR_MAP) logError(_logger, "%s already exists!\n", generalAssignation->idDeclared->idValue);
 		if(res != true) logError(_logger, "Error declaring %s\n", generalAssignation->idDeclared->idValue);
 	}
@@ -116,6 +116,7 @@ static void _generateMainExpression(MainExpression * mainExpression){
 	}
 	else{
 		logError(_logger, "Unknown MainExpressionType: %d\n", mainExpression->type);
+		logError(_logger, "tree%d fores%d grow%d for%d arith%d gen%d cond%d\n", TREE_m, FOREST_m, GROW_m, FOR_m, ARITHMETIC_m, GENERAL_ASSIGNATION_m, CONDITIONAL_m);
 	}
 }
 
@@ -133,17 +134,19 @@ static void _generateMainExpressions(MainExpressions * mainExpressions){
 }
 
 static void _generateWorldAssignment(WorldAssignment * worldAssignment){
+	//scope WORLD
 	if(worldAssignment->type == ID_BY_VALUE){
-		//TODO chequear todo ok y seria lo mismo q en general
+		logError(_logger, "heyo\n");
+		logError(_logger, "%s\n", worldAssignment->id->idValue);
+		//TODO ahora solo int
+		int type = getType(worldAssignment->id->idValue);
+		if(type != ERROR_MAP){
+			if(updateToTable(worldAssignment->id->idValue, type, worldAssignment->value->intValue->value) != true)
+				logError(_logger, "Error setting world->%s\n", worldAssignment->id->idValue);
+		}
+		else logError(_logger, "%s is not a world attribute\n", worldAssignment->id->idValue);
 	}
 	else if(worldAssignment->type == ID_BY_OPP){
-		//TODO get OPP result?
-		//TODO set in table
-	}
-	else if(worldAssignment->type == ATT_BY_VALUE){
-		//TODO set in table, ademas como chequeas que sea un attributo valido del world?
-	}
-	else if(worldAssignment->type == ATT_BY_OPP){
 		//TODO get OPP result?
 		//TODO set in table
 	}
@@ -166,18 +169,19 @@ static void _generateWorldAssignments(WorldAssignments * worldAssignments){
 }
 
 static void _generateWorldExpression(WorldExpression * worldExpression){
-	_generateWorldAssignments(indentationLevel, worldExpression->worldAssignments);
+	_generateWorldAssignments(worldExpression->worldAssignments);
 }
 
 static void _generateProgramExpression(ProgramExpression * programExpression){
 	//TODO complete commented ones
 	//setup default world TODO:capaz con scope?
-	addToTable("world->height", INTCLASS, DEFAULT_WORLD_HEIGHT);
-	addToTable("world->width", INTCLASS, DEFAULT_WORLD_WIDTH);
-	addToTable("world->uneveness", INTCLASS, DEFAULT_WORLD_UNEVENESS);
-	addToTable("world->message", STRCLASS, DEFAULT_WORLD_MESSAGE);
+	addToTable("height", INTCLASS, DEFAULT_WORLD_HEIGHT);
+	addToTable("width", INTCLASS, DEFAULT_WORLD_WIDTH);
+	addToTable("uneveness", INTCLASS, DEFAULT_WORLD_UNEVENESS);
+	addToTable("message", STRCLASS, DEFAULT_WORLD_MESSAGE);
 
 	if(programExpression->type == WORLDLESS){
+		logError(_logger, "nope\n");
 		_generateMainExpressions(programExpression->worldlessMainExpressions);
 	}
 	else if(programExpression->type == WORLDFULL){
