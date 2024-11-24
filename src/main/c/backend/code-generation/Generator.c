@@ -47,9 +47,28 @@ static void _generateArithmeticAssignation(ArithmeticAssignation * arithmeticAss
 static void _generateGeneralAssignation(GeneralAssignation * generalAssignation);
 static void _generateConditionalExpression(ConditionalExpression * conditionalExpression);
 static boolean _generateConditionalClause(ConditionalClause * conditionalClause);
-static void _generateArithmeticOperation(ArithmeticOperation * arithmeticOperation);
-static void _generateAttributeValue(AttributeValue * attributeValue);
-static void _generateDeclarationValue(DeclarationValue * declarationValue);
+static int _generateArithmeticOperation(ArithmeticOperation * arithmeticOperation);
+
+/* AUX FUNCTIONS */ //TODO son placeholders, cambiar con lo de la tabla luego
+boolean checkExistent(char * key){
+	//TODO do it with symbol table
+	return true;//Aux value for now
+}
+
+boolean checkWorldAttribute(char * name, int type){
+	return ((strcmp(name, "height") == 0 && (type == INTCLASS))
+		|| (strcmp(name, "width") == 0 && (type == INTCLASS))
+		|| (strcmp(name, "uneveness") == 0 && (type == INTCLASS))
+		|| (strcmp(name, "message") == 0 && (type == STRCLASS)));
+}
+
+boolean checkGrow(char * name){
+	//TODO chequear q exista en la tabla, y que ademas de existir sea TREECLASS/FORESTCLASS
+	return true;//placeholder
+}
+
+/**************************************** */
+
 
 /**
  * Creates the epilogue of the generated output, that is, the final lines that
@@ -61,37 +80,156 @@ static void _generateEpilogue(void) {
 	);
 }
 
-static void _generateDeclarationValue(DeclarationValue * declarationValue){
-	//TODO
+static int _getArithOpResult(int v1, int v2, OperatorType ot){
+	if(ot == ADD_o){
+		return v1 + v2;
+	}
+	else if(ot == SUB_o){
+		return v1 - v2;
+	}
+	else if(ot == MUL_o){
+		return v1 * v2;
+	}
+	else if(ot == DIV_o){
+		if(v2 == 0){
+			logError(_logger, "ZeroDivError\n");
+			return 0;
+		}
+		return v1 / v2;
+	}
+	else{
+		logError(_logger, "Unknown OperatorType: %d\n", ot);
+		return 0;
+	}
 }
 
-static void _generateAttributeValue(AttributeValue * attributeValue){
-	//TODO
+static int _generateArithmeticOperation(ArithmeticOperation * arithmeticOperation){
+	if(arithmeticOperation->type == LV_RV){
+		if(arithmeticOperation->leftValue->type != INTEGERvalue || arithmeticOperation->rightValue->type != INTEGERvalue){
+			logError(_logger, "Cannot operate with type other than int\n");
+			return false;
+		}
+		return _getArithOpResult(arithmeticOperation->leftValue->intValue->value, arithmeticOperation->rightValue->intValue->value, arithmeticOperation->operator);
+	}
+	else if(arithmeticOperation->type == LV_RO){
+		if(arithmeticOperation->leftValue->type != INTEGERvalue){
+			logError(_logger, "Cannot operate with type other than int\n");
+			return false;
+		}
+		return _getArithOpResult(arithmeticOperation->leftValue->intValue->value, _generateArithmeticOperation(arithmeticOperation->rightOperation), arithmeticOperation->operator);
+	}
+	else if(arithmeticOperation->type == LO_RV){
+		if(arithmeticOperation->rightValue->type != INTEGERvalue){
+			logError(_logger, "Cannot operate with type other than int\n");
+			return false;
+		}
+		return _getArithOpResult(_generateArithmeticOperation(arithmeticOperation->leftOperation), arithmeticOperation->rightValue->intValue->value, arithmeticOperation->operator);
+	}
+	else if(arithmeticOperation->type == LO_RO){
+		return _getArithOpResult(_generateArithmeticOperation(arithmeticOperation->leftOperation), _generateArithmeticOperation(arithmeticOperation->rightOperation), arithmeticOperation->operator);
+	}
+	else if(arithmeticOperation->type == PARENTHESIS){
+		return _generateArithmeticOperation(arithmeticOperation->arithOp);
+	}
+	else{	
+		logError(_logger, "Unknown ArithmeticOperationType: %d\n", arithmeticOperation->type);
+		return 0;
+	}
 }
 
-static void _generateArithmeticOperation(ArithmeticOperation * arithmeticOperation){
-	//TODO
+static boolean _getConditionalClauseResultVV(DeclarationValue dv1, DeclarationValue dv2, ComparissonType ct){
+	if(dv1->type != dv2->type){
+		logError(_logger, "Cannot compare different types\n");
+		return false;
+	}
+	else if(dv1->type == BOOLEANvalue){
+		return _getConditionalClauseResultBool(dv1->booleanValue->value, dv2->booleanValue->value, ct);
+	}
+	else if(dv1->type == INTEGERvalue){
+		return _getConditionalClauseResultInt(dv1->intValue->value, dv2->intValue->value, ct);
+	}
+	else{
+		logError(_logger, "Unknown DeclarationValueType or invalid for conditionalComparisson: %d\n", dv1->type);
+		return false;
+	}
+}
+
+static boolean _getConditionalClauseResultInt(int i1, int i2, ComparissonType ct){
+	if(ct == EQUIVALENT_c){
+		return i1 == i2;
+	}
+	else if(ct == DIFFERENT_c){
+		return i1 != i2;
+	}
+	else if(ct == LESSERTHAN_c){
+		return i1 < i2;
+	}
+	else if(ct == LESSER_EQUAL_c){
+		return i1 <= i2;
+	}
+	else if(ct == GREATERTHAN_c){
+		return i1 > i2;
+	}
+	else if(ct == GREATER_EQUAL_c){
+		return i1 >= i2;
+	}
+	else{
+		logError(_logger, "Unknown Comparissontype: %d\n", ct);
+		return false;
+	}
+}
+
+static boolean _getConditionalClauseResultBool(boolean b1, boolean b2, ComparissonType ct){
+	if(ct == EQUIVALENT_c){
+		return b1 == b2;
+	}
+	else if(ct == DIFFERENT_c){
+		return b1 != b2;
+	}
+	else if(ct == LESSERTHAN_c){
+		return b1 < b2;
+	}
+	else if(ct == LESSER_EQUAL_c){
+		return b1 <= b2;
+	}
+	else if(ct == GREATERTHAN_c){
+		return b1 > b2;
+	}
+	else if(ct == GREATER_EQUAL_c){
+		return b1 >= b2;
+	}
+	else{
+		logError(_logger, "Unknown Comparissontype: %d\n", ct);
+		return false;
+	}
 }
 
 static boolean _generateConditionalClause(ConditionalClause * conditionalClause){
-	//TODOcheck types maybe? idk MENTIRA FALTA AUN EVALUAR POR COMPARISSONtyPE tMB AAAAAAAAAAAAAAAA
 	if(conditionalClause->type == PARENTHESIS_c){
 		return _generateConditionalClause(conditionalClause->conditionalClause);
 	}
-	else if(conditionalClause->type == V_V){
-		return (_generateConditionalClause(conditionalClause->leftConditional) && _generateConditionalClause(conditionalClause->rightConditional));
+	else if(conditionalClause->conditionalType == V_V){
+		return _getConditionalClauseResultVV(conditionalClause->leftValue, conditionalClause->rightValue, conditionalClause->comparissonType);
 	}
-	else if(conditionalClause->type == V_C){
-		return (_generateConditionalClause(conditionalClause->leftConditional) && _generateConditionalClause(conditionalClause->rightConditional));
+	else if(conditionalClause->conditionalType == V_C){
+		if(conditionalClause->leftValueDeclare->type != BOOLEANvalue){
+			logError(_logger, "Cannot compare different types\n");
+			return false;
+		}
+		return _getConditionalClauseResultBool(conditionalClause->leftValueDeclare->booleanValue->value, _generateConditionalClause(conditionalClause->rightConditionalClause), conditionalClause->comparissonType);
 	}
-	else if(conditionalClause->type == C_V){
-		return (_generateConditionalClause(conditionalClause->leftConditional) && _generateConditionalClause(conditionalClause->rightConditional));
+	else if(conditionalClause->conditionalType == C_V){
+		if(conditionalClause->rightValueDeclare->type != BOOLEANvalue){
+			logError(_logger, "Cannot compare different types\n");
+			return false;
+		}
+		return _getConditionalClauseResultBool(_generateConditionalClause(conditionalClause->leftConditionalClause), conditionalClause->rightValueDeclare->booleanValue->value, conditionalClause->comparissonType);
 	}
-	else if(conditionalClause->type == C_C){
-		return (_generateConditionalClause(conditionalClause->leftConditional) && _generateConditionalClause(conditionalClause->rightConditional));
+	else if(conditionalClause->conditionalType == C_C){
+		return _getConditionalClauseResultBool(_generateConditionalClause(conditionalClause->leftConditionalClause), _generateConditionalClause(conditionalClause->rightConditionalClause), conditionalClause->comparissonType);
 	}
 	else{
-		logError(_logger, "Unknown ConditionalClauseType: %d\n", conditionalClause->type);
+		logError(_logger, "Unknown ConditionalClauseType: %d\n", conditionalClause->conditionalType);
 		return false;
 	}
 }
@@ -160,9 +298,15 @@ static void _generateArithmeticAssignation(ArithmeticAssignation * arithmeticAss
 static void _generateForExpression(ForExpression * forExpression){
 	if(forExpression->type == CLASSIC_ITERATION){
 		//TODO check los types del for, luego es hacer un for de toda la vida
+		//chequear que forExp->id no exista en tabla ya, setearlo en reangeStart
+		for(i = forExpression->rangeStart, i < forExpression->rangeEnd, i++){
+			_generateMainExpressions(forExpression->mainExpressions);
+			//TODO set en la table forExpression->id = 	i+1;
+		}
 	}
 	else if(forExpression->type == FOREST_ITERATION){
 		//TODO aca lo que sea que esta en el bloque se repite por cada tree en el forest, idk como hacer eso aun
+		//while(hasNextTree)ponele que sea algo asi este for, la estructura del forest debria tener lista de trees
 	}
 	else{
 		logError(_logger, "Unknown ForType: %d\n", forExpression->type);
@@ -171,6 +315,12 @@ static void _generateForExpression(ForExpression * forExpression){
 
 static void _generateGrowExpression(GrowExpression * growExpression){
 	//TODO check exista el ID y sea algo valido de growear (encuanto a type) si es asi se guarda en una lista a imprimir?onda en epilogue?
+	if(checkGrow(growExpression->id)){
+		//TODO print then??
+	}
+	else{
+		logError(_logger, "Wrong parameter for grow");
+	}
 }
 
 static void _generateForestAssignment(ForestAssignment * forestAssignment){
@@ -214,15 +364,52 @@ static void _generateForestExpression(ForestExpression * forestExpression){
 static void _generateTreeAssignment(TreeAssignment * treeAssignment){
 	if(treeAssignment->type == ID_BY_VALUE){
 		//TODO mismo q co el de world pero con tree
+		if(treeAssignment->value->type == INTEGERvalue){
+			if(checkTreeAttribute(treeAssignment->id, INTCLASS)){
+				addToTable();//TODO nose como acceder al nodo de world, en particular al id este, capaz se podria integrar en checkWorldAtt el update de tabla y mandar directo el value?
+			}
+		}
+		else if(treeAssignment->value->type == STRINGvalue){
+			if(checkTreeAttribute(treeAssignment->id, STRCLASS)){
+				addToTable();//TODO idem
+			}
+		}
+		else if(treeAssignment->value->type == HEXCOLORvalue){
+			if(checkTreeAttribute(treeAssignment->id, HEXCOLORCLASS)){
+				addToTable();//TODO idem
+			}
+		}
+		else if(treeAssignment->value->type == BOOLEANvalue){
+			if(checkTreeAttribute(treeAssignment->id, BOOLCLASS)){
+				addToTable();//TODO idem
+			}
+		}
+		else if(treeAssignment->value->type == DECLARATIONvalue){
+			if(checkTreeAttribute(treeAssignment->id, BOOLCLASS)){
+				addToTable();//TODO idem
+			}
+		}
+		else{
+			logError(_logger, "Wrong DeclarationValueType for treeAssignment: %d\n", treeAssignment->value->type);
+			return;
+		}
 	}
-	else if(treeAssignment->type == ID_BY_OPP){
-		//TODO mismo q co el de world pero con tree
+	else if(treeAssignment->type == ID_BY_OPP){//OBS: only INTCLASS att are possible then
+		if(strcmp(treeAssignment->id, "leaf") == 0 || strcmp(treeAssignment->id, "color") == 0 || strcmp(treeAssignment->id, "snowed") == 0){
+			logError(_logger, "Tried to initialize tree->leaf or tree->color or tree->snowed with int result");
+			return;
+		}
+		int op = _generateArithmeticOperation(treeAssignment->arithmeticOperation);
+		if(checkTreeAttribute(treeAssignment->id, INTCLASS)){
+			addToTable();//TODO lo mismo que en el caso anterior, seria con op siempre lo cual es aun mas comodo
+		}
 	}
 	else{
 		logError(_logger, "Unknown AssignationType: %d\n", treeAssignments->type);
 	}
 }
 
+//TODO si esto termina devolviendo un struct del tipo de dato tree, hay que chequear q si algun assignment singular da error entonces da error toda la operación
 static void _generateTreeAssignments(TreeAssignments * treeAssignments){
 	if(treeAssignments->type == SIMPLE_ta){
 		_generateTreeAssignment(treeAssignments->singleTreeAssignment);
@@ -242,6 +429,7 @@ static void _generateTreeExpression(TreeExpression * treeExpression){
 	}
 	else if(treeExpression->type == FULL_t){
 		//TODO guardar tree default con ese id (capaz pasar por parametro el id para guardarlo con key id->att?)
+		//la funcion tendira que devolver un struct de lo que seria el tipo de dato tree entonces
 		_generateTreeAssignments(treeExpression->treeAssignments);
 	}
 	else{
@@ -291,10 +479,31 @@ static void _generateMainExpressions(MainExpressions * mainExpressions){
 
 static void _generateWorldAssignment(WorldAssignment * worldAssignment){
 	if(worldAssignment->type == ID_BY_VALUE){
-		//TODO check ID sea worldAtt, coincida con el type, sobrescribir en tabla
+		if(worldAssignment->value->type == INTEGERvalue){
+			if(checkWorldAttribute(worldAssignment->id, INTCLASS)){
+				addToTable();//TODO nose como acceder al nodo de world, en particular al id este, capaz se podria integrar en checkWorldAtt el update de tabla y mandar directo el value?
+			}
+		}
+		else if(worldAssignment->value->type == STRINGvalue){
+			if(checkWorldAttribute(worldAssignment->id, STRCLASS)){
+				addToTable();//TODO idem
+			}
+		}
+		else{
+			logError(_logger, "Wrong DeclarationValueType for worldAssignment: %d\n", worldAssignment->value->type);
+			return;
+		}		
 	}
-	else if(worldAssignment->type == ID_BY_OPP){
+	else if(worldAssignment->type == ID_BY_OPP){//OBS: only INTCLASS att are possible then
 		//TODO check ID sea worldAtt, procesar la OPP, er ue coincida con el typr, sobrescribir en tabla
+		if(strcmp(worldAssignment->id, "message") == 0){
+			logError(_logger, "Tried to initialize world->message with int result");
+			return;
+		}
+		int op = _generateArithmeticOperation(worldAssignment->arithmeticOperation);
+		if(checkWorldAttribute(worldAssignment->id, INTCLASS)){
+			addToTable();//TODO lo mismo que en el caso anterior, seria con op siempre lo cual es aun mas comodo
+		}
 	}
 	else{
 		logError(_logger, "Unknown AssignationType: %d\n", worldAssignment->type);

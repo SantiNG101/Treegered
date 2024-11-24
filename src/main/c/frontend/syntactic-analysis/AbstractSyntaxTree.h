@@ -191,12 +191,9 @@ struct GeneralAssignation{
 
 struct ArithmeticOperation{
     OperatorType operator;
-
 	union{
-
-	ArithmeticOperation * arithOp;
-
-	struct{
+        ArithmeticOperation * arithOp;
+        struct{
     		union{
         		DeclarationValue *leftValue;
         		ArithmeticOperation *leftOperation;
@@ -206,7 +203,6 @@ struct ArithmeticOperation{
        			ArithmeticOperation *rightOperation;
     		};
 		};
-
 	};
     ArithmeticOperationType type;
 };
