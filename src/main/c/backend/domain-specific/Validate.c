@@ -187,6 +187,9 @@ ComputationResult computeWorldAssignment(WorldAssignment * worldAssignment){
     switch (worldAssignment->type){
         case ID_BY_VALUE:
             //TODO check que el ID sea de un worldAtt, luego sobrescribir en la tabla de simbolos con el valor
+
+            //TODO checkTable worldAtt
+            //TODO checkType coincida con elq se quiere asignar
         case ID_BY_OPP:
             //TODO check que el ID sea de un worldAtt, luego sobrescribir en la tabla de simbolos con el valor
         default:
