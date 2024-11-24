@@ -1,73 +1,66 @@
 #ifndef TABLE_H
 #define TABLE_H
 
-typedef struct {
-    int value;
-} INTCLASS;
+#include "../../frontend/syntactic-analysis/AbstractSyntaxTree.h"
+#include "../../shared/Type.h"
 
-typedef struct {
-    char value[512];
-} STRCLASS;
+typedef enum {
+    INTEGER_TYPE = INTEGER_T,
+    BOOL_TYPE = BOOLEAN_T,
+    STRING_TYPE = STRING_T,
+    HEXCOLOR_TYPE = HEXCOLOR_T,
+    TREE_TYPE = TREE_T,
+    FOREST_TYPE = FOREST_T,
+    WORLD_TYPE = WORLD_T
+} EntryType;
 
-typedef struct {
-    char value[10];
-} HEXCOLORCLASS;
+typedef union {
+    _INTEGER * _integer;
+    _BOOLEAN * _boolean;
+    _STRING * _string;
+    _HEXCOLOR * _hexcolor;
+    _TREE * _tree;
+    _FOREST * _forest;
+    _WORLD * _world;
+} EntryValue;  
 
-typedef struct {
-    bool value;
-} BOOLCLASS;
+typedef struct{
+    EntryValue value;
+    EntryType type;
+    boolean found;
+} EntryResult;
 
-typedef struct {
-    int height;
-    char species[50];
-} TREECLASS;
+void initializeTable(void);
 
-typedef struct {
-    TREECLASS trees[100];
-    int numTrees;
-} FORESTCLASS;
+EntryResult getInteger(char * identifier);
 
-typedef struct {
-    char name[100];
-    FORESTCLASS forest;
-    int population;
-} WORLDCLASS;
+EntryResult getBoolean(char * identifier);
 
+EntryResult getString(char * identifier);
 
-// Define the symbol table entry structure
-typedef struct SymbolTableEntry {
-    char varName[100];  // Variable name (identifier)
-    enum { INT, STR, HEXCOLOR, BOOL, TREE, FOREST, WORLD } varType; // Type of the variable
-    union { 
-        INTCLASS intValue;
-        STRCLASS strValue;
-        HEXCOLORCLASS hexColorValue;
-        BOOLCLASS boolValue;
-        TREECLASS treeValue;
-        FORESTCLASS forestValue;
-        WORLDCLASS worldValue;
-    } value;  // The value of the variable
-    struct SymbolTableEntry* next;  // Pointer to the next entry
-} SymbolTableEntry;
+EntryResult getHexcolor(char * identifier);
 
+EntryResult getTree(char * identifier);
 
-// Define the symbol table structure
-typedef struct {
-    SymbolTableEntry* head;
-} SymbolTable;
+EntryResult getForest(char * identifier);
 
-// Function Declarations
+EntryResult getWorld(char * identifier);
 
-// Function to create a new empty symbol table
-SymbolTable* createSymbolTable();
+boolean exists(char * identifier );
 
-// Function to add a symbol to the symbol table
-void addSymbol(SymbolTable* table, const char* varName, void* value, int varType);
+boolean insertInteger(char * identifier, _INTEGER * value );
 
-// Function to find a symbol by its name
-SymbolTableEntry* findSymbol(SymbolTable* table, const char* varName);
+boolean insertBoolean(char * identifier, _BOOLEAN * value);
 
-// Function to print the contents of the symbol table
-void printSymbolTable(SymbolTable* table);
+boolean insertString(char * identifier, _STRING * value);
+
+boolean insertHexcolor(char * identifier, _HEXCOLOR * value);
+
+boolean insertTree(char * identifier, _TREE * value);
+
+boolean insertForest(char * identifier, _FOREST * value);
+
+boolean insertWorld(char * identifier, _WORLD * value);
+
 
 #endif  // TABLE_H

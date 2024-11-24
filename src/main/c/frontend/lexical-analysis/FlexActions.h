@@ -26,7 +26,7 @@ void EndMultilineCommentLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerCont
 void IgnoredLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token UnknownLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 
-Token ClassLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
+Token ClassLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext, Token token);
 
 Token WorldLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token TreeLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);

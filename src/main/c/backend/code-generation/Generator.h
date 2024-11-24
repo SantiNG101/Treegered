@@ -10,6 +10,14 @@
 #include <stdarg.h>
 #include <stdio.h>
 
+#define WORLD_HEIGHT 100
+#define WORLD_WIDTH 200
+
+#define DEFAULT_FOREST_HEIGHT 25
+#define DEFAULT_FOREST_WIDTH 50
+
+// Por los otros?
+
 /** Initialize module's internal state. */
 void initializeGeneratorModule();
 
