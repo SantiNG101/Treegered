@@ -949,10 +949,10 @@ static void _output(FILE * file, const unsigned int indentationLevel, const char
 
 int generate(CompilerState * compilerState, CompilationStatus * compilationStatus) {
 	logDebugging(_logger, "Generating final output...");
-	_generatePrologue();
+	_generatePrologue();//TODO sacar
 	compi = compilationStatus;
 	_generateProgram(compilerState->abstractSyntaxtTree);
-	if(ERROR_OCCURED == false) _generateEpilogue();
+	if(ERROR_OCCURED == false) _generateEpilogue();//TODO podria cambiar el nombre mas descriptivo
 	logDebugging(_logger, "Generation is done.");
 	return ERROR_OCCURED==true? 1:0;
 }
