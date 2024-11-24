@@ -2,7 +2,7 @@
 #define ABSTRACT_SYNTAX_TREE_HEADER
 
 #include "../../shared/Logger.h"
-#include <stdlib.h>/
+#include <stdlib.h>
 
 
 /** Initialize module's internal state. */
@@ -123,7 +123,7 @@ struct _TREE{
     int depth;
     int density;
     int bark;
-    boolean snowed
+    boolean snowed;
 };
 
 struct _FOREST{

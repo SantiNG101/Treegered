@@ -1,5 +1,4 @@
 #include "Generator.h"
-//#include "../symbol-table/table.h"
 
 /* MODULE INTERNAL STATE */
 CompilationStatus * compi = NULL;

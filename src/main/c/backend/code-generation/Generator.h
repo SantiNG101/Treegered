@@ -3,6 +3,7 @@
 
 #include "../../frontend/syntactic-analysis/AbstractSyntaxTree.h"
 #include "../../frontend/syntactic-analysis/BisonParser.h"
+#include "../../backend/symbol-table/Table.h"
 #include "../../shared/CompilerState.h"
 #include "../../shared/Logger.h"
 #include "../../shared/String.h"
