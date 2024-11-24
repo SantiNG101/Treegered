@@ -46,7 +46,7 @@ static void _generateForExpression(ForExpression * forExpression);
 static void _generateArithmeticAssignation(ArithmeticAssignation * arithmeticAssignation);
 static void _generateGeneralAssignation(GeneralAssignation * generalAssignation);
 static void _generateConditionalExpression(ConditionalExpression * conditionalExpression);
-static void _generateConditionalClause(ConditionalClause * conditionalClause);
+static boolean _generateConditionalClause(ConditionalClause * conditionalClause);
 static void _generateArithmeticOperation(ArithmeticOperation * arithmeticOperation);
 static void _generateAttributeValue(AttributeValue * attributeValue);
 static void _generateDeclarationValue(DeclarationValue * declarationValue);
@@ -73,52 +73,180 @@ static void _generateArithmeticOperation(ArithmeticOperation * arithmeticOperati
 	//TODO
 }
 
-static void _generateConditionalClause(ConditionalClause * conditionalClause){
-	//TODO
+static boolean _generateConditionalClause(ConditionalClause * conditionalClause){
+	//TODOcheck types maybe? idk MENTIRA FALTA AUN EVALUAR POR COMPARISSONtyPE tMB AAAAAAAAAAAAAAAA
+	if(conditionalClause->type == PARENTHESIS_c){
+		return _generateConditionalClause(conditionalClause->conditionalClause);
+	}
+	else if(conditionalClause->type == V_V){
+		return (_generateConditionalClause(conditionalClause->leftConditional) && _generateConditionalClause(conditionalClause->rightConditional));
+	}
+	else if(conditionalClause->type == V_C){
+		return (_generateConditionalClause(conditionalClause->leftConditional) && _generateConditionalClause(conditionalClause->rightConditional));
+	}
+	else if(conditionalClause->type == C_V){
+		return (_generateConditionalClause(conditionalClause->leftConditional) && _generateConditionalClause(conditionalClause->rightConditional));
+	}
+	else if(conditionalClause->type == C_C){
+		return (_generateConditionalClause(conditionalClause->leftConditional) && _generateConditionalClause(conditionalClause->rightConditional));
+	}
+	else{
+		logError(_logger, "Unknown ConditionalClauseType: %d\n", conditionalClause->type);
+		return false;
+	}
 }
 
 static void _generateConditionalExpression(ConditionalExpression * conditionalExpression){
-	//TODO
+	if(conditionalExpression->type == IF_c){
+		if(_generateConditionalClause(conditionalExpression->conditionalClause)){
+			_generateMainExpressions(conditionalExpression->ifMainExpressions);
+		}
+	}
+	else if(conditionalExpression->type == ELSE_c){
+		if(_generateConditionalClause(conditionalExpression->conditionalClause)){
+			_generateMainExpressions(conditionalExpression->ifMainExpressions);
+		}
+		else _generateMainExpressions(conditionalExpression->elseMainExpressions);
+	}
+	else{
+		logError(_logger, "Unknown ConditionalType: %d\n", conditionalExpression->type);
+	}
 }
 
 static void _generateGeneralAssignation(GeneralAssignation * generalAssignation){
-	//TODO
+	//TODO mismo de siempre, checkear existencia(o no) si es necesario, checkar dataType y hacer el update  en tabla
+	if(generalAssignation->type == ID_BY_VALUE_TYPE){
+
+	}
+	else if(generalAssignation->type == ID_BY_OPP_TYPE){
+
+	}
+	else if(generalAssignation->type == ID_BY_VALUE){
+
+	}
+	else if(generalAssignation->type == ID_BY_OPP){
+
+	}
+	else if(generalAssignation->type == ATT_BY_VALUE){
+
+	}
+	else if(generalAssignation->type == ATT_BY_OPP){
+
+	}
+	else{
+		logError(_logger, "Unknown AssignationType: %d\n", generalAssignation->type);
+	}
 }
 
 static void _generateArithmeticAssignation(ArithmeticAssignation * arithmeticAssignation){
-	//TODO
+	//TODO todos, en cualquiera hay que chequear existencia de ser necesario, types, hacer la cuentita(+,-,etc) y luego updatear tabla
+	if(arithmeticAssignation->type == ID_BY_VALUE){
+
+	}
+	else if(arithmeticAssignation->type == ID_BY_OPP){
+
+	}
+	else if(arithmeticAssignation->type == ATT_BY_VALUE){
+
+	}
+	else if(arithmeticAssignation->type == ATT_BY_OPP){
+
+	}
+	else{
+		logError(_logger, "Unknown AssignationType: %d\n", arithmeticAssignation->type);
+	}
 }
 
 static void _generateForExpression(ForExpression * forExpression){
-	//TODO
+	if(forExpression->type == CLASSIC_ITERATION){
+		//TODO check los types del for, luego es hacer un for de toda la vida
+	}
+	else if(forExpression->type == FOREST_ITERATION){
+		//TODO aca lo que sea que esta en el bloque se repite por cada tree en el forest, idk como hacer eso aun
+	}
+	else{
+		logError(_logger, "Unknown ForType: %d\n", forExpression->type);
+	}
 }
 
 static void _generateGrowExpression(GrowExpression * growExpression){
-	//TODO
+	//TODO check exista el ID y sea algo valido de growear (encuanto a type) si es asi se guarda en una lista a imprimir?onda en epilogue?
 }
 
 static void _generateForestAssignment(ForestAssignment * forestAssignment){
-	//TODO
+	if(forestAssignment->type == ID_BY_VALUE){
+		//TODO mismo q co el de tree pero con forest
+	}
+	else if(forestAssignment->type == ID_BY_OPP){
+		//TODO mismo q co el de tree pero con forest
+	}
+	else{
+		logError(_logger, "Unknown AssignationType: %d\n", forestAssignment->type);
+	}
 }
 
 static void _generateForestAssignments(ForestAssignments * forestAssignments){
-	//TODO
+	if(forestAssignments->type == SIMPLE_fa){
+		_generateForestAssignment(forestAssignments->singleForestAssignment);
+	}
+	else if(forestAssignments->type == MULTIPLE_fa){
+		_generateForestAssignment(forestAssignments->multipleForestAssignment);
+		_generateForestAssignments(forestAssignments->forestAssignments);
+	}
+	else{
+		logError(_logger, "Unknown ForestAssignType: %d\n", forestAssignments->type);
+	}
 }
 
 static void _generateForestExpression(ForestExpression * forestExpression){
-	//TODO
+	if(forestExpression->type == EMPTY_f){
+		//TODO guardar forest default con ese id
+	}
+	else if(forestExpression->type == FULL_f){
+		//TODO guardar forest default con ese id (capaz pasar por parametro el id para guardarlo con key id->att?)
+		_generateForestAssignments(forestExpression->forestAssignments);
+	}
+	else{
+		logError(_logger, "Unknown ForestType: %d\n", forestExpression->type);
+	}
 }
 
 static void _generateTreeAssignment(TreeAssignment * treeAssignment){
-	//TODO
+	if(treeAssignment->type == ID_BY_VALUE){
+		//TODO mismo q co el de world pero con tree
+	}
+	else if(treeAssignment->type == ID_BY_OPP){
+		//TODO mismo q co el de world pero con tree
+	}
+	else{
+		logError(_logger, "Unknown AssignationType: %d\n", treeAssignments->type);
+	}
 }
 
 static void _generateTreeAssignments(TreeAssignments * treeAssignments){
-	//TODO
+	if(treeAssignments->type == SIMPLE_ta){
+		_generateTreeAssignment(treeAssignments->singleTreeAssignment);
+	}
+	else if(treeAssignments->type == MULTIPLE_ta){
+		_generateTreeAssignment(treeAssignments->multipleTreeAssignment);
+		_generateTreeAssignments(treeAssignments->treeAssignments);
+	}
+	else{
+		logError(_logger, "Unknown TreeAssignType: %d\n", treeAssignments->type);
+	}
 }
 
 static void _generateTreeExpression(TreeExpression * treeExpression){
-	//TODO
+	if(treeExpression->type == EMPTY_t){
+		//TODO guardar tree default con ese id
+	}
+	else if(treeExpression->type == FULL_t){
+		//TODO guardar tree default con ese id (capaz pasar por parametro el id para guardarlo con key id->att?)
+		_generateTreeAssignments(treeExpression->treeAssignments);
+	}
+	else{
+		logError(_logger, "Unknown TreeType: %d\n", treeExpression->type);
+	}
 }
 
 static void _generateMainExpression(MainExpression * mainExpression){
