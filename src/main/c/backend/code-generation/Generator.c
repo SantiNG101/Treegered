@@ -93,12 +93,15 @@ static void _generateEpilogue(void) {
 
 static int _getArithOpResult(int v1, int v2, OperatorType ot){
 	if(ot == ADD_o){
+		_output(file, 0, "sum %d + %d\n", v1, v2);
 		return v1 + v2;
 	}
 	else if(ot == SUB_o){
+		_output(file, 0, "sub %d - %d\n", v1, v2);
 		return v1 - v2;
 	}
 	else if(ot == MUL_o){
+		_output(file, 0, "mul %d * %d\n", v1, v2);
 		return v1 * v2;
 	}
 	else if(ot == DIV_o){
@@ -108,6 +111,7 @@ static int _getArithOpResult(int v1, int v2, OperatorType ot){
 			*compi=FAILED;
 			return 0;
 		}
+		_output(file, 0, "div %d / %d\n", v1, v2);
 		return v1 / v2;
 	}
 	else{
@@ -362,7 +366,6 @@ static void _generateGeneralAssignation(GeneralAssignation * generalAssignation)
 			
 		}
 		else if(generalAssignation->value->type == INTEGERvalue){
-			
 		}
 		else if(generalAssignation->value->type == STRINGvalue){
 			
@@ -387,7 +390,7 @@ static void _generateGeneralAssignation(GeneralAssignation * generalAssignation)
 		}
 	}
 	else if(generalAssignation->type == ID_BY_OPP_TYPE){
-
+		int op = _generateArithmeticOperation(generalAssignation->arithmeticOperation);
 	}
 	else if(generalAssignation->type == ID_BY_VALUE){
 		if(generalAssignation->value->type == IDvalue){
