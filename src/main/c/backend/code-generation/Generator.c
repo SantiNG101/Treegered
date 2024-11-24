@@ -49,6 +49,13 @@ static void _generateConditionalExpression(ConditionalExpression * conditionalEx
 static boolean _generateConditionalClause(ConditionalClause * conditionalClause);
 static int _generateArithmeticOperation(ArithmeticOperation * arithmeticOperation);
 
+static boolean _getConditionalClauseResultVV(DeclarationValue * dv1, DeclarationValue * dv2, ComparissonType ct);
+static boolean _getConditionalClauseResultBool(boolean b1, boolean b2, ComparissonType ct);
+static boolean _getConditionalClauseResultInt(int i1, int i2, ComparissonType ct);
+
+static int _getArithOpResult(int v1, int v2, OperatorType ot);
+
+
 /* AUX FUNCTIONS */ //TODO son placeholders, cambiar con lo de la tabla luego
 boolean checkExistent(char * key){
 	//TODO do it with symbol table
@@ -60,6 +67,10 @@ boolean checkWorldAttribute(char * name, int type){
 		|| (strcmp(name, "width") == 0 && (type == INTCLASS))
 		|| (strcmp(name, "uneveness") == 0 && (type == INTCLASS))
 		|| (strcmp(name, "message") == 0 && (type == STRCLASS)));
+}
+
+boolean checkTreeAttribute(char * name, int type){
+	return true;//TODO
 }
 
 boolean checkGrow(char * name){
@@ -137,7 +148,7 @@ static int _generateArithmeticOperation(ArithmeticOperation * arithmeticOperatio
 	}
 }
 
-static boolean _getConditionalClauseResultVV(DeclarationValue dv1, DeclarationValue dv2, ComparissonType ct){
+static boolean _getConditionalClauseResultVV(DeclarationValue * dv1, DeclarationValue * dv2, ComparissonType ct){
 	if(dv1->type != dv2->type){
 		logError(_logger, "Cannot compare different types\n");
 		return false;
@@ -205,7 +216,7 @@ static boolean _getConditionalClauseResultBool(boolean b1, boolean b2, Compariss
 }
 
 static boolean _generateConditionalClause(ConditionalClause * conditionalClause){
-	if(conditionalClause->type == PARENTHESIS_c){
+	if(conditionalClause->conditionalType == PARENTHESIS_c){
 		return _generateConditionalClause(conditionalClause->conditionalClause);
 	}
 	else if(conditionalClause->conditionalType == V_V){
@@ -299,7 +310,7 @@ static void _generateForExpression(ForExpression * forExpression){
 	if(forExpression->type == CLASSIC_ITERATION){
 		//TODO check los types del for, luego es hacer un for de toda la vida
 		//chequear que forExp->id no exista en tabla ya, setearlo en reangeStart
-		for(i = forExpression->rangeStart, i < forExpression->rangeEnd, i++){
+		for(int i = forExpression->rangeStart->value; i < forExpression->rangeEnd->value; i++){
 			_generateMainExpressions(forExpression->mainExpressions);
 			//TODO set en la table forExpression->id = 	i+1;
 		}
@@ -315,7 +326,7 @@ static void _generateForExpression(ForExpression * forExpression){
 
 static void _generateGrowExpression(GrowExpression * growExpression){
 	//TODO check exista el ID y sea algo valido de growear (encuanto a type) si es asi se guarda en una lista a imprimir?onda en epilogue?
-	if(checkGrow(growExpression->id)){
+	if(checkGrow(growExpression->id->idValue)){
 		//TODO print then??
 	}
 	else{
@@ -365,27 +376,27 @@ static void _generateTreeAssignment(TreeAssignment * treeAssignment){
 	if(treeAssignment->type == ID_BY_VALUE){
 		//TODO mismo q co el de world pero con tree
 		if(treeAssignment->value->type == INTEGERvalue){
-			if(checkTreeAttribute(treeAssignment->id, INTCLASS)){
+			if(checkTreeAttribute(treeAssignment->id->idValue, INTCLASS)){
 				addToTable();//TODO nose como acceder al nodo de world, en particular al id este, capaz se podria integrar en checkWorldAtt el update de tabla y mandar directo el value?
 			}
 		}
 		else if(treeAssignment->value->type == STRINGvalue){
-			if(checkTreeAttribute(treeAssignment->id, STRCLASS)){
+			if(checkTreeAttribute(treeAssignment->id->idValue, STRCLASS)){
 				addToTable();//TODO idem
 			}
 		}
 		else if(treeAssignment->value->type == HEXCOLORvalue){
-			if(checkTreeAttribute(treeAssignment->id, HEXCOLORCLASS)){
+			if(checkTreeAttribute(treeAssignment->id->idValue, HEXCOLORCLASS)){
 				addToTable();//TODO idem
 			}
 		}
 		else if(treeAssignment->value->type == BOOLEANvalue){
-			if(checkTreeAttribute(treeAssignment->id, BOOLCLASS)){
+			if(checkTreeAttribute(treeAssignment->id->idValue, BOOLCLASS)){
 				addToTable();//TODO idem
 			}
 		}
 		else if(treeAssignment->value->type == DECLARATIONvalue){
-			if(checkTreeAttribute(treeAssignment->id, BOOLCLASS)){
+			if(checkTreeAttribute(treeAssignment->id->idValue, BOOLCLASS)){
 				addToTable();//TODO idem
 			}
 		}
@@ -395,17 +406,17 @@ static void _generateTreeAssignment(TreeAssignment * treeAssignment){
 		}
 	}
 	else if(treeAssignment->type == ID_BY_OPP){//OBS: only INTCLASS att are possible then
-		if(strcmp(treeAssignment->id, "leaf") == 0 || strcmp(treeAssignment->id, "color") == 0 || strcmp(treeAssignment->id, "snowed") == 0){
+		if(strcmp(treeAssignment->id->idValue, "leaf") == 0 || strcmp(treeAssignment->id->idValue, "color") == 0 || strcmp(treeAssignment->id->idValue, "snowed") == 0){
 			logError(_logger, "Tried to initialize tree->leaf or tree->color or tree->snowed with int result");
 			return;
 		}
 		int op = _generateArithmeticOperation(treeAssignment->arithmeticOperation);
-		if(checkTreeAttribute(treeAssignment->id, INTCLASS)){
+		if(checkTreeAttribute(treeAssignment->id->idValue, INTCLASS)){
 			addToTable();//TODO lo mismo que en el caso anterior, seria con op siempre lo cual es aun mas comodo
 		}
 	}
 	else{
-		logError(_logger, "Unknown AssignationType: %d\n", treeAssignments->type);
+		logError(_logger, "Unknown AssignationType: %d\n", treeAssignment->type);
 	}
 }
 
@@ -480,12 +491,12 @@ static void _generateMainExpressions(MainExpressions * mainExpressions){
 static void _generateWorldAssignment(WorldAssignment * worldAssignment){
 	if(worldAssignment->type == ID_BY_VALUE){
 		if(worldAssignment->value->type == INTEGERvalue){
-			if(checkWorldAttribute(worldAssignment->id, INTCLASS)){
+			if(checkWorldAttribute(worldAssignment->id->idValue, INTCLASS)){
 				addToTable();//TODO nose como acceder al nodo de world, en particular al id este, capaz se podria integrar en checkWorldAtt el update de tabla y mandar directo el value?
 			}
 		}
 		else if(worldAssignment->value->type == STRINGvalue){
-			if(checkWorldAttribute(worldAssignment->id, STRCLASS)){
+			if(checkWorldAttribute(worldAssignment->id->idValue, STRCLASS)){
 				addToTable();//TODO idem
 			}
 		}
@@ -496,12 +507,12 @@ static void _generateWorldAssignment(WorldAssignment * worldAssignment){
 	}
 	else if(worldAssignment->type == ID_BY_OPP){//OBS: only INTCLASS att are possible then
 		//TODO check ID sea worldAtt, procesar la OPP, er ue coincida con el typr, sobrescribir en tabla
-		if(strcmp(worldAssignment->id, "message") == 0){
+		if(strcmp(worldAssignment->id->idValue, "message") == 0){
 			logError(_logger, "Tried to initialize world->message with int result");
 			return;
 		}
 		int op = _generateArithmeticOperation(worldAssignment->arithmeticOperation);
-		if(checkWorldAttribute(worldAssignment->id, INTCLASS)){
+		if(checkWorldAttribute(worldAssignment->id->idValue, INTCLASS)){
 			addToTable();//TODO lo mismo que en el caso anterior, seria con op siempre lo cual es aun mas comodo
 		}
 	}
@@ -515,7 +526,7 @@ static void _generateWorldAssignments(WorldAssignments * worldAssignments){
 		_generateWorldAssignment(worldAssignments->singleWorldAssignment);
 	}
 	else if(worldAssignments->wType == MULTIPLE_w){
-		_generateWorldAssignment(worldAssignments->singleWorldAssignment);
+		_generateWorldAssignment(worldAssignments->multipleWorldAssignment);
 		_generateWorldAssignments(worldAssignments->worldAssignments);
 	}
 	else{

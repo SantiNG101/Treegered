@@ -2,9 +2,11 @@
 #define GENERATOR_HEADER
 
 #include "../../frontend/syntactic-analysis/AbstractSyntaxTree.h"
+#include "../../frontend/syntactic-analysis/BisonParser.h"
 #include "../../shared/CompilerState.h"
 #include "../../shared/Logger.h"
 #include "../../shared/String.h"
+#include "../../shared/Type.h"
 #include <stdarg.h>
 #include <stdio.h>
 
