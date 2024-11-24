@@ -19,6 +19,6 @@ void shutdownGeneratorModule();
 /**
  * Generates the final output using the current compiler state.
  */
-void generate(CompilerState * compilerState);
+int generate(CompilerState * compilerState, CompilationStatus * compilationStatus);
 
 #endif
