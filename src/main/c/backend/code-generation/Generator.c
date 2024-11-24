@@ -119,29 +119,46 @@ static int _getArithOpResult(int v1, int v2, OperatorType ot){
 }
 
 static int _generateArithmeticOperation(ArithmeticOperation * arithmeticOperation){
+	if(ERROR_OCCURED==true) return 0;
 	if(arithmeticOperation->type == LV_RV){
+		if(arithmeticOperation->leftValue->type == ATTvalue || arithmeticOperation->leftValue->type == DECLARATIONvalue){
+			//TODO
+			return 0;
+		}
+		if(arithmeticOperation->rightValue->type == ATTvalue || arithmeticOperation->rightValue->type == DECLARATIONvalue){
+			//TODO
+			return 0;
+		}
 		if(arithmeticOperation->leftValue->type != INTEGERvalue || arithmeticOperation->rightValue->type != INTEGERvalue){
 			logError(_logger, "Cannot operate with type other than int\n");
 			ERROR_OCCURED = true;
-*compi=FAILED;
+			*compi=FAILED;
 			return false;
 		}
 		return _getArithOpResult(arithmeticOperation->leftValue->intValue->value, arithmeticOperation->rightValue->intValue->value, arithmeticOperation->operator);
 	}
 	else if(arithmeticOperation->type == LV_RO){
+		if(arithmeticOperation->leftValue->type == ATTvalue || arithmeticOperation->leftValue->type == DECLARATIONvalue){
+			//TODO
+			return 0;
+		}
 		if(arithmeticOperation->leftValue->type != INTEGERvalue){
 			logError(_logger, "Cannot operate with type other than int\n");
 			ERROR_OCCURED = true;
-*compi=FAILED;
+			*compi=FAILED;
 			return false;
 		}
 		return _getArithOpResult(arithmeticOperation->leftValue->intValue->value, _generateArithmeticOperation(arithmeticOperation->rightOperation), arithmeticOperation->operator);
 	}
 	else if(arithmeticOperation->type == LO_RV){
+		if(arithmeticOperation->rightValue->type == ATTvalue || arithmeticOperation->rightValue->type == DECLARATIONvalue){
+			//TODO
+			return 0;
+		}
 		if(arithmeticOperation->rightValue->type != INTEGERvalue){
 			logError(_logger, "Cannot operate with type other than int\n");
 			ERROR_OCCURED = true;
-*compi=FAILED;
+			*compi=FAILED;
 			return false;
 		}
 		return _getArithOpResult(_generateArithmeticOperation(arithmeticOperation->leftOperation), arithmeticOperation->rightValue->intValue->value, arithmeticOperation->operator);
@@ -155,16 +172,17 @@ static int _generateArithmeticOperation(ArithmeticOperation * arithmeticOperatio
 	else{	
 		logError(_logger, "Unknown ArithmeticOperationType: %d\n", arithmeticOperation->type);
 		ERROR_OCCURED = true;
-*compi=FAILED;
+		*compi=FAILED;
 		return 0;
 	}
 }
 
 static boolean _getConditionalClauseResultVV(DeclarationValue * dv1, DeclarationValue * dv2, ComparissonType ct){
+	if(ERROR_OCCURED==true) return false;
 	if(dv1->type != dv2->type){
 		logError(_logger, "Cannot compare different types\n");
 		ERROR_OCCURED = true;
-*compi=FAILED;
+		*compi=FAILED;
 		return false;
 	}
 	else if(dv1->type == BOOLEANvalue){
@@ -176,12 +194,13 @@ static boolean _getConditionalClauseResultVV(DeclarationValue * dv1, Declaration
 	else{
 		logError(_logger, "Unknown DeclarationValueType or invalid for conditionalComparisson: %d\n", dv1->type);
 		ERROR_OCCURED = true;
-*compi=FAILED;
+		*compi=FAILED;
 		return false;
 	}
 }
 
 static boolean _getConditionalClauseResultInt(int i1, int i2, ComparissonType ct){
+	if(ERROR_OCCURED==true) return false;
 	if(ct == EQUIVALENT_c){
 		return i1 == i2;
 	}
@@ -203,12 +222,13 @@ static boolean _getConditionalClauseResultInt(int i1, int i2, ComparissonType ct
 	else{
 		logError(_logger, "Unknown Comparissontype: %d\n", ct);
 		ERROR_OCCURED = true;
-*compi=FAILED;
+		*compi=FAILED;
 		return false;
 	}
 }
 
 static boolean _getConditionalClauseResultBool(boolean b1, boolean b2, ComparissonType ct){
+	if(ERROR_OCCURED==true) return false;
 	if(ct == EQUIVALENT_c){
 		return b1 == b2;
 	}
@@ -230,32 +250,75 @@ static boolean _getConditionalClauseResultBool(boolean b1, boolean b2, Compariss
 	else{
 		logError(_logger, "Unknown Comparissontype: %d\n", ct);
 		ERROR_OCCURED = true;
-*compi=FAILED;
+		*compi=FAILED;
 		return false;
 	}
 }
 
 static boolean _generateConditionalClause(ConditionalClause * conditionalClause){
+	if(ERROR_OCCURED==true) return false;
 	if(conditionalClause->conditionalType == PARENTHESIS_c){
 		return _generateConditionalClause(conditionalClause->conditionalClause);
 	}
 	else if(conditionalClause->conditionalType == V_V){
+		if(conditionalClause->leftValue->type == ATTvalue){//TODO check que exista la variabl, recuperarla de la tabla y ver q coincidaa el tipo
+			if(conditionalClause->leftValue->attValue->type == WORLDatt){
+				return true;//TODO
+			}
+			else if(conditionalClause->leftValue->attValue->type == IDatt){
+				return true;//TODO
+			}
+			else{
+				logError(_logger, "Unknown AttributeValueType: %d\n", conditionalClause->leftValue->attValue->type);
+				ERROR_OCCURED = true;
+				*compi=FAILED;
+				return false;
+			}
+		}
 		return _getConditionalClauseResultVV(conditionalClause->leftValue, conditionalClause->rightValue, conditionalClause->comparissonType);
 	}
 	else if(conditionalClause->conditionalType == V_C){
+		if(conditionalClause->leftValue->type == ATTvalue){//TODO check que exista la variabl, recuperarla de la tabla y ver q coincidaa el tipo
+			if(conditionalClause->leftValue->attValue->type == WORLDatt){
+				return true;//TODO
+			}
+			else if(conditionalClause->leftValue->attValue->type == IDatt){
+				return true;//TODO
+			}
+			else{
+				logError(_logger, "Unknown AttributeValueType: %d\n", conditionalClause->leftValue->attValue->type);
+				ERROR_OCCURED = true;
+				*compi=FAILED;
+				return false;
+			}
+		}
 		if(conditionalClause->leftValueDeclare->type != BOOLEANvalue){
 			logError(_logger, "Cannot compare different types\n");
 			ERROR_OCCURED = true;
-*compi=FAILED;
+			*compi=FAILED;
 			return false;
 		}
 		return _getConditionalClauseResultBool(conditionalClause->leftValueDeclare->booleanValue->value, _generateConditionalClause(conditionalClause->rightConditionalClause), conditionalClause->comparissonType);
 	}
 	else if(conditionalClause->conditionalType == C_V){
+		if(conditionalClause->rightValue->type == ATTvalue){//TODO check que exista la variabl, recuperarla de la tabla y ver q coincidaa el tipo
+			if(conditionalClause->rightValue->attValue->type == WORLDatt){
+				return true;//TODO
+			}
+			else if(conditionalClause->rightValue->attValue->type == IDatt){
+				return true;//TODO
+			}
+			else{
+				logError(_logger, "Unknown AttributeValueType: %d\n", conditionalClause->rightValue->attValue->type);
+				ERROR_OCCURED = true;
+				*compi=FAILED;
+				return false;
+			}
+		}
 		if(conditionalClause->rightValueDeclare->type != BOOLEANvalue){
 			logError(_logger, "Cannot compare different types\n");
 			ERROR_OCCURED = true;
-*compi=FAILED;
+			*compi=FAILED;
 			return false;
 		}
 		return _getConditionalClauseResultBool(_generateConditionalClause(conditionalClause->leftConditionalClause), conditionalClause->rightValueDeclare->booleanValue->value, conditionalClause->comparissonType);
@@ -266,12 +329,13 @@ static boolean _generateConditionalClause(ConditionalClause * conditionalClause)
 	else{
 		logError(_logger, "Unknown ConditionalClauseType: %d\n", conditionalClause->conditionalType);
 		ERROR_OCCURED = true;
-*compi=FAILED;
+		*compi=FAILED;
 		return false;
 	}
 }
 
 static void _generateConditionalExpression(ConditionalExpression * conditionalExpression){
+	if(ERROR_OCCURED==true) return;
 	if(conditionalExpression->type == IF_c){
 		if(_generateConditionalClause(conditionalExpression->conditionalClause)){
 			_generateMainExpressions(conditionalExpression->ifMainExpressions);
@@ -286,14 +350,18 @@ static void _generateConditionalExpression(ConditionalExpression * conditionalEx
 	else{
 		logError(_logger, "Unknown ConditionalType: %d\n", conditionalExpression->type);
 		ERROR_OCCURED = true;
-*compi=FAILED;
+		*compi=FAILED;
 	}
 }
 
 static void _generateGeneralAssignation(GeneralAssignation * generalAssignation){
+	if(ERROR_OCCURED==true) return;
 	//TODO mismo de siempre, checkear existencia(o no) si es necesario, checkar dataType y hacer el update  en tabla
 	if(generalAssignation->type == ID_BY_VALUE_TYPE){
-		if(generalAssignation->value->type == INTEGERvalue){
+		if(generalAssignation->value->type == IDvalue){
+			
+		}
+		else if(generalAssignation->value->type == INTEGERvalue){
 			
 		}
 		else if(generalAssignation->value->type == STRINGvalue){
@@ -314,7 +382,7 @@ static void _generateGeneralAssignation(GeneralAssignation * generalAssignation)
 		else{
 			logError(_logger, "Wrong DeclarationValueType for generalAssignation: %d\n", generalAssignation->value->type);
 			ERROR_OCCURED = true;
-*compi=FAILED;
+			*compi=FAILED;
 			return;
 		}
 	}
@@ -322,7 +390,10 @@ static void _generateGeneralAssignation(GeneralAssignation * generalAssignation)
 
 	}
 	else if(generalAssignation->type == ID_BY_VALUE){
-		if(generalAssignation->value->type == INTEGERvalue){
+		if(generalAssignation->value->type == IDvalue){
+			
+		}
+		else if(generalAssignation->value->type == INTEGERvalue){
 			
 		}
 		else if(generalAssignation->value->type == STRINGvalue){
@@ -343,7 +414,7 @@ static void _generateGeneralAssignation(GeneralAssignation * generalAssignation)
 		else{
 			logError(_logger, "Wrong DeclarationValueType for generalAssignation: %d\n", generalAssignation->value->type);
 			ERROR_OCCURED = true;
-*compi=FAILED;
+			*compi=FAILED;
 			return;
 		}
 	}
@@ -351,7 +422,10 @@ static void _generateGeneralAssignation(GeneralAssignation * generalAssignation)
 
 	}
 	else if(generalAssignation->type == ATT_BY_VALUE){
-		if(generalAssignation->value->type == INTEGERvalue){
+		if(generalAssignation->value->type == IDvalue){
+			
+		}
+		else if(generalAssignation->value->type == INTEGERvalue){
 			
 		}
 		else if(generalAssignation->value->type == STRINGvalue){
@@ -372,7 +446,7 @@ static void _generateGeneralAssignation(GeneralAssignation * generalAssignation)
 		else{
 			logError(_logger, "Wrong DeclarationValueType for generalAssignation: %d\n", generalAssignation->value->type);
 			ERROR_OCCURED = true;
-*compi=FAILED;
+			*compi=FAILED;
 			return;
 		}
 	}
@@ -382,14 +456,18 @@ static void _generateGeneralAssignation(GeneralAssignation * generalAssignation)
 	else{
 		logError(_logger, "Unknown AssignationType: %d\n", generalAssignation->type);
 		ERROR_OCCURED = true;
-*compi=FAILED;
+		*compi=FAILED;
 	}
 }
 
 static void _generateArithmeticAssignation(ArithmeticAssignation * arithmeticAssignation){
+	if(ERROR_OCCURED==true) return;
 	//TODO todos, en cualquiera hay que chequear existencia de ser necesario, types, hacer la cuentita(+,-,etc) y luego updatear tabla
 	if(arithmeticAssignation->type == ID_BY_VALUE){
-		if(arithmeticAssignation->value->type == INTEGERvalue){
+		if(arithmeticAssignation->value->type == IDvalue){
+			
+		}
+		else if(arithmeticAssignation->value->type == INTEGERvalue){
 			
 		}
 		else if(arithmeticAssignation->value->type == STRINGvalue){
@@ -410,7 +488,7 @@ static void _generateArithmeticAssignation(ArithmeticAssignation * arithmeticAss
 		else{
 			logError(_logger, "Wrong DeclarationValueType for arithmeticAssignation: %d\n", arithmeticAssignation->value->type);
 			ERROR_OCCURED = true;
-*compi=FAILED;
+			*compi=FAILED;
 			return;
 		}
 	}
@@ -418,7 +496,10 @@ static void _generateArithmeticAssignation(ArithmeticAssignation * arithmeticAss
 		
 	}
 	else if(arithmeticAssignation->type == ATT_BY_VALUE){
-		if(arithmeticAssignation->value->type == INTEGERvalue){
+		if(arithmeticAssignation->value->type == IDvalue){
+			
+		}
+		else if(arithmeticAssignation->value->type == INTEGERvalue){
 			
 		}
 		else if(arithmeticAssignation->value->type == STRINGvalue){
@@ -439,7 +520,7 @@ static void _generateArithmeticAssignation(ArithmeticAssignation * arithmeticAss
 		else{
 			logError(_logger, "Wrong DeclarationValueType for arithmeticAssignation: %d\n", arithmeticAssignation->value->type);
 			ERROR_OCCURED = true;
-*compi=FAILED;
+			*compi=FAILED;
 			return;
 		}
 
@@ -450,11 +531,12 @@ static void _generateArithmeticAssignation(ArithmeticAssignation * arithmeticAss
 	else{
 		logError(_logger, "Unknown AssignationType: %d\n", arithmeticAssignation->type);
 		ERROR_OCCURED = true;
-*compi=FAILED;
+		*compi=FAILED;
 	}
 }
 
 static void _generateForExpression(ForExpression * forExpression){
+	if(ERROR_OCCURED==true) return;
 	if(forExpression->type == CLASSIC_ITERATION){
 		//TODO check los types del for, luego es hacer un for de toda la vida
 		//chequear que forExp->id no exista en tabla ya, setearlo en reangeStart
@@ -472,11 +554,12 @@ static void _generateForExpression(ForExpression * forExpression){
 	else{
 		logError(_logger, "Unknown ForType: %d\n", forExpression->type);
 		ERROR_OCCURED = true;
-*compi=FAILED;
+		*compi=FAILED;
 	}
 }
 
 static void _generateGrowExpression(GrowExpression * growExpression){
+	if(ERROR_OCCURED==true) return;
 	//TODO check exista el ID y sea algo valido de growear (encuanto a type) si es asi se guarda en una lista a imprimir?onda en epilogue?
 	if(checkGrow(growExpression->id->idValue)){
 		_output(file, 0, "grow:%s\n", growExpression->id->idValue);//TODO sacar es para probar no mas
@@ -485,11 +568,12 @@ static void _generateGrowExpression(GrowExpression * growExpression){
 	else{
 		logError(_logger, "Wrong parameter for grow");
 		ERROR_OCCURED = true;
-*compi=FAILED;
+		*compi=FAILED;
 	}
 }
 
 static void _generateForestAssignment(ForestAssignment * forestAssignment){
+	if(ERROR_OCCURED==true) return;
 	if(forestAssignment->type == ID_BY_VALUE){
 		//TODO mismo q co el de world pero con forest
 		if(forestAssignment->value->type == INTEGERvalue){
@@ -531,7 +615,7 @@ static void _generateForestAssignment(ForestAssignment * forestAssignment){
 		else{
 			logError(_logger, "Wrong DeclarationValueType for forestAssignment: %d\n", forestAssignment->value->type);
 			ERROR_OCCURED = true;
-*compi=FAILED;
+			*compi=FAILED;
 			return;
 		}
 	}
@@ -545,11 +629,12 @@ static void _generateForestAssignment(ForestAssignment * forestAssignment){
 	else{
 		logError(_logger, "Unknown AssignationType: %d\n", forestAssignment->type);
 		ERROR_OCCURED = true;
-*compi=FAILED;
+		*compi=FAILED;
 	}
 }
 
 static void _generateForestAssignments(ForestAssignments * forestAssignments){
+	if(ERROR_OCCURED==true) return;
 	if(forestAssignments->type == SIMPLE_fa){
 		_generateForestAssignment(forestAssignments->singleForestAssignment);
 	}
@@ -560,11 +645,12 @@ static void _generateForestAssignments(ForestAssignments * forestAssignments){
 	else{
 		logError(_logger, "Unknown ForestAssignType: %d\n", forestAssignments->type);
 		ERROR_OCCURED = true;
-*compi=FAILED;
+		*compi=FAILED;
 	}
 }
 
 static void _generateForestExpression(ForestExpression * forestExpression){
+	if(ERROR_OCCURED==true) return;
 	if(forestExpression->type == EMPTY_f){
 		_output(file, 0, "forestExpression att:%s\n", forestExpression->id->idValue);//TODO sacar es para probar no mas
 		//TODO guardar forest default con ese id
@@ -577,11 +663,12 @@ static void _generateForestExpression(ForestExpression * forestExpression){
 	else{
 		logError(_logger, "Unknown ForestType: %d\n", forestExpression->type);
 		ERROR_OCCURED = true;
-*compi=FAILED;
+		*compi=FAILED;
 	}
 }
 
 static void _generateTreeAssignment(TreeAssignment * treeAssignment){
+	if(ERROR_OCCURED==true) return;
 	if(treeAssignment->type == ID_BY_VALUE){
 		//TODO mismo q co el de world pero con tree
 		if(treeAssignment->value->type == INTEGERvalue){
@@ -623,7 +710,7 @@ static void _generateTreeAssignment(TreeAssignment * treeAssignment){
 		else{
 			logError(_logger, "Wrong DeclarationValueType for treeAssignment: %d\n", treeAssignment->value->type);
 			ERROR_OCCURED = true;
-*compi=FAILED;
+			*compi=FAILED;
 			return;
 		}
 	}
@@ -631,7 +718,7 @@ static void _generateTreeAssignment(TreeAssignment * treeAssignment){
 		if(strcmp(treeAssignment->id->idValue, "leaf") == 0 || strcmp(treeAssignment->id->idValue, "color") == 0 || strcmp(treeAssignment->id->idValue, "snowed") == 0){
 			logError(_logger, "Tried to initialize tree->leaf or tree->color or tree->snowed with int result");
 			ERROR_OCCURED = true;
-*compi=FAILED;
+			*compi=FAILED;
 			return;
 		}
 		int op = _generateArithmeticOperation(treeAssignment->arithmeticOperation);
@@ -643,12 +730,13 @@ static void _generateTreeAssignment(TreeAssignment * treeAssignment){
 	else{
 		logError(_logger, "Unknown AssignationType: %d\n", treeAssignment->type);
 		ERROR_OCCURED = true;
-*compi=FAILED;
+		*compi=FAILED;
 	}
 }
 
 //TODO si esto termina devolviendo un struct del tipo de dato tree, hay que chequear q si algun assignment singular da error entonces da error toda la operación
 static void _generateTreeAssignments(TreeAssignments * treeAssignments){
+	if(ERROR_OCCURED==true) return;
 	if(treeAssignments->type == SIMPLE_ta){
 		_generateTreeAssignment(treeAssignments->singleTreeAssignment);
 	}
@@ -659,11 +747,12 @@ static void _generateTreeAssignments(TreeAssignments * treeAssignments){
 	else{
 		logError(_logger, "Unknown TreeAssignType: %d\n", treeAssignments->type);
 		ERROR_OCCURED = true;
-*compi=FAILED;
+		*compi=FAILED;
 	}
 }
 
 static void _generateTreeExpression(TreeExpression * treeExpression){
+	if(ERROR_OCCURED==true) return;
 	if(treeExpression->type == EMPTY_t){
 		//TODO guardar tree default con ese id
 		_output(file, 0, "treeExpression:%s\n", treeExpression->id->idValue);//TODO sacar es para probar no mas
@@ -677,11 +766,12 @@ static void _generateTreeExpression(TreeExpression * treeExpression){
 	else{
 		logError(_logger, "Unknown TreeType: %d\n", treeExpression->type);
 		ERROR_OCCURED = true;
-*compi=FAILED;
+		*compi=FAILED;
 	}
 }
 
 static void _generateMainExpression(MainExpression * mainExpression){
+	if(ERROR_OCCURED==true) return;
 	if(mainExpression->type == TREE_m){
 		_generateTreeExpression(mainExpression->treeExpression);
 	}
@@ -706,11 +796,12 @@ static void _generateMainExpression(MainExpression * mainExpression){
 	else{
 		logError(_logger, "Unknown MainExpressionType: %d\n", mainExpression->type);
 		ERROR_OCCURED = true;
-*compi=FAILED;
+		*compi=FAILED;
 	}
 }
 
 static void _generateMainExpressions(MainExpressions * mainExpressions){
+	if(ERROR_OCCURED==true) return;
 	if(mainExpressions->type == SIMPLE_e){
 		_generateMainExpression(mainExpressions->singleMainExpression);
 	}
@@ -721,11 +812,12 @@ static void _generateMainExpressions(MainExpressions * mainExpressions){
 	else{
 		logError(_logger, "Unknown ExpressionType: %d\n", mainExpressions->type);
 		ERROR_OCCURED = true;
-*compi=FAILED;
+		*compi=FAILED;
 	}
 }
 
 static void _generateWorldAssignment(WorldAssignment * worldAssignment){
+	if(ERROR_OCCURED==true) return;
 	if(worldAssignment->type == ID_BY_VALUE){
 		if(worldAssignment->value->type == INTEGERvalue){
 			if(checkWorldAttribute(worldAssignment->id->idValue, INTCLASS)){
@@ -742,7 +834,7 @@ static void _generateWorldAssignment(WorldAssignment * worldAssignment){
 		else{
 			logError(_logger, "Wrong DeclarationValueType for worldAssignment: %d\n", worldAssignment->value->type);
 			ERROR_OCCURED = true;
-*compi=FAILED;
+			*compi=FAILED;
 			return;
 		}		
 	}
@@ -751,7 +843,7 @@ static void _generateWorldAssignment(WorldAssignment * worldAssignment){
 		if(strcmp(worldAssignment->id->idValue, "message") == 0){
 			logError(_logger, "Tried to initialize world->message with int result");
 			ERROR_OCCURED = true;
-*compi=FAILED;
+			*compi=FAILED;
 			return;
 		}
 		int op = _generateArithmeticOperation(worldAssignment->arithmeticOperation);
@@ -763,11 +855,12 @@ static void _generateWorldAssignment(WorldAssignment * worldAssignment){
 	else{
 		logError(_logger, "Unknown AssignationType: %d\n", worldAssignment->type);
 		ERROR_OCCURED = true;
-*compi=FAILED;
+		*compi=FAILED;
 	}
 }
 
 static void _generateWorldAssignments(WorldAssignments * worldAssignments){
+	if(ERROR_OCCURED==true) return;
 	if(worldAssignments->wType == SIMPLE_w){
 		_generateWorldAssignment(worldAssignments->singleWorldAssignment);
 	}
@@ -778,11 +871,12 @@ static void _generateWorldAssignments(WorldAssignments * worldAssignments){
 	else{
 		logError(_logger, "Unknown WorldType: %d\n", worldAssignments->wType);
 		ERROR_OCCURED = true;
-*compi=FAILED;
+		*compi=FAILED;
 	}
 }
 
 static void _generateWorldExpression(WorldExpression * worldExpression){
+	if(ERROR_OCCURED==true) return;
 	_generateWorldAssignments(worldExpression->worldAssignments);
 }
 
@@ -797,7 +891,7 @@ static void _generateProgramExpression(ProgramExpression * programExpression){
 	else{
 		logError(_logger, "Unknown ProgramType: %d\n", programExpression->type);
 		ERROR_OCCURED = true;
-*compi=FAILED;
+		*compi=FAILED;
 	}
 }
 
