@@ -9,20 +9,20 @@ typedef struct {
 
 static Logger * _logger = NULL;
 
-KHASH_MAP_INIT_STR(hash, Entry)
+KHASH_MAP_INIT_STR(myhash, Entry)
 
-khash_t(hash) * table;
+khash_t(myhash) * table;
 
 
 void initializeTable(void){
-   table = kh_init(hash);
+   table = kh_init(myhash);
    _logger = createLogger("Table");
 }
 
 static EntryResult getEntry(char * identifier, EntryType type){
     logInformation(_logger, "Looking up value with the identifier: %s...", identifier);
     EntryResult result = { .found=false} ;
-    khiter_t k = kh_get(hash, table, identifier);
+    khiter_t k = kh_get(myhash, table, identifier);
     if ( k==kh_end(table) )
         return result;
     Entry entry = kh_value(table,k);
