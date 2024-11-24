@@ -2,7 +2,8 @@
 #define ABSTRACT_SYNTAX_TREE_HEADER
 
 #include "../../shared/Logger.h"
-#include <stdlib.h>
+#include <stdlib.h>/
+
 
 /** Initialize module's internal state. */
 void initializeAbstractSyntaxTreeModule();
@@ -36,6 +37,9 @@ typedef struct _HEXCOLOR _HEXCOLOR;
 typedef struct _STRING _STRING;
 typedef struct _BOOLEAN _BOOLEAN;
 typedef struct _INTEGER _INTEGER;
+typedef struct _TREE _TREE;
+typedef struct _FOREST _FOREST;
+typedef struct _WORLD _WORLD;
 typedef struct type type;
 typedef struct DeclarationValue DeclarationValue;
 typedef struct Program Program;
@@ -109,6 +113,29 @@ struct _BOOLEAN{
 
 struct _INTEGER{
 	int value;
+};
+
+struct _TREE{
+    int x;
+    int height;
+    char leaf;
+    Hexcolor color;
+    int depth;
+    int density;
+    int bark;
+    boolean snowed
+};
+
+struct _FOREST{
+    int start;
+    int end;
+};
+
+struct _WORLD{
+    int height;
+    int width;
+    int uneveness;
+    char * message;
 };
 
 struct type{
