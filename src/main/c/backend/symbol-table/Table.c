@@ -19,6 +19,20 @@ void initializeTable(void){
    _logger = createLogger("Table");
 }
 
+void destroyTable(void){
+    kh_destroy(hash, table);
+}
+
+EntryType getType(char * identifier){
+    logInformation(_logger, "Looking up type with the identifier: %s...", identifier);
+    khiter_t k = kh_get(hash, table, identifier);
+    if( k == kh_end(table) ){
+        return EMPTY_TYPE;
+    }
+    Entry entry = kh_value(table, k);
+    return entry.type;
+}
+
 static EntryResult getEntry(char * identifier, EntryType type){
     logInformation(_logger, "Looking up value with the identifier: %s...", identifier);
     EntryResult result = { .found=false} ;

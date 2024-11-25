@@ -6,7 +6,7 @@ typedef enum {
 	true = 1
 } boolean;
 
-typedef enum{ INTEGER_T, BOOLEAN_T, STRING_T, HEXCOLOR_T, TREE_T, FOREST_T, WORLD_T } SymbolTypes;
+typedef enum{ INTEGER_T, BOOLEAN_T, STRING_T, HEXCOLOR_T, TREE_T, FOREST_T, WORLD_T, EMPTY_T } SymbolTypes;
 
 typedef int Token;
 typedef char* Id;
