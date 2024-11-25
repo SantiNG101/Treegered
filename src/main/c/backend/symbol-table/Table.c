@@ -21,6 +21,7 @@ void initializeTable(void){
 
 void destroyTable(void){
     kh_destroy(hash, table);
+    destroyLogger(_logger);
 }
 
 EntryType getType(char * identifier){
