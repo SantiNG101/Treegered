@@ -23,6 +23,24 @@ void destroyTable(void){
     destroyLogger(_logger);
 }
 
+boolean updateValueInteger(char * identifier, int newValue){
+    logInformation(_logger, "Looking up type with the identifier: %s...", identifier);
+    khiter_t k = kh_get(myhash, table, identifier);
+    if (k == kh_end(table)) {
+        logWarning(_logger, "Identifier %s not found", identifier);
+        return false;  // Si no se encuentra, devolver false.
+    }
+
+    // si encuentra, obtener la entrada y modificar el valor del EntryValue
+    kh_del(myhash, table, identifier);
+    _INTEGER * newEntryValue = calloc(1, sizeof(_INTEGER));
+    newEntryValue->value = newValue;
+    insertInteger(identifier, newEntryValue);
+
+    logInformation(_logger, "Identifier %s modified successfully", identifier);
+    return true;
+}
+
 EntryType getType(char * identifier){
     logInformation(_logger, "Looking up type with the identifier: %s...", identifier);
 

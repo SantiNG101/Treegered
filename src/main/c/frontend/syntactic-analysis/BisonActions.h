@@ -6,7 +6,10 @@
 #include "../../shared/Type.h"
 #include "AbstractSyntaxTree.h"
 #include "SyntacticAnalyzer.h"
+#include "../../backend/symbol-table/Table.h"
 #include <stdlib.h>
+#include "../../shared/Type.h"
+#include "../../frontend/syntactic-analysis/BisonParser.h"
 
 /** Initialize module's internal state. */
 void initializeBisonActionsModule();

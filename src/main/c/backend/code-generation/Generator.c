@@ -8,24 +8,6 @@ const char _indentationSize = 4;
 static Logger * _logger = NULL;
 FILE * file = NULL;
 
-/* DEFAULT VALUES */
-const int DEFAULT_WORLD_HEIGHT = 70;
-const int DEFAULT_WORLD_WIDTH = 100;
-const int DEFAULT_WORLD_UNEVENESS = 0;
-char * DEFAULT_WORLD_MESSAGE = "bie ^_^";
-
-const int DEFAULT_TREE_HEIGHT = 10;
-const int DEFAULT_TREE_X = DEFAULT_WORLD_WIDTH/2;
-const char DEFAULT_TREE_LEAF = '*';
-const Hexcolor DEFAULT_TREE_COLOR = "#FFFFFF";
-const int DEFAULT_TREE_DEPTH = 0;
-const int DEFAULT_TREE_DENSITY = 0;
-const int DEFAULT_TREE_BARK = 0;
-const boolean DEFAULT_TREE_SNOWED = false;
-
-const int DEFAULT_FOREST_START = 0;
-const int DEFAULT_FOREST_END = DEFAULT_WORLD_WIDTH;
-
 void initializeGeneratorModule() {
 	_logger = createLogger("Generator");
 	initializeTable();
@@ -812,31 +794,31 @@ static void _generateGeneralAssignation(GeneralAssignation * generalAssignation)
 	if(generalAssignation->type == ID_BY_VALUE_TYPE){
 		if(generalAssignation->classType->class == INTCLASS){
 			if(generalAssignation->value->type == INTEGERvalue){
-				_INTEGER * integer = calloc(1, sizeof(_INTEGER));
+				/* _INTEGER * integer = calloc(1, sizeof(_INTEGER));
 				integer->value = generalAssignation->value->intValue->value;
 				insertInteger(generalAssignation->idDeclared->idValue, integer);
-				return;
+				return; */
 			}
 			else if(generalAssignation->value->type == ATTvalue){
 				if(generalAssignation->value->attValue->type == WORLDatt){
-					_WORLD * world = getWorld("world").value._world;
+					//_WORLD * world = getWorld("world").value._world;
 
 					if(strcmp(generalAssignation->value->attValue->attribute->idValue, "width") == 0){
-						_INTEGER * integer = calloc(1, sizeof(_INTEGER));
+						/* _INTEGER * integer = calloc(1, sizeof(_INTEGER));
 						integer->value = world->width;
-						insertInteger(generalAssignation->idDeclared->idValue, integer);
+						insertInteger(generalAssignation->idDeclared->idValue, integer); */
 						return;
 					}
 					else if(strcmp(generalAssignation->value->attValue->attribute->idValue, "height") == 0){
-						_INTEGER * integer = calloc(1, sizeof(_INTEGER));
+						/* _INTEGER * integer = calloc(1, sizeof(_INTEGER));
 						integer->value = world->height;
-						insertInteger(generalAssignation->idDeclared->idValue, integer);
+						insertInteger(generalAssignation->idDeclared->idValue, integer); */
 						return;
 					}
 					else if(strcmp(generalAssignation->value->attValue->attribute->idValue, "uneveness") == 0){
-						_INTEGER * integer = calloc(1, sizeof(_INTEGER));
+						/* _INTEGER * integer = calloc(1, sizeof(_INTEGER));
 						integer->value = world->uneveness;
-						insertInteger(generalAssignation->idDeclared->idValue, integer);
+						insertInteger(generalAssignation->idDeclared->idValue, integer); */
 						return;
 					}
 					else{
@@ -857,33 +839,33 @@ static void _generateGeneralAssignation(GeneralAssignation * generalAssignation)
 					if(type == TREE_TYPE){
 						_TREE * tree = getTree(generalAssignation->value->attValue->variableID->idValue).value._tree;
 						if(strcmp(generalAssignation->value->attValue->attributeID->idValue, "x") == 0){
-							_INTEGER * integer = calloc(1, sizeof(_INTEGER));
+							/* _INTEGER * integer = calloc(1, sizeof(_INTEGER));
 							integer->value = tree->x;
-							insertInteger(generalAssignation->idDeclared->idValue, integer);
+							insertInteger(generalAssignation->idDeclared->idValue, integer); */
 							return;
 						}
 						else if(strcmp(generalAssignation->value->attValue->attributeID->idValue, "depth") == 0){
-							_INTEGER * integer = calloc(1, sizeof(_INTEGER));
+							/* _INTEGER * integer = calloc(1, sizeof(_INTEGER));
 							integer->value = tree->depth;
-							insertInteger(generalAssignation->idDeclared->idValue, integer);
+							insertInteger(generalAssignation->idDeclared->idValue, integer); */
 							return;
 						}
 						else if(strcmp(generalAssignation->value->attValue->attributeID->idValue, "density") == 0){
-							_INTEGER * integer = calloc(1, sizeof(_INTEGER));
+							/* _INTEGER * integer = calloc(1, sizeof(_INTEGER));
 							integer->value = tree->density;
-							insertInteger(generalAssignation->idDeclared->idValue, integer);
+							insertInteger(generalAssignation->idDeclared->idValue, integer); */
 							return;
 						}
 						else if(strcmp(generalAssignation->value->attValue->attributeID->idValue, "bark") == 0){
-							_INTEGER * integer = calloc(1, sizeof(_INTEGER));
+							/* _INTEGER * integer = calloc(1, sizeof(_INTEGER));
 							integer->value = tree->bark;
-							insertInteger(generalAssignation->idDeclared->idValue, integer);
+							insertInteger(generalAssignation->idDeclared->idValue, integer); */
 							return;
 						}
 						else if(strcmp(generalAssignation->value->attValue->attributeID->idValue, "height") == 0){
-							_INTEGER * integer = calloc(1, sizeof(_INTEGER));
+							/* _INTEGER * integer = calloc(1, sizeof(_INTEGER));
 							integer->value = tree->height;
-							insertInteger(generalAssignation->idDeclared->idValue, integer);
+							insertInteger(generalAssignation->idDeclared->idValue, integer); */
 							return;
 						}
 						else{
@@ -896,15 +878,15 @@ static void _generateGeneralAssignation(GeneralAssignation * generalAssignation)
 					else if(type == FOREST_TYPE){
 						_FOREST * forest = getTree(generalAssignation->value->attValue->variableID->idValue).value._forest;
 						if(strcmp(generalAssignation->value->attValue->attributeID->idValue, "start") == 0){
-							_INTEGER * integer = calloc(1, sizeof(_INTEGER));
+							/* _INTEGER * integer = calloc(1, sizeof(_INTEGER));
 							integer->value = forest->start;
-							insertInteger(generalAssignation->idDeclared->idValue, integer);
+							insertInteger(generalAssignation->idDeclared->idValue, integer); */
 							return;
 						}
 						else if(strcmp(generalAssignation->value->attValue->attributeID->idValue, "end") == 0){
-							_INTEGER * integer = calloc(1, sizeof(_INTEGER));
+							/* _INTEGER * integer = calloc(1, sizeof(_INTEGER));
 							integer->value = forest->end;
-							insertInteger(generalAssignation->idDeclared->idValue, integer);
+							insertInteger(generalAssignation->idDeclared->idValue, integer); */
 							return;
 						}
 						else{
@@ -930,7 +912,7 @@ static void _generateGeneralAssignation(GeneralAssignation * generalAssignation)
 					}
 				}
 			}
-			else if(generalAssignation->value->type == DECLARATIONvalue){
+			 else if(generalAssignation->value->type == DECLARATIONvalue){
 				GeneralAssignation * aux = calloc(1, sizeof(GeneralAssignation));
 				aux->idDeclared = generalAssignation->idDeclared;
 				aux->classType = generalAssignation->classType;
@@ -949,9 +931,9 @@ static void _generateGeneralAssignation(GeneralAssignation * generalAssignation)
 		}
 		else if(generalAssignation->classType->class == STRCLASS){
 			if(generalAssignation->value->type == STRINGvalue){
-				_STRING * string = calloc(1, sizeof(_STRING));
+				/* _STRING * string = calloc(1, sizeof(_STRING));
 				string->value = generalAssignation->value->charValue->value;
-				insertString(generalAssignation->idDeclared->idValue, string);
+				insertString(generalAssignation->idDeclared->idValue, string);*/
 				return;
 			}
 			else if(generalAssignation->value->type == ATTvalue){
@@ -959,9 +941,9 @@ static void _generateGeneralAssignation(GeneralAssignation * generalAssignation)
 					_WORLD * world = getWorld("world").value._world;
 
 					if(strcmp(generalAssignation->value->attValue->attribute->idValue, "message") == 0){
-						_STRING * string = calloc(1, sizeof(_STRING));
+						/* _STRING * string = calloc(1, sizeof(_STRING));
 						string->value = world->message;
-						insertString(generalAssignation->idDeclared->idValue, string);
+						insertString(generalAssignation->idDeclared->idValue, string); */
 						return;
 					}
 					else{
@@ -1020,9 +1002,9 @@ static void _generateGeneralAssignation(GeneralAssignation * generalAssignation)
 		}
 		else if(generalAssignation->classType->class == BOOLCLASS){
 			if(generalAssignation->value->type == BOOLEANvalue){
-				_BOOLEAN * boool = calloc(1, sizeof(_BOOLEAN));
+				/* _BOOLEAN * boool = calloc(1, sizeof(_BOOLEAN));
 				boool->value = generalAssignation->value->booleanValue->value;
-				insertBoolean(generalAssignation->idDeclared->idValue, boool);
+				insertBoolean(generalAssignation->idDeclared->idValue, boool); */
 				return;
 			}
 			else if(generalAssignation->value->type == ATTvalue){
@@ -1043,9 +1025,9 @@ static void _generateGeneralAssignation(GeneralAssignation * generalAssignation)
 					if(type == TREE_TYPE){
 						_TREE * tree = getTree(generalAssignation->value->attValue->variableID->idValue).value._tree;
 						if(strcmp(generalAssignation->value->attValue->attributeID->idValue, "snowed") == 0){
-							_BOOLEAN * boool = calloc(1, sizeof(_BOOLEAN));
+							/* _BOOLEAN * boool = calloc(1, sizeof(_BOOLEAN));
 							boool->value = tree->snowed;
-							insertBoolean(generalAssignation->idDeclared->idValue, boool);
+							insertBoolean(generalAssignation->idDeclared->idValue, boool); */
 							return;
 						}
 						else{
@@ -1096,9 +1078,9 @@ static void _generateGeneralAssignation(GeneralAssignation * generalAssignation)
 		}
 		else if(generalAssignation->classType->class == HEXCOLORCLASS){
 			if(generalAssignation->value->type == HEXCOLORvalue){
-				_HEXCOLOR * color = calloc(1, sizeof(_HEXCOLOR));
+				/* _HEXCOLOR * color = calloc(1, sizeof(_HEXCOLOR));
 				color->value = generalAssignation->value->hexcolorValue->value;
-				insertHexcolor(generalAssignation->idDeclared->idValue, color);
+				insertHexcolor(generalAssignation->idDeclared->idValue, color); */
 				return;
 			}
 			else if(generalAssignation->value->type == ATTvalue){
@@ -1119,9 +1101,9 @@ static void _generateGeneralAssignation(GeneralAssignation * generalAssignation)
 					if(type == TREE_TYPE){
 						_TREE * tree = getTree(generalAssignation->value->attValue->variableID->idValue).value._tree;
 						if(strcmp(generalAssignation->value->attValue->attributeID->idValue, "color") == 0){
-							_HEXCOLOR * color = calloc(1, sizeof(_HEXCOLOR));
+							/* _HEXCOLOR * color = calloc(1, sizeof(_HEXCOLOR));
 							color->value = tree->color;
-							insertHexcolor(generalAssignation->idDeclared->idValue, color);
+							insertHexcolor(generalAssignation->idDeclared->idValue, color); */
 							return;
 						}
 						else{
@@ -1898,11 +1880,13 @@ static void _generateForExpression(ForExpression * forExpression){
 			*compi=FAILED;
 			return;
 		}
-		_INTEGER * integer = calloc(1, sizeof(_INTEGER));
+		/* _INTEGER * integer = calloc(1, sizeof(_INTEGER));
 		integer->value = forExpression->rangeStart->value;
-		insertInteger(forExpression->id->idValue, integer);
+		insertInteger(forExpression->id->idValue, integer); */
 		for(int i = forExpression->rangeStart->value; i < forExpression->rangeEnd->value; i++){
-			integer->value = i;
+			// Esto no estoy segura de que se haga asi pero veremos
+			// integer->value = i;
+			updateValueInteger(forExpression->id->idValue, i);
 			_generateMainExpressions(forExpression->mainExpressions);
 			if(ERROR_OCCURED==true) return;
 		}
@@ -2186,10 +2170,10 @@ static void _generateForestExpression(ForestExpression * forestExpression){
 			*compi=FAILED;
 		}
 		else{
-			_FOREST * forest = calloc(1, sizeof(_FOREST));
+			/* _FOREST * forest = calloc(1, sizeof(_FOREST));
 			forest->start = DEFAULT_FOREST_START;
 			forest->end = DEFAULT_FOREST_END;
-			insertForest(forestExpression->id->idValue, forest);
+			insertForest(forestExpression->id->idValue, forest); */
 		}
 	}
 	else if(forestExpression->type == FULL_f){
@@ -2199,10 +2183,10 @@ static void _generateForestExpression(ForestExpression * forestExpression){
 			*compi=FAILED;
 		}
 		else{
-			_FOREST * forest = calloc(1, sizeof(_FOREST));
+			/* _FOREST * forest = calloc(1, sizeof(_FOREST));
 			forest->start = DEFAULT_FOREST_START;
 			forest->end = DEFAULT_FOREST_END;
-			insertForest(forestExpression->id->idValue, forest);
+			insertForest(forestExpression->id->idValue, forest); */
 			_generateForestAssignments(forestExpression->forestAssignments, forestExpression->id->idValue);
 		}
 	}
@@ -2656,7 +2640,7 @@ static void _generateTreeExpression(TreeExpression * treeExpression){
 			*compi=FAILED;
 		}
 		else{
-			_TREE * tree = calloc(1, sizeof(_TREE));
+			/* _TREE * tree = calloc(1, sizeof(_TREE));
 			tree->x = DEFAULT_TREE_X;
 			tree->height = DEFAULT_TREE_HEIGHT;
 			tree->leaf = DEFAULT_TREE_LEAF;
@@ -2665,7 +2649,7 @@ static void _generateTreeExpression(TreeExpression * treeExpression){
 			tree->density = DEFAULT_TREE_DENSITY;
 			tree->bark = DEFAULT_TREE_BARK;
 			tree->snowed = DEFAULT_TREE_SNOWED;
-			insertTree(treeExpression->id->idValue, tree);
+			insertTree(treeExpression->id->idValue, tree); */
 		}
 	}
 	else if(treeExpression->type == FULL_t){
@@ -2675,7 +2659,7 @@ static void _generateTreeExpression(TreeExpression * treeExpression){
 			*compi=FAILED;
 		}
 		else{
-			_TREE * tree = calloc(1, sizeof(_TREE));
+			/* _TREE * tree = calloc(1, sizeof(_TREE));
 			tree->x = DEFAULT_TREE_X;
 			tree->height = DEFAULT_TREE_HEIGHT;
 			tree->leaf = DEFAULT_TREE_LEAF;
@@ -2684,7 +2668,7 @@ static void _generateTreeExpression(TreeExpression * treeExpression){
 			tree->density = DEFAULT_TREE_DENSITY;
 			tree->bark = DEFAULT_TREE_BARK;
 			tree->snowed = DEFAULT_TREE_SNOWED;
-			insertTree(treeExpression->id->idValue, tree);
+			insertTree(treeExpression->id->idValue, tree); */
 			_generateTreeAssignments(treeExpression->treeAssignments, treeExpression->id->idValue);
 		}
 		
@@ -3107,12 +3091,12 @@ static void _generateWorldExpression(WorldExpression * worldExpression){
 }
 
 static void _generateProgramExpression(ProgramExpression * programExpression){
-	_WORLD * world = calloc(1, sizeof(_WORLD));
+	/* _WORLD * world = calloc(1, sizeof(_WORLD));
 	world->height = DEFAULT_WORLD_HEIGHT;
 	world->width = DEFAULT_WORLD_WIDTH;
 	world->uneveness = DEFAULT_WORLD_UNEVENESS;
 	world->message = DEFAULT_WORLD_MESSAGE;
-	insertWorld("world", world);
+	insertWorld("world", world); */
 
 	if(programExpression->type == WORLDLESS){
 		_generateMainExpressions(programExpression->worldlessMainExpressions);

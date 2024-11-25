@@ -35,6 +35,8 @@ void initializeTable(void);
 
 void destroyTable(void);
 
+boolean updateValueInteger(char * identifier, int newValue);
+
 EntryType getType(char * identifier);
 
 EntryResult getInteger(char * identifier);

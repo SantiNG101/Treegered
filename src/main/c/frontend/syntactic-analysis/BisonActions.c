@@ -1,5 +1,24 @@
 #include "BisonActions.h"
 
+/* DEFAULT VALUES */
+
+const int DEFAULT_WORLD_HEIGHT = 70;
+const int DEFAULT_WORLD_WIDTH = 100;
+const int DEFAULT_WORLD_UNEVENESS = 0;
+char * DEFAULT_WORLD_MESSAGE = "bie ^_^";
+
+const int DEFAULT_TREE_HEIGHT = 10;
+const int DEFAULT_TREE_X = DEFAULT_WORLD_WIDTH/2;
+const char DEFAULT_TREE_LEAF = '*';
+const Hexcolor DEFAULT_TREE_COLOR = "#FFFFFF";
+const int DEFAULT_TREE_DEPTH = 0;
+const int DEFAULT_TREE_DENSITY = 0;
+const int DEFAULT_TREE_BARK = 0;
+const boolean DEFAULT_TREE_SNOWED = false;
+
+const int DEFAULT_FOREST_START = 0;
+const int DEFAULT_FOREST_END = DEFAULT_WORLD_WIDTH;
+
 /* MODULE INTERNAL STATE */
 
 static Logger * _logger = NULL;
@@ -202,6 +221,16 @@ ProgramExpression * WorldlessProgramExpressionSemanticAction(MainExpressions * m
 	ProgramExpression * programExpression = calloc(1, sizeof(ProgramExpression));
 	programExpression->worldlessMainExpressions = mainExpressions;
 	programExpression->type = type;
+
+	// For symbol table
+
+	_WORLD * world = calloc(1, sizeof(_WORLD));
+	world->height = DEFAULT_WORLD_HEIGHT;
+	world->width = DEFAULT_WORLD_WIDTH;
+	world->uneveness = DEFAULT_WORLD_UNEVENESS;
+	world->message = DEFAULT_WORLD_MESSAGE;
+	insertWorld("world", world);
+
 	return programExpression;
 }
 
@@ -211,6 +240,15 @@ ProgramExpression * WorldProgramExpressionSemanticAction(MainExpressions * mainE
 	programExpression->worldExpression = worldExpression;
 	programExpression->mainExpressions = mainExpressions;
 	programExpression->type = type;
+	
+	// For symbol table
+	_WORLD * world = calloc(1, sizeof(_WORLD));
+	world->height = DEFAULT_WORLD_HEIGHT;
+	world->width = DEFAULT_WORLD_WIDTH;
+	world->uneveness = DEFAULT_WORLD_UNEVENESS;
+	world->message = DEFAULT_WORLD_MESSAGE;
+	insertWorld("world", world);
+
 	return programExpression;
 }
 
@@ -324,6 +362,12 @@ ForestExpression * ForestExpressionSemanticAction(Id id, ForestAssignments * for
 	notDefaultForest->id = aux;
 	notDefaultForest->forestAssignments = forestAssignments;
 	notDefaultForest->type = type;
+
+	// For symbol table
+	_FOREST * forest = calloc(1, sizeof(_FOREST));
+	forest->start = DEFAULT_FOREST_START;
+	forest->end = DEFAULT_FOREST_END;
+	insertForest(notDefaultForest->id->idValue, forest);
 	
 	return notDefaultForest;
 }
@@ -338,6 +382,11 @@ ForestExpression * DefaultForestExpressionSemanticAction(Id id, ForestType type)
 	defaultForest->id = aux;
 	defaultForest->type = type;
 	
+	_FOREST * forest = calloc(1, sizeof(_FOREST));
+	forest->start=DEFAULT_FOREST_START;
+	forest->end=DEFAULT_FOREST_END;
+	insertForest(defaultForest->id->idValue, forest);
+
 	return defaultForest;
 }
 
@@ -400,6 +449,18 @@ TreeExpression * TreeExpressionSemanticAction(Id id, TreeAssignments * treeAssig
 	treeExpression->treeAssignments = treeAssignments;
 	treeExpression->id = aux;
 	treeExpression->type = type;
+
+	// For symbol table
+	_TREE * tree = calloc(1, sizeof(_TREE));
+			tree->x = DEFAULT_TREE_X;
+			tree->height = DEFAULT_TREE_HEIGHT;
+			tree->leaf = DEFAULT_TREE_LEAF;
+			tree->color = DEFAULT_TREE_COLOR;
+			tree->depth = DEFAULT_TREE_DEPTH;
+			tree->density = DEFAULT_TREE_DENSITY;
+			tree->bark = DEFAULT_TREE_BARK;
+			tree->snowed = DEFAULT_TREE_SNOWED;
+			insertTree(treeExpression->id->idValue, tree);
 	
 	return treeExpression;	
 }
@@ -413,6 +474,18 @@ TreeExpression * DefaultTreeExpressionSemanticAction(Id id, TreeType type){
 	
 	defaultTree->id = aux;
 	defaultTree->type = type;
+
+	// For symbol table
+	_TREE * tree = calloc(1, sizeof(_TREE));
+	tree->x = DEFAULT_TREE_X;
+	tree->height = DEFAULT_TREE_HEIGHT;
+	tree->leaf = DEFAULT_TREE_LEAF;
+	tree->color = DEFAULT_TREE_COLOR;
+	tree->depth = DEFAULT_TREE_DEPTH;
+	tree->density = DEFAULT_TREE_DENSITY;
+	tree->bark = DEFAULT_TREE_BARK;
+	tree->snowed = DEFAULT_TREE_SNOWED;
+	insertTree(defaultTree->id->idValue, tree);
 	
 	return defaultTree;
 }
@@ -447,6 +520,11 @@ ForExpression * ForExpressionSemanticAction(Id id, int start, int end, MainExpre
 	forExpression->rangeEnd = auxEnd;
 	forExpression->mainExpressions = mainExpressions;
 	forExpression->type = type;
+
+	// For symbol table
+	_INTEGER * integer = calloc(1, sizeof(_INTEGER));
+	integer->value = forExpression->rangeStart->value;
+	insertInteger(forExpression->id->idValue, integer);
 	
 	return forExpression;
 }
@@ -546,7 +624,7 @@ GeneralAssignation * GeneralSingleDeclarationAssignationSemanticAction(Id id, De
 
 	return singleDeclare;
 }
-
+																// intclass                                           // id_by_value_type
 GeneralAssignation * GeneralDeclarationAssignationSemanticAction(type * classType, Id id, DeclarationValue * value, AssignationType type){
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	GeneralAssignation * generalDeclare = calloc(1, sizeof(GeneralAssignation));
