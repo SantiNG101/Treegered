@@ -8,9 +8,27 @@ const char _indentationSize = 4;
 static Logger * _logger = NULL;
 FILE * file = NULL;
 
+/* DEFAULT VALUES */
+int DEFAULT_WORLD_HEIGHT = 70;
+int DEFAULT_WORLD_WIDTH = 100;
+int DEFAULT_WORLD_UNEVENESS = 0;
+char * DEFAULT_WORLD_MESSAGE = "bie ^_^";
+
+int DEFAULT_TREE_HEIGHT = 10;
+int DEFAULT_TREE_X = DEFAULT_WORLD_WIDTH/2;
+char DEFAULT_TREE_LEAF = '*';
+Hexcolor DEFAULT_TREE_COLOR = #FFFFFF;
+int DEFAULT_TREE_DEPTH = 0;
+int DEFAULT_TREE_DENSITY = 0;
+int DEFAULT_TREE_BARK = 0;
+boolean DEFAULT_TREE_SNOWED = false;
+
+int DEFAULT_FOREST_START = 0;
+int DEFAULT_FOREST_END = DEFAULT_WORLD_WIDTH;
+
 void initializeGeneratorModule() {
 	_logger = createLogger("Generator");
-	//initTable();
+	initializeTable();
 	file = fopen("treegered.txt", "w");
 }
 
@@ -18,13 +36,12 @@ void shutdownGeneratorModule() {
 	if (_logger != NULL) {
 		destroyLogger(_logger);
 		fclose(file);
-		//freeTable();
+		freeTable();
 	}
 }
 
 /** PRIVATE FUNCTIONS */
 static void _generateEpilogue(void);
-static void _generatePrologue(void);
 static char * _indentation(const unsigned int indentationLevel);
 static void _output(FILE * file, const unsigned int indentationLevel, const char * const format, ...);
 
@@ -54,28 +71,6 @@ static boolean _getConditionalClauseResultBool(boolean b1, boolean b2, Compariss
 static boolean _getConditionalClauseResultInt(int i1, int i2, ComparissonType ct);
 
 static int _getArithOpResult(int v1, int v2, OperatorType ot);
-
-
-/* AUX FUNCTIONS */ //TODO son placeholders, cambiar con lo de la tabla luego
-boolean checkWorldAttribute(char * name, int type){
-	return ((strcmp(name, "height") == 0 && (type == INTCLASS))
-		|| (strcmp(name, "width") == 0 && (type == INTCLASS))
-		|| (strcmp(name, "uneveness") == 0 && (type == INTCLASS))
-		|| (strcmp(name, "message") == 0 && (type == STRCLASS)));
-}
-
-boolean checkTreeAttribute(char * name, int type){
-	return true;//TODO
-}
-
-boolean checkForestAttribute(char * name, int type){
-	return true;//TODO
-}
-
-boolean checkGrow(char * name){
-	//TODO chequear q exista en la tabla, y que ademas de existir sea TREECLASS/FORESTCLASS
-	return true;//placeholder
-}
 
 /**************************************** */
 
@@ -820,18 +815,126 @@ static void _generateMainExpressions(MainExpressions * mainExpressions){
 
 static void _generateWorldAssignment(WorldAssignment * worldAssignment){
 	if(ERROR_OCCURED==true) return;
+	
+	_WORLD world = getWorld("world")->_world;
+
 	if(worldAssignment->type == ID_BY_VALUE){
 		if(worldAssignment->value->type == INTEGERvalue){
-			if(checkWorldAttribute(worldAssignment->id->idValue, INTCLASS)){
-				_output(file, 0, "worldAssignment int :%s\n", worldAssignment->id->idValue);//TODO sacar es para probar no mas
-				//addToTable();//TODO nose como acceder al nodo de world, en particular al id este, capaz se podria integrar en checkWorldAtt el update de tabla y mandar directo el value?
+			if(strcmp(worldAssignment->id->idValue, "height") == 0){
+				world->height = worldAssignment->value->intValue->value;
 			}
+			else if(strcmp(worldAssignment->id->idValue, "width") == 0){
+				world->width = worldAssignment->value->intValue->value;
+			}
+			else if(strcmp(worldAssignment->id->idValue, "uneveness") == 0){
+				world->uneveness = worldAssignment->value->intValue->value;
+			}
+			else{
+				logError(_logger, "Unknown world attribute assignment by int value by name: %s\n", worldAssignment->id->idValue);
+				ERROR_OCCURED = true;
+				*compi=FAILED;
+			}
+			return;
 		}
 		else if(worldAssignment->value->type == STRINGvalue){
-			if(checkWorldAttribute(worldAssignment->id->idValue, STRCLASS)){
-				_output(file, 0, "worldAssignment str:%s\n", worldAssignment->id->idValue);//TODO sacar es para probar no mas
-				//addToTable();//TODO idem
+			if(strcmp(worldAssignment->id->idValue, "message") == 0){
+				world->uneveness = worldAssignment->value->charValue->value;
 			}
+			else{
+				logError(_logger, "Unknown world attribute assignment by str value by name: %s\n", worldAssignment->id->idValue);
+				ERROR_OCCURED = true;
+				*compi=FAILED;
+			}
+			return;
+		}
+		else if(worldAssignment->value->type == DECLARATIONvalue){
+			WorldAssignment * aux = calloc(1, sizeof(WorldAssignment));
+			aux->id = worldAssignment->id;
+			aux->value = worldAssignment->value->declareValue;
+			_generateWorldAssignment(aux);
+			free(aux);
+			return;
+		}
+		else if(worldAssignment->value->type == ATTvalue){
+			if(worldAssignment->value->attValue->type == WORLDatt){
+				if(strcmp(worldAssignment->id, "height") == 0){
+					if(strcmp(worldAssignment->value->attValue->attribute, "height") == 0){
+						world->height = world->height;
+					}
+					else if(strcmp(worldAssignment->value->attValue->attribute, "width") == 0){
+						world->height = world->width;
+					}
+					else if(strcmp(worldAssignment->value->attValue->attribute, "uneveness") == 0){
+						world->height = world->uneveness;
+					}
+					else{
+						logError(_logger, "Unknown worldAttribute to assign to world->height: %s\n", worldAssignment->value->attValue->attribute);
+						ERROR_OCCURED = true;
+						*compi=FAILED;
+					}
+					return;
+				}
+				else if(strcmp(worldAssignment->id, "width") == 0){
+					if(strcmp(worldAssignment->value->attValue->attribute, "height") == 0){
+						world->width = world->height;
+					}
+					else if(strcmp(worldAssignment->value->attValue->attribute, "width") == 0){
+						world->width = world->width;
+					}
+					else if(strcmp(worldAssignment->value->attValue->attribute, "uneveness") == 0){
+						world->width = world->uneveness;
+					}
+					else{
+						logError(_logger, "Unknown worldAttribute to assign to world->width: %s\n", worldAssignment->value->attValue->attribute);
+						ERROR_OCCURED = true;
+						*compi=FAILED;
+					}
+					return;
+				}
+				else if(strcmp(worldAssignment->id, "uneveness") == 0){
+					if(strcmp(worldAssignment->value->attValue->attribute, "height") == 0){
+						world->uneveness = world->height;
+					}
+					else if(strcmp(worldAssignment->value->attValue->attribute, "width") == 0){
+						world->uneveness = world->width;
+					}
+					else if(strcmp(worldAssignment->value->attValue->attribute, "uneveness") == 0){
+						world->uneveness = world->uneveness;
+					}
+					else{
+						logError(_logger, "Unknown worldAttribute to assign to world->uneveness: %s\n", worldAssignment->value->attValue->attribute);
+						ERROR_OCCURED = true;
+						*compi=FAILED;
+					}
+					return;
+				}
+				else if(strcmp(worldAssignment->id, "message") == 0){
+					if(strcmp(worldAssignment->value->attValue->attribute, "message") == 0){
+						world->message = world->message;
+					}
+					else{
+						logError(_logger, "Unknown worldAttribute to assign to world->message: %s\n", worldAssignment->value->attValue->attribute);
+						ERROR_OCCURED = true;
+						*compi=FAILED;
+					}
+					return
+				}
+				else{
+					logError(_logger, "Unknown worldAttribute: %s\n", worldAssignment->id);
+					ERROR_OCCURED = true;
+					*compi=FAILED;
+					return;
+				}
+			}
+			else if(worldAssignment->value->attValue->type == IDatt){
+				
+			}
+			else{
+				logError(_logger, "Unknown attributeValueType: %d\n", worldAssignment->value->attValue->type);
+				ERROR_OCCURED = true;
+				*compi=FAILED;
+			}
+			return;
 		}
 		else{
 			logError(_logger, "Wrong DeclarationValueType for worldAssignment: %d\n", worldAssignment->value->type);
@@ -841,18 +944,31 @@ static void _generateWorldAssignment(WorldAssignment * worldAssignment){
 		}		
 	}
 	else if(worldAssignment->type == ID_BY_OPP){//OBS: only INTCLASS att are possible then
-		//TODO check ID sea worldAtt, procesar la OPP, er ue coincida con el typr, sobrescribir en tabla
 		if(strcmp(worldAssignment->id->idValue, "message") == 0){
 			logError(_logger, "Tried to initialize world->message with int result");
 			ERROR_OCCURED = true;
 			*compi=FAILED;
 			return;
 		}
+
 		int op = _generateArithmeticOperation(worldAssignment->arithmeticOperation);
-		if(checkWorldAttribute(worldAssignment->id->idValue, INTCLASS)){
-			_output(file, 0, "worldAssignment arith:%s\n", worldAssignment->id->idValue);//TODO sacar es para probar no mas
-			//addToTable();//TODO lo mismo que en el caso anterior, seria con op siempre lo cual es aun mas comodo
+		if(ERROR_OCCURED==true) return;
+
+		if(strcmp(worldAssignment->id->idValue, "height") == 0){
+			world->height = op;
 		}
+		else if(strcmp(worldAssignment->id->idValue, "width") == 0){
+			world->width = op;
+		}
+		else if(strcmp(worldAssignment->id->idValue, "uneveness") == 0){
+			world->uneveness = op;
+		}
+		else{
+			logError(_logger, "Unknown world attribute assign by operation: name(%s)\n", worldAssignment->id->idValue);
+			ERROR_OCCURED = true;
+			*compi=FAILED;
+		}
+		return;
 	}
 	else{
 		logError(_logger, "Unknown AssignationType: %d\n", worldAssignment->type);
@@ -883,6 +999,13 @@ static void _generateWorldExpression(WorldExpression * worldExpression){
 }
 
 static void _generateProgramExpression(ProgramExpression * programExpression){
+	_WORLD * world = calloc(1, sizeof(_WORLD));
+	world->height = DEFAULT_WORLD_HEIGHT;
+	world->width = DEFAULT_WORLD_WIDTH;
+	world->uneveness = DEFAULT_WORLD_UNEVENESS;
+	world->message = DEFAULT_WORLD_MESSAGE;
+	insertWorld("world", world);
+
 	if(programExpression->type == WORLDLESS){
 		_generateMainExpressions(programExpression->worldlessMainExpressions);
 	}
@@ -902,18 +1025,6 @@ static void _generateProgramExpression(ProgramExpression * programExpression){
  */
 static void _generateProgram(Program * program) {
 	_generateProgramExpression(program->programExpression);
-}
-
-/**
- * Creates the prologue of the generated output, a Latex document that renders
- * a tree thanks to the Forest package.
- *
- * @see https://ctan.dcc.uchile.cl/graphics/pgf/contrib/forest/forest-doc.pdf
- */
-static void _generatePrologue(void) {
-	_output(file, 0, "%s",
-		"prologue heyo\n"
-	);
 }
 
 /**
