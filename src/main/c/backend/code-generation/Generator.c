@@ -557,13 +557,22 @@ static void _generateForExpression(ForExpression * forExpression){
 
 static void _generateGrowExpression(GrowExpression * growExpression){
 	if(ERROR_OCCURED==true) return;
-	//TODO check exista el ID y sea algo valido de growear (encuanto a type) si es asi se guarda en una lista a imprimir?onda en epilogue?
-	
-	//else{
-	//	logError(_logger, "Wrong parameter for grow");
-	//	ERROR_OCCURED = true;
-	//	*compi=FAILED;
-	//}
+	EntryType type = getType(growExpression->id->idValue);
+	if(type == EMPTY_TYPE){
+		logError(_logger, "Nonexistent variable: %s\n", growExpression->id->idValue);
+		ERROR_OCCURED = true;
+		*compi=FAILED;
+		return;
+	}
+	if(type == FOREST_TYPE || type == TREE_TYPE){
+		//TODO logica del grow
+	}
+	else{
+		logError(_logger, "Cannot grow variables of type: %s\n", type);
+		ERROR_OCCURED = true;
+		*compi=FAILED;
+		return;
+	}
 }
 
 static void _generateForestAssignment(ForestAssignment * forestAssignment){
