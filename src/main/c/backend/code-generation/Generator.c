@@ -535,7 +535,8 @@ static void _generateArithmeticAssignation(ArithmeticAssignation * arithmeticAss
 static void _generateForExpression(ForExpression * forExpression){
 	if(ERROR_OCCURED==true) return;
 	if(forExpression->type == CLASSIC_ITERATION){
-		if(exists(forExpression->id->idValue)){
+		boolean not_anidado = false;
+		if(exists(forExpression->id->idValue) && not_anidado){
 			logError(_logger, "Variable %s already exists\n", forExpression->id->idValue);
 			ERROR_OCCURED = true;
 			*compi=FAILED;
@@ -549,6 +550,7 @@ static void _generateForExpression(ForExpression * forExpression){
 			_generateMainExpressions(forExpression->mainExpressions);
 			if(ERROR_OCCURED==true) return;
 		}
+		not_anidado = true;
 	}
 	else if(forExpression->type == FOREST_ITERATION){
 		_output(file, 0, "forForest id:%s forest:%s\n", forExpression->id->idValue, forExpression->forestId->idValue);//TODO sacar es para probar no mas
@@ -649,7 +651,6 @@ static void _generateForestAssignment(ForestAssignment * forestAssignment, char 
 					else if(strcmp(forestAssignment->id->idValue, "end") == 0){
 						forest->end = world->height;
 					}
-					insertForest(forestId, forest);
 				}
 				else if(strcmp(forestAssignment->value->attValue->attribute->idValue, "width") == 0){
 					if(strcmp(forestAssignment->id->idValue, "start") == 0){
@@ -658,7 +659,6 @@ static void _generateForestAssignment(ForestAssignment * forestAssignment, char 
 					else if(strcmp(forestAssignment->id->idValue, "end") == 0){
 						forest->end = world->width;
 					}
-					insertForest(forestId, forest);
 				}
 				else{
 					logError(_logger, "Unkown world attribute of int type: %s\n", forestAssignment->value->attValue->attribute->idValue);
@@ -785,11 +785,9 @@ static void _generateForestAssignment(ForestAssignment * forestAssignment, char 
 
 		if(strcmp(forestAssignment->id->idValue, "start") == 0){
 			forest->start = op;
-			insertForest(forestId, forest);//TODO no se si asi se actualizan
 		}
 		else if(strcmp(forestAssignment->id->idValue, "end") == 0){
 			forest->end = op;
-			insertForest(forestId, forest);
 		}
 		else{
 			logError(_logger, "Unknown forest attribute assign by operation: name(%s)\n", forestAssignment->id->idValue);
@@ -867,23 +865,18 @@ static void _generateTreeAssignment(TreeAssignment * treeAssignment, char * tree
 		if(treeAssignment->value->type == INTEGERvalue){
 			if(strcmp(treeAssignment->id->idValue, "x") == 0){
 				tree->x = treeAssignment->value->intValue->value;
-				insertTree(treeId, tree);
 			}
 			else if(strcmp(treeAssignment->id->idValue, "height") == 0){
 				tree->height = treeAssignment->value->intValue->value;
-				insertTree(treeId, tree);
 			}
 			else if(strcmp(treeAssignment->id->idValue, "depth") == 0){
 				tree->depth = treeAssignment->value->intValue->value;
-				insertTree(treeId, tree);
 			}
 			else if(strcmp(treeAssignment->id->idValue, "density") == 0){
 				tree->density = treeAssignment->value->intValue->value;
-				insertTree(treeId, tree);
 			}
 			else if(strcmp(treeAssignment->id->idValue, "bark") == 0){
 				tree->bark = treeAssignment->value->intValue->value;
-				insertTree(treeId, tree);
 			}
 			else{
 				logError(_logger, "Unknown tree attribute assignment by int value by name: %s\n", treeAssignment->id->idValue);
@@ -895,7 +888,6 @@ static void _generateTreeAssignment(TreeAssignment * treeAssignment, char * tree
 		else if(treeAssignment->value->type == STRINGvalue){
 			if(strcmp(treeAssignment->id->idValue, "leaf") == 0 && strlen(treeAssignment->value->charValue->value) == 3){
 				tree->leaf = treeAssignment->value->charValue->value[1];
-				insertTree(treeId, tree);
 			}
 			else{
 				logError(_logger, "Unknown tree attribute assignment by char value by name: %s\n", treeAssignment->id->idValue);
@@ -907,7 +899,6 @@ static void _generateTreeAssignment(TreeAssignment * treeAssignment, char * tree
 		else if(treeAssignment->value->type == HEXCOLORvalue){
 			if(strcmp(treeAssignment->id->idValue, "color") == 0){
 				tree->color = treeAssignment->value->hexcolorValue->value;
-				insertTree(treeId, tree);
 			}
 			else{
 				logError(_logger, "Unknown tree attribute assignment by hexcolor value by name: %s\n", treeAssignment->id->idValue);
@@ -919,7 +910,6 @@ static void _generateTreeAssignment(TreeAssignment * treeAssignment, char * tree
 		else if(treeAssignment->value->type == BOOLEANvalue){
 			if(strcmp(treeAssignment->id->idValue, "snowed") == 0){
 				tree->snowed = treeAssignment->value->booleanValue->value;
-				insertTree(treeId, tree);
 			}
 			else{
 				logError(_logger, "Unknown tree attribute assignment by boolean value by name: %s\n", treeAssignment->id->idValue);
@@ -939,23 +929,18 @@ static void _generateTreeAssignment(TreeAssignment * treeAssignment, char * tree
 			else if(type == INTEGER_TYPE){
 				if(strcmp(treeAssignment->id->idValue, "x") == 0){
 					tree->x = getInteger(treeAssignment->value->idValue->idValue).value._integer->value;
-					insertTree(treeId, tree);
 				}
 				else if(strcmp(treeAssignment->id->idValue, "height") == 0){
 					tree->height = getInteger(treeAssignment->value->idValue->idValue).value._integer->value;
-					insertTree(treeId, tree);
 				}
 				else if(strcmp(treeAssignment->id->idValue, "depth") == 0){
 					tree->depth = getInteger(treeAssignment->value->idValue->idValue).value._integer->value;
-					insertTree(treeId, tree);
 				}
 				else if(strcmp(treeAssignment->id->idValue, "density") == 0){
 					tree->density = getInteger(treeAssignment->value->idValue->idValue).value._integer->value;
-					insertTree(treeId, tree);
 				}
 				else if(strcmp(treeAssignment->id->idValue, "bark") == 0){
 					tree->bark = getInteger(treeAssignment->value->idValue->idValue).value._integer->value;
-					insertTree(treeId, tree);
 				}
 				else{
 					logError(_logger, "Unknown tree attribute assignment by int value by name: %s\n", treeAssignment->id->idValue);
@@ -967,7 +952,6 @@ static void _generateTreeAssignment(TreeAssignment * treeAssignment, char * tree
 			else if(type == BOOL_TYPE){
 				if(strcmp(treeAssignment->id->idValue, "snowed") == 0){
 					tree->snowed = getBoolean(treeAssignment->value->idValue->idValue).value._boolean->value;
-					insertTree(treeId, tree);
 				}
 				else{
 					logError(_logger, "Unknown tree attribute assignment by boolean value by name: %s\n", treeAssignment->id->idValue);
@@ -979,7 +963,6 @@ static void _generateTreeAssignment(TreeAssignment * treeAssignment, char * tree
 			else if(type == STRING_TYPE){
 				if(strcmp(treeAssignment->id->idValue, "leaf") == 0 && strlen(treeAssignment->value->charValue->value) == 3){
 					tree->leaf = getString(treeAssignment->value->idValue->idValue).value._string->value[1];
-					insertTree(treeId, tree);
 				}
 				else{
 					logError(_logger, "Unknown tree attribute assignment by char value by name: %s\n", treeAssignment->id->idValue);
@@ -991,7 +974,6 @@ static void _generateTreeAssignment(TreeAssignment * treeAssignment, char * tree
 			else if(type == HEXCOLOR_TYPE){
 				if(strcmp(treeAssignment->id->idValue, "color") == 0){
 					tree->color = getHexcolor(treeAssignment->value->idValue->idValue).value._hexcolor->value;
-					insertTree(treeId, tree);
 				}
 				else{
 					logError(_logger, "Unknown tree attribute assignment by hexcolor value by name: %s\n", treeAssignment->id->idValue);
@@ -1034,7 +1016,6 @@ static void _generateTreeAssignment(TreeAssignment * treeAssignment, char * tree
 					else if(strcmp(treeAssignment->id->idValue, "bark") == 0){
 						tree->bark = world->height;
 					}
-					insertTree(treeId, tree);
 				}
 				else if(strcmp(treeAssignment->value->attValue->attribute->idValue, "width") == 0){
 					if(strcmp(treeAssignment->id->idValue, "x") == 0){
@@ -1052,7 +1033,6 @@ static void _generateTreeAssignment(TreeAssignment * treeAssignment, char * tree
 					else if(strcmp(treeAssignment->id->idValue, "bark") == 0){
 						tree->bark = world->width;
 					}
-					insertTree(treeId, tree);
 				}
 				else if(strcmp(treeAssignment->value->attValue->attribute->idValue, "uneveness") == 0){
 					if(strcmp(treeAssignment->id->idValue, "x") == 0){
@@ -1070,7 +1050,6 @@ static void _generateTreeAssignment(TreeAssignment * treeAssignment, char * tree
 					else if(strcmp(treeAssignment->id->idValue, "bark") == 0){
 						tree->bark = world->uneveness;
 					}
-					insertTree(treeId, tree);
 				}
 				else{
 					logError(_logger, "Unkown world attribute of int type: %s\n", treeAssignment->value->attValue->attribute->idValue);
@@ -1107,7 +1086,6 @@ static void _generateTreeAssignment(TreeAssignment * treeAssignment, char * tree
 							else if(strcmp(treeAssignment->id->idValue, "bark") == 0){
 								tree->bark = tree2->x;
 							}
-							insertTree(treeId, tree);
 						}
 						else if(strcmp(treeAssignment->value->attValue->attributeID->idValue, "height") == 0){
 							if(strcmp(treeAssignment->id->idValue, "x") == 0){
@@ -1125,7 +1103,6 @@ static void _generateTreeAssignment(TreeAssignment * treeAssignment, char * tree
 							else if(strcmp(treeAssignment->id->idValue, "bark") == 0){
 								tree->bark = tree2->height;
 							}
-							insertTree(treeId, tree);
 						}
 						else if(strcmp(treeAssignment->value->attValue->attributeID->idValue, "depth") == 0){
 							if(strcmp(treeAssignment->id->idValue, "x") == 0){
@@ -1143,7 +1120,6 @@ static void _generateTreeAssignment(TreeAssignment * treeAssignment, char * tree
 							else if(strcmp(treeAssignment->id->idValue, "bark") == 0){
 								tree->bark = tree2->depth;
 							}
-							insertTree(treeId, tree);
 						}
 						else if(strcmp(treeAssignment->value->attValue->attributeID->idValue, "density") == 0){
 							if(strcmp(treeAssignment->id->idValue, "x") == 0){
@@ -1161,7 +1137,6 @@ static void _generateTreeAssignment(TreeAssignment * treeAssignment, char * tree
 							else if(strcmp(treeAssignment->id->idValue, "bark") == 0){
 								tree->bark = tree2->density;
 							}
-							insertTree(treeId, tree);
 						}
 						else if(strcmp(treeAssignment->value->attValue->attributeID->idValue, "bark") == 0){
 							if(strcmp(treeAssignment->id->idValue, "x") == 0){
@@ -1179,7 +1154,6 @@ static void _generateTreeAssignment(TreeAssignment * treeAssignment, char * tree
 							else if(strcmp(treeAssignment->id->idValue, "bark") == 0){
 								tree->bark = tree2->bark;
 							}
-							insertTree(treeId, tree);
 						}
 						else{
 							logError(_logger, "Unkown tree attribute of int type: %s\n", treeAssignment->value->attValue->attributeID->idValue);
@@ -1206,7 +1180,6 @@ static void _generateTreeAssignment(TreeAssignment * treeAssignment, char * tree
 							else if(strcmp(treeAssignment->id->idValue, "bark") == 0){
 								tree->bark = forest->start;
 							}
-							insertTree(treeId, tree);
 						}
 						else if(strcmp(treeAssignment->value->attValue->attributeID->idValue, "end") == 0){
 							if(strcmp(treeAssignment->id->idValue, "x") == 0){
@@ -1224,7 +1197,6 @@ static void _generateTreeAssignment(TreeAssignment * treeAssignment, char * tree
 							else if(strcmp(treeAssignment->id->idValue, "bark") == 0){
 								tree->bark = forest->end;
 							}
-							insertTree(treeId, tree);
 						}
 						else{
 							logError(_logger, "Unkown forest attribute of int type: %s\n", treeAssignment->value->attValue->attributeID->idValue);
@@ -1274,23 +1246,18 @@ static void _generateTreeAssignment(TreeAssignment * treeAssignment, char * tree
 
 		if(strcmp(treeAssignment->id->idValue, "x") == 0){
 			tree->x = op;
-			insertTree(treeId, tree);
 		}
 		else if(strcmp(treeAssignment->id->idValue, "height") == 0){
 			tree->height = op;
-			insertTree(treeId, tree);
 		}
 		else if(strcmp(treeAssignment->id->idValue, "depth") == 0){
 			tree->depth = op;
-			insertTree(treeId, tree);
 		}
 		else if(strcmp(treeAssignment->id->idValue, "density") == 0){
 			tree->density = op;
-			insertTree(treeId, tree);
 		}
 		else if(strcmp(treeAssignment->id->idValue, "bark") == 0){
 			tree->bark = op;
-			insertTree(treeId, tree);
 		}
 		else{
 			logError(_logger, "Unknown tree attribute assign by operation: name(%s)\n", treeAssignment->id->idValue);
@@ -1427,15 +1394,12 @@ static void _generateWorldAssignment(WorldAssignment * worldAssignment){
 		if(worldAssignment->value->type == INTEGERvalue){
 			if(strcmp(worldAssignment->id->idValue, "height") == 0){
 				world->height = worldAssignment->value->intValue->value;
-				insertWorld("world", world);
 			}
 			else if(strcmp(worldAssignment->id->idValue, "width") == 0){
 				world->width = worldAssignment->value->intValue->value;
-				insertWorld("world", world);
 			}
 			else if(strcmp(worldAssignment->id->idValue, "uneveness") == 0){
 				world->uneveness = worldAssignment->value->intValue->value;
-				insertWorld("world", world);
 			}
 			else{
 				logError(_logger, "Unknown world attribute assignment by int value by name: %s\n", worldAssignment->id->idValue);
@@ -1447,7 +1411,6 @@ static void _generateWorldAssignment(WorldAssignment * worldAssignment){
 		else if(worldAssignment->value->type == STRINGvalue){
 			if(strcmp(worldAssignment->id->idValue, "message") == 0){
 				world->message = worldAssignment->value->charValue->value;
-				insertWorld("world", world);
 			}
 			else{
 				logError(_logger, "Unknown world attribute assignment by str value by name: %s\n", worldAssignment->id->idValue);
@@ -1469,15 +1432,12 @@ static void _generateWorldAssignment(WorldAssignment * worldAssignment){
 				if(strcmp(worldAssignment->id->idValue, "height") == 0){
 					if(strcmp(worldAssignment->value->attValue->attribute->idValue, "height") == 0){
 						world->height = world->height;
-						insertWorld("world", world);
 					}
 					else if(strcmp(worldAssignment->value->attValue->attribute->idValue, "width") == 0){
 						world->height = world->width;
-						insertWorld("world", world);
 					}
 					else if(strcmp(worldAssignment->value->attValue->attribute->idValue, "uneveness") == 0){
 						world->height = world->uneveness;
-						insertWorld("world", world);
 					}
 					else{
 						logError(_logger, "Unknown worldAttribute to assign to world->height: %s\n", worldAssignment->value->attValue->attribute->idValue);
@@ -1489,15 +1449,12 @@ static void _generateWorldAssignment(WorldAssignment * worldAssignment){
 				else if(strcmp(worldAssignment->id->idValue, "width") == 0){
 					if(strcmp(worldAssignment->value->attValue->attribute->idValue, "height") == 0){
 						world->width = world->height;
-						insertWorld("world", world);
 					}
 					else if(strcmp(worldAssignment->value->attValue->attribute->idValue, "width") == 0){
 						world->width = world->width;
-						insertWorld("world", world);
 					}
 					else if(strcmp(worldAssignment->value->attValue->attribute->idValue, "uneveness") == 0){
 						world->width = world->uneveness;
-						insertWorld("world", world);
 					}
 					else{
 						logError(_logger, "Unknown worldAttribute to assign to world->width: %s\n", worldAssignment->value->attValue->attribute->idValue);
@@ -1509,15 +1466,12 @@ static void _generateWorldAssignment(WorldAssignment * worldAssignment){
 				else if(strcmp(worldAssignment->id->idValue, "uneveness") == 0){
 					if(strcmp(worldAssignment->value->attValue->attribute->idValue, "height") == 0){
 						world->uneveness = world->height;
-						insertWorld("world", world);
 					}
 					else if(strcmp(worldAssignment->value->attValue->attribute->idValue, "width") == 0){
 						world->uneveness = world->width;
-						insertWorld("world", world);
 					}
 					else if(strcmp(worldAssignment->value->attValue->attribute->idValue, "uneveness") == 0){
 						world->uneveness = world->uneveness;
-						insertWorld("world", world);
 					}
 					else{
 						logError(_logger, "Unknown worldAttribute to assign to world->uneveness: %s\n", worldAssignment->value->attValue->attribute->idValue);
@@ -1529,7 +1483,6 @@ static void _generateWorldAssignment(WorldAssignment * worldAssignment){
 				else if(strcmp(worldAssignment->id->idValue, "message") == 0){
 					if(strcmp(worldAssignment->value->attValue->attribute->idValue, "message") == 0){
 						world->message = world->message;
-						insertWorld("world", world);
 					}
 					else{
 						logError(_logger, "Unknown worldAttribute to assign to world->message: %s\n", worldAssignment->value->attValue->attribute->idValue);
@@ -1567,7 +1520,6 @@ static void _generateWorldAssignment(WorldAssignment * worldAssignment){
 							else if(strcmp(worldAssignment->id->idValue, "height") == 0){
 								world->height = tree->x;
 							}
-							insertWorld("world", world);
 						}
 						else if(strcmp(worldAssignment->value->attValue->attributeID->idValue, "height") == 0){
 							if(strcmp(worldAssignment->id->idValue, "uneveness") == 0){
@@ -1579,7 +1531,6 @@ static void _generateWorldAssignment(WorldAssignment * worldAssignment){
 							else if(strcmp(worldAssignment->id->idValue, "height") == 0){
 								world->height = tree->height;
 							}
-							insertWorld("world", world);
 						}
 						else if(strcmp(worldAssignment->value->attValue->attributeID->idValue, "depth") == 0){
 							if(strcmp(worldAssignment->id->idValue, "uneveness") == 0){
@@ -1591,7 +1542,6 @@ static void _generateWorldAssignment(WorldAssignment * worldAssignment){
 							else if(strcmp(worldAssignment->id->idValue, "height") == 0){
 								world->height = tree->depth;
 							}
-							insertWorld("world", world);
 						}
 						else if(strcmp(worldAssignment->value->attValue->attributeID->idValue, "density") == 0){
 							if(strcmp(worldAssignment->id->idValue, "uneveness") == 0){
@@ -1603,7 +1553,6 @@ static void _generateWorldAssignment(WorldAssignment * worldAssignment){
 							else if(strcmp(worldAssignment->id->idValue, "height") == 0){
 								world->height = tree->density;
 							}
-							insertWorld("world", world);
 						}
 						else if(strcmp(worldAssignment->value->attValue->attributeID->idValue, "bark") == 0){
 							if(strcmp(worldAssignment->id->idValue, "uneveness") == 0){
@@ -1615,7 +1564,6 @@ static void _generateWorldAssignment(WorldAssignment * worldAssignment){
 							else if(strcmp(worldAssignment->id->idValue, "height") == 0){
 								world->height = tree->bark;
 							}
-							insertWorld("world", world);
 						}
 						else{
 							logError(_logger, "Unkown tree attribute of int type: %s\n", worldAssignment->value->attValue->attributeID->idValue);
@@ -1636,7 +1584,6 @@ static void _generateWorldAssignment(WorldAssignment * worldAssignment){
 							else if(strcmp(worldAssignment->id->idValue, "height") == 0){
 								world->height = forest->start;
 							}
-							insertWorld("world", world);
 						}
 						else if(strcmp(worldAssignment->value->attValue->attributeID->idValue, "end") == 0){
 							if(strcmp(worldAssignment->id->idValue, "uneveness") == 0){
@@ -1648,7 +1595,6 @@ static void _generateWorldAssignment(WorldAssignment * worldAssignment){
 							else if(strcmp(worldAssignment->id->idValue, "height") == 0){
 								world->height = forest->end;
 							}
-							insertWorld("world", world);
 						}
 						else{
 							logError(_logger, "Unkown forest attribute of int type: %s\n", worldAssignment->value->attValue->attributeID->idValue);
@@ -1668,7 +1614,6 @@ static void _generateWorldAssignment(WorldAssignment * worldAssignment){
 							else if(strcmp(worldAssignment->id->idValue, "height") == 0){
 								world->height = world->height;
 							}
-							insertWorld("world", world);
 						}
 						else if(strcmp(worldAssignment->value->attValue->attributeID->idValue, "width") == 0){
 							if(strcmp(worldAssignment->id->idValue, "uneveness") == 0){
@@ -1680,7 +1625,6 @@ static void _generateWorldAssignment(WorldAssignment * worldAssignment){
 							else if(strcmp(worldAssignment->id->idValue, "height") == 0){
 								world->height = world->width;
 							}
-							insertWorld("world", world);
 						}
 						else if(strcmp(worldAssignment->value->attValue->attributeID->idValue, "uneveness") == 0){
 							if(strcmp(worldAssignment->id->idValue, "uneveness") == 0){
@@ -1692,7 +1636,6 @@ static void _generateWorldAssignment(WorldAssignment * worldAssignment){
 							else if(strcmp(worldAssignment->id->idValue, "height") == 0){
 								world->height = world->uneveness;
 							}
-							insertWorld("world", world);
 						}
 						else{
 							logError(_logger, "Unkown world attribute of int type: %s\n", worldAssignment->value->attValue->attributeID->idValue);
@@ -1712,7 +1655,6 @@ static void _generateWorldAssignment(WorldAssignment * worldAssignment){
 					if(type == WORLD_TYPE){
 						if(strcmp(worldAssignment->value->attValue->attributeID->idValue, "message") == 0){
 							world->message = world->message;
-							insertWorld("world", world);
 						}
 						else{
 							logError(_logger, "Unkown world attribute of str type: %s\n", worldAssignment->value->attValue->attributeID->idValue);
@@ -1762,16 +1704,13 @@ static void _generateWorldAssignment(WorldAssignment * worldAssignment){
 
 		if(strcmp(worldAssignment->id->idValue, "height") == 0){
 			world->height = op;
-			insertWorld("world", world);
 
 		}
 		else if(strcmp(worldAssignment->id->idValue, "width") == 0){
 			world->width = op;
-			insertWorld("world", world);
 		}
 		else if(strcmp(worldAssignment->id->idValue, "uneveness") == 0){
 			world->uneveness = op;
-			insertWorld("world", world);
 		}
 		else{
 			logError(_logger, "Unknown world attribute assign by operation: name(%s)\n", worldAssignment->id->idValue);
