@@ -568,7 +568,7 @@ static void _generateGrowExpression(GrowExpression * growExpression){
 		//TODO logica del grow
 	}
 	else{
-		logError(_logger, "Cannot grow variables of type: %s\n", type);
+		logError(_logger, "Cannot grow variables of type: %d\n", type);
 		ERROR_OCCURED = true;
 		*compi=FAILED;
 		return;
