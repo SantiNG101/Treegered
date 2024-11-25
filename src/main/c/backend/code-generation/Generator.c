@@ -822,12 +822,15 @@ static void _generateWorldAssignment(WorldAssignment * worldAssignment){
 		if(worldAssignment->value->type == INTEGERvalue){
 			if(strcmp(worldAssignment->id->idValue, "height") == 0){
 				world->height = worldAssignment->value->intValue->value;
+				insertWorld("world", world);
 			}
 			else if(strcmp(worldAssignment->id->idValue, "width") == 0){
 				world->width = worldAssignment->value->intValue->value;
+				insertWorld("world", world);
 			}
 			else if(strcmp(worldAssignment->id->idValue, "uneveness") == 0){
 				world->uneveness = worldAssignment->value->intValue->value;
+				insertWorld("world", world);
 			}
 			else{
 				logError(_logger, "Unknown world attribute assignment by int value by name: %s\n", worldAssignment->id->idValue);
@@ -839,6 +842,7 @@ static void _generateWorldAssignment(WorldAssignment * worldAssignment){
 		else if(worldAssignment->value->type == STRINGvalue){
 			if(strcmp(worldAssignment->id->idValue, "message") == 0){
 				world->uneveness = worldAssignment->value->charValue->value;
+				insertWorld("world", world);
 			}
 			else{
 				logError(_logger, "Unknown world attribute assignment by str value by name: %s\n", worldAssignment->id->idValue);
@@ -860,12 +864,15 @@ static void _generateWorldAssignment(WorldAssignment * worldAssignment){
 				if(strcmp(worldAssignment->id, "height") == 0){
 					if(strcmp(worldAssignment->value->attValue->attribute, "height") == 0){
 						world->height = world->height;
+						insertWorld("world", world);
 					}
 					else if(strcmp(worldAssignment->value->attValue->attribute, "width") == 0){
 						world->height = world->width;
+						insertWorld("world", world);
 					}
 					else if(strcmp(worldAssignment->value->attValue->attribute, "uneveness") == 0){
 						world->height = world->uneveness;
+						insertWorld("world", world);
 					}
 					else{
 						logError(_logger, "Unknown worldAttribute to assign to world->height: %s\n", worldAssignment->value->attValue->attribute);
@@ -877,12 +884,15 @@ static void _generateWorldAssignment(WorldAssignment * worldAssignment){
 				else if(strcmp(worldAssignment->id, "width") == 0){
 					if(strcmp(worldAssignment->value->attValue->attribute, "height") == 0){
 						world->width = world->height;
+						insertWorld("world", world);
 					}
 					else if(strcmp(worldAssignment->value->attValue->attribute, "width") == 0){
 						world->width = world->width;
+						insertWorld("world", world);
 					}
 					else if(strcmp(worldAssignment->value->attValue->attribute, "uneveness") == 0){
 						world->width = world->uneveness;
+						insertWorld("world", world);
 					}
 					else{
 						logError(_logger, "Unknown worldAttribute to assign to world->width: %s\n", worldAssignment->value->attValue->attribute);
@@ -894,12 +904,15 @@ static void _generateWorldAssignment(WorldAssignment * worldAssignment){
 				else if(strcmp(worldAssignment->id, "uneveness") == 0){
 					if(strcmp(worldAssignment->value->attValue->attribute, "height") == 0){
 						world->uneveness = world->height;
+						insertWorld("world", world);
 					}
 					else if(strcmp(worldAssignment->value->attValue->attribute, "width") == 0){
 						world->uneveness = world->width;
+						insertWorld("world", world);
 					}
 					else if(strcmp(worldAssignment->value->attValue->attribute, "uneveness") == 0){
 						world->uneveness = world->uneveness;
+						insertWorld("world", world);
 					}
 					else{
 						logError(_logger, "Unknown worldAttribute to assign to world->uneveness: %s\n", worldAssignment->value->attValue->attribute);
@@ -911,6 +924,7 @@ static void _generateWorldAssignment(WorldAssignment * worldAssignment){
 				else if(strcmp(worldAssignment->id, "message") == 0){
 					if(strcmp(worldAssignment->value->attValue->attribute, "message") == 0){
 						world->message = world->message;
+						insertWorld("world", world);
 					}
 					else{
 						logError(_logger, "Unknown worldAttribute to assign to world->message: %s\n", worldAssignment->value->attValue->attribute);
@@ -927,6 +941,25 @@ static void _generateWorldAssignment(WorldAssignment * worldAssignment){
 				}
 			}
 			else if(worldAssignment->value->attValue->type == IDatt){
+				//TODO ver typo y blablabla
+				if(strcmp(worldAssignment->id, "uneveness") == 0){
+
+				}
+				else if(strcmp(worldAssignment->id, "width") == 0){
+
+				}
+				else if(strcmp(worldAssignment->id, "height") == 0){
+
+				}
+				else if(strcmp(worldAssignment->id, "mesage") == 0){
+
+				}
+				else{
+					logError(_logger, "Unknown worldAttribute: %s\n", worldAssignment->id);
+					ERROR_OCCURED = true;
+					*compi=FAILED;
+					return;
+				}
 				
 			}
 			else{
@@ -956,12 +989,16 @@ static void _generateWorldAssignment(WorldAssignment * worldAssignment){
 
 		if(strcmp(worldAssignment->id->idValue, "height") == 0){
 			world->height = op;
+			insertWorld("world", world);
+
 		}
 		else if(strcmp(worldAssignment->id->idValue, "width") == 0){
 			world->width = op;
+			insertWorld("world", world);
 		}
 		else if(strcmp(worldAssignment->id->idValue, "uneveness") == 0){
 			world->uneveness = op;
+			insertWorld("world", world);
 		}
 		else{
 			logError(_logger, "Unknown world attribute assign by operation: name(%s)\n", worldAssignment->id->idValue);
