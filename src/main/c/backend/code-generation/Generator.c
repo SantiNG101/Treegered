@@ -659,12 +659,122 @@ static boolean _generateConditionalClause(ConditionalClause * conditionalClause)
 		return _generateConditionalClause(conditionalClause->conditionalClause);
 	}
 	else if(conditionalClause->conditionalType == V_V){
+		DeclarationValue * dvLeft = NULL;
+		DeclarationValue * dvRight = NULL;
+		boolean freeLeft = false;
+		boolean freeRight = false;
 		if(conditionalClause->leftValue->type == ATTvalue){
 			if(conditionalClause->leftValue->attValue->type == WORLDatt){
-				return true;//TODO
+				_WORLD * world = getWorld("world").value._world;
+				if(strcmp(conditionalClause->leftValue->attValue->attribute->idValue, "height") == 0){
+					DeclarationValue * aux = calloc(1, sizeof(DeclarationValue));
+					aux->type = INTEGERvalue;
+					aux->intValue->value = world->height;
+					dvLeft=aux;
+					freeLeft = true;
+				}
+				else if(strcmp(conditionalClause->leftValue->attValue->attribute->idValue, "width") == 0){
+					DeclarationValue * aux = calloc(1, sizeof(DeclarationValue));
+					aux->type = INTEGERvalue;
+					aux->intValue->value = world->width;
+					dvLeft=aux;
+					freeLeft = true;
+				}
+				else if(strcmp(conditionalClause->leftValue->attValue->attribute->idValue, "uneveness") == 0){
+					DeclarationValue * aux = calloc(1, sizeof(DeclarationValue));
+					aux->type = INTEGERvalue;
+					aux->intValue->value = world->uneveness;
+					dvLeft=aux;
+					freeLeft = true;
+				}
+				else{
+					logError(_logger, "Attribute cant be used in conditional clause\n");
+					ERROR_OCCURED = true;
+					*compi=FAILED;
+					return false;
+				}
 			}
 			else if(conditionalClause->leftValue->attValue->type == IDatt){
-				return true;//TODO
+				EntryType type = getType(conditionalClause->leftValue->attValue->variableID->idValue);
+					if(type == EMPTY_TYPE){
+						logError(_logger, "Nonexistent variable: %s\n", conditionalClause->leftValue->attValue->variableID->idValue);
+						ERROR_OCCURED = true;
+						*compi=FAILED;
+						return false;
+					}
+				if(type == TREE_TYPE){
+					_TREE * tree = getTree(conditionalClause->leftValue->attValue->variableID->idValue).value._tree;
+					if(strcmp(conditionalClause->leftValue->attValue->attributeID->idValue, "x") == 0){
+						DeclarationValue * aux = calloc(1, sizeof(DeclarationValue));
+						aux->type = INTEGERvalue;
+						aux->intValue->value = tree->x;
+						dvLeft=aux;
+						freeLeft = true;
+					}
+					else if(strcmp(conditionalClause->leftValue->attValue->attributeID->idValue, "height") == 0){
+						DeclarationValue * aux = calloc(1, sizeof(DeclarationValue));
+						aux->type = INTEGERvalue;
+						aux->intValue->value = tree->height;
+						dvLeft=aux;
+						freeLeft = true;
+					}
+					else if(strcmp(conditionalClause->leftValue->attValue->attributeID->idValue, "depth") == 0){
+						DeclarationValue * aux = calloc(1, sizeof(DeclarationValue));
+						aux->type = INTEGERvalue;
+						aux->intValue->value = tree->depth;
+						dvLeft=aux;
+						freeLeft = true;
+					}
+					else if(strcmp(conditionalClause->leftValue->attValue->attributeID->idValue, "density") == 0){
+						DeclarationValue * aux = calloc(1, sizeof(DeclarationValue));
+						aux->type = INTEGERvalue;
+						aux->intValue->value = tree->density;
+						dvLeft=aux;
+						freeLeft = true;
+					}
+					else if(strcmp(conditionalClause->leftValue->attValue->attributeID->idValue, "bark") == 0){
+						DeclarationValue * aux = calloc(1, sizeof(DeclarationValue));
+						aux->type = INTEGERvalue;
+						aux->intValue->value = tree->bark;
+						dvLeft=aux;
+						freeLeft = true;
+					}
+					else{
+						logError(_logger, "Attribute cannot be used in conditional clause\n");
+						ERROR_OCCURED = true;
+						*compi=FAILED;
+						return false;
+					}
+				}
+				else if(type == FOREST_TYPE){
+					_FOREST * forest = getForest(conditionalClause->leftValue->attValue->variableID->idValue).value._forest;
+					if(strcmp(conditionalClause->leftValue->attValue->attributeID->idValue, "start") == 0){
+						DeclarationValue * aux = calloc(1, sizeof(DeclarationValue));
+						aux->type = INTEGERvalue;
+						aux->intValue->value = forest->start;
+						dvLeft=aux;
+						freeLeft = true;
+					}
+					else if(strcmp(conditionalClause->leftValue->attValue->attributeID->idValue, "end") == 0){
+						DeclarationValue * aux = calloc(1, sizeof(DeclarationValue));
+						aux->type = INTEGERvalue;
+						aux->intValue->value = forest->end;
+						dvLeft=aux;
+						freeLeft = true;
+					}
+					else{
+						logError(_logger, "Attribute cannot be used in conditional clause\n");
+						ERROR_OCCURED = true;
+						*compi=FAILED;
+						return false;
+					}
+				}
+				else{
+					logError(_logger, "Attribute cannot be used in conditional clause\n");
+					ERROR_OCCURED = true;
+					*compi=FAILED;
+					return false;
+				}
 			}
 			else{
 				logError(_logger, "Unknown AttributeValueType: %d\n", conditionalClause->leftValue->attValue->type);
@@ -673,7 +783,132 @@ static boolean _generateConditionalClause(ConditionalClause * conditionalClause)
 				return false;
 			}
 		}
-		return _getConditionalClauseResultVV(conditionalClause->leftValue, conditionalClause->rightValue, conditionalClause->comparissonType);
+		if(conditionalClause->rightValue->type == ATTvalue){
+			if(conditionalClause->rightValue->attValue->type == WORLDatt){
+				_WORLD * world = getWorld("world").value._world;
+				if(strcmp(conditionalClause->rightValue->attValue->attribute->idValue, "height") == 0){
+					DeclarationValue * aux = calloc(1, sizeof(DeclarationValue));
+					aux->type = INTEGERvalue;
+					aux->intValue->value = world->height;
+					dvRight=aux;
+					freeRight = true;
+				}
+				else if(strcmp(conditionalClause->rightValue->attValue->attribute->idValue, "width") == 0){
+					DeclarationValue * aux = calloc(1, sizeof(DeclarationValue));
+					aux->type = INTEGERvalue;
+					aux->intValue->value = world->width;
+					dvRight=aux;
+					freeRight = true;
+				}
+				else if(strcmp(conditionalClause->rightValue->attValue->attribute->idValue, "uneveness") == 0){
+					DeclarationValue * aux = calloc(1, sizeof(DeclarationValue));
+					aux->type = INTEGERvalue;
+					aux->intValue->value = world->uneveness;
+					dvRight=aux;
+					freeRight = true;
+				}
+				else{
+					logError(_logger, "Attribute cant be used in conditional clause\n");
+					ERROR_OCCURED = true;
+					*compi=FAILED;
+					return false;
+				}
+			}
+			else if(conditionalClause->rightValue->attValue->type == IDatt){
+				EntryType type = getType(conditionalClause->rightValue->attValue->variableID->idValue);
+					if(type == EMPTY_TYPE){
+						logError(_logger, "Nonexistent variable: %s\n", conditionalClause->rightValue->attValue->variableID->idValue);
+						ERROR_OCCURED = true;
+						*compi=FAILED;
+						return false;
+					}
+				if(type == TREE_TYPE){
+					_TREE * tree = getTree(conditionalClause->rightValue->attValue->variableID->idValue).value._tree;
+					if(strcmp(conditionalClause->rightValue->attValue->attributeID->idValue, "x") == 0){
+						DeclarationValue * aux = calloc(1, sizeof(DeclarationValue));
+						aux->type = INTEGERvalue;
+						aux->intValue->value = tree->x;
+						dvRight=aux;
+						freeRight = true;
+					}
+					else if(strcmp(conditionalClause->rightValue->attValue->attributeID->idValue, "height") == 0){
+						DeclarationValue * aux = calloc(1, sizeof(DeclarationValue));
+						aux->type = INTEGERvalue;
+						aux->intValue->value = tree->height;
+						dvRight=aux;
+						freeRight = true;
+					}
+					else if(strcmp(conditionalClause->rightValue->attValue->attributeID->idValue, "depth") == 0){
+						DeclarationValue * aux = calloc(1, sizeof(DeclarationValue));
+						aux->type = INTEGERvalue;
+						aux->intValue->value = tree->depth;
+						dvRight=aux;
+						freeRight = true;
+					}
+					else if(strcmp(conditionalClause->rightValue->attValue->attributeID->idValue, "density") == 0){
+						DeclarationValue * aux = calloc(1, sizeof(DeclarationValue));
+						aux->type = INTEGERvalue;
+						aux->intValue->value = tree->density;
+						dvRight=aux;
+						freeRight = true;
+					}
+					else if(strcmp(conditionalClause->rightValue->attValue->attributeID->idValue, "bark") == 0){
+						DeclarationValue * aux = calloc(1, sizeof(DeclarationValue));
+						aux->type = INTEGERvalue;
+						aux->intValue->value = tree->bark;
+						dvRight=aux;
+						freeRight = true;
+					}
+					else{
+						logError(_logger, "Attribute cannot be used in conditional clause\n");
+						ERROR_OCCURED = true;
+						*compi=FAILED;
+						return false;
+					}
+				}
+				else if(type == FOREST_TYPE){
+					_FOREST * forest = getForest(conditionalClause->rightValue->attValue->variableID->idValue).value._forest;
+					if(strcmp(conditionalClause->rightValue->attValue->attributeID->idValue, "start") == 0){
+						DeclarationValue * aux = calloc(1, sizeof(DeclarationValue));
+						aux->type = INTEGERvalue;
+						aux->intValue->value = forest->start;
+						dvRight=aux;
+						freeRight = true;
+					}
+					else if(strcmp(conditionalClause->rightValue->attValue->attributeID->idValue, "end") == 0){
+						DeclarationValue * aux = calloc(1, sizeof(DeclarationValue));
+						aux->type = INTEGERvalue;
+						aux->intValue->value = forest->end;
+						dvRight=aux;
+						freeRight = true;
+					}
+					else{
+						logError(_logger, "Attribute cannot be used in conditional clause\n");
+						ERROR_OCCURED = true;
+						*compi=FAILED;
+						return false;
+					}
+				}
+				else{
+					logError(_logger, "Attribute cannot be used in conditional clause\n");
+					ERROR_OCCURED = true;
+					*compi=FAILED;
+					return false;
+				}
+			}
+			else{
+				logError(_logger, "Unknown AttributeValueType: %d\n", conditionalClause->rightValue->attValue->type);
+				ERROR_OCCURED = true;
+				*compi=FAILED;
+				return false;
+			}
+		}
+		if(dvLeft == NULL) dvLeft = conditionalClause->leftValue;
+		if(dvRight == NULL) dvRight = conditionalClause->rightValue;
+		int toRet = _getConditionalClauseResultVV(dvLeft, dvRight, conditionalClause->comparissonType);
+		if(freeLeft == true) free(dvLeft);
+		if(freeRight == true) free(dvRight);
+		return toRet;
 	}
 	else if(conditionalClause->conditionalType == V_C){
 		if(conditionalClause->leftValue->type == ATTvalue){
