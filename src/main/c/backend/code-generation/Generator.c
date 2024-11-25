@@ -535,12 +535,19 @@ static void _generateArithmeticAssignation(ArithmeticAssignation * arithmeticAss
 static void _generateForExpression(ForExpression * forExpression){
 	if(ERROR_OCCURED==true) return;
 	if(forExpression->type == CLASSIC_ITERATION){
-		//TODO check los types del for, luego es hacer un for de toda la vida
-		//chequear que forExp->id no exista en tabla ya, setearlo en reangeStart
+		if(exists(forExpression->id->idValue)){
+			logError(_logger, "Variable %s already exists\n", forExpression->id->idValue);
+			ERROR_OCCURED = true;
+			*compi=FAILED;
+			return;
+		}
+		_INTEGER * integer = calloc(1, sizeof(_INTEGER));
+		integer->value = forExpression->rangeStart->value;
+		insertInteger(forExpression->id->idValue, integer);
 		for(int i = forExpression->rangeStart->value; i < forExpression->rangeEnd->value; i++){
-			_output(file, 0, "insideForLoop:%d\n", i);//TODO sacar es para probar no mas
+			integer->value = i;
 			_generateMainExpressions(forExpression->mainExpressions);
-			//TODO set en la table forExpression->id = 	i+1;
+			if(ERROR_OCCURED==true) return;
 		}
 	}
 	else if(forExpression->type == FOREST_ITERATION){
