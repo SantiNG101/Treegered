@@ -11,7 +11,8 @@ typedef enum {
     HEXCOLOR_TYPE = HEXCOLOR_T,
     TREE_TYPE = TREE_T,
     FOREST_TYPE = FOREST_T,
-    WORLD_TYPE = WORLD_T
+    WORLD_TYPE = WORLD_T,
+    EMPTY_TYPE = EMPTY_T
 } EntryType;
 
 typedef union {
@@ -31,6 +32,10 @@ typedef struct{
 } EntryResult;
 
 void initializeTable(void);
+
+void destroyTable(void);
+
+EntryType getType(char * identifier);
 
 EntryResult getInteger(char * identifier);
 
