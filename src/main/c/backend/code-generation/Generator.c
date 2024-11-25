@@ -1813,73 +1813,513 @@ static void _generateGeneralAssignation(GeneralAssignation * generalAssignation)
 	}
 }
 
-static void _generateArithmeticAssignation(ArithmeticAssignation * arithmeticAssignation){
+static void _generateArithmeticAssignation(ArithmeticAssignation * arithmeticAssignation){//INTtypes or forest!
 	if(ERROR_OCCURED==true) return;
-	//TODO todos, en cualquiera hay que chequear existencia de ser necesario, types, hacer la cuentita(+,-,etc) y luego updatear tabla
 	if(arithmeticAssignation->type == ID_BY_VALUE){
-		if(arithmeticAssignation->value->type == IDvalue){
-			
+		EntryType type = getType(arithmeticAssignation->id->idValue);
+		if(type == EMPTY_TYPE){
+			logError(_logger, "Nonexistent variable: %s\n", arithmeticAssignation->id->idValue);
+			ERROR_OCCURED = true;
+			*compi=FAILED;
+			return;
 		}
-		else if(arithmeticAssignation->value->type == INTEGERvalue){
-			
+
+		if(type == INTEGER_TYPE){
+			_INTEGER * integer = getInteger(arithmeticAssignation->id->idValue).value._integer;
+
+			ArithmeticOperation * aux = calloc(1, sizeof(ArithmeticOperation));
+			aux->operator = arithmeticAssignation->operator;
+			aux->type = LV_RV;
+			DeclarationValue * auxVal = calloc(1, sizeof(DeclarationValue));
+			auxVal->type = INTEGERvalue;
+			auxVal->intValue->value = integer->value;
+			aux->leftValue = auxVal;
+			aux->rightValue = arithmeticAssignation->value;
+			int res = _generateArithmeticOperation(aux);
+			free(auxVal);
+			free(aux);
+
+			integer->value = res;
+			return;
 		}
-		else if(arithmeticAssignation->value->type == STRINGvalue){
+		else if(type == FOREST_TYPE){
+			if(arithmeticAssignation->operator != ADD_o){
+				logError(_logger, "Only can add elements to a tree\n");
+				ERROR_OCCURED = true;
+				*compi=FAILED;
+				return;
+			}
+
+			_FOREST * forest = getForest(arithmeticAssignation->id->idValue).value._forest;
 			
-		}
-		else if(arithmeticAssignation->value->type == HEXCOLORvalue){
-			
-		}
-		else if(arithmeticAssignation->value->type == BOOLEANvalue){
-			
-		}
-		else if(arithmeticAssignation->value->type == DECLARATIONvalue){
-			
-		}
-		else if(arithmeticAssignation->value->type == ATTvalue){
-			
+			if(arithmeticAssignation->value->type == IDvalue){
+				EntryType type = getType(arithmeticAssignation->value->idValue->idValue);
+				if(type != TREE_TYPE){
+					logError(_logger, "Must be a tree to be added to forest: %s\n", arithmeticAssignation->value->idValue->idValue);
+					ERROR_OCCURED = true;
+					*compi=FAILED;
+					return;
+				}
+				_TREE * tree = getTree(arithmeticAssignation->value->idValue->idValue).value._tree;
+				//TODO logica añadir tree al arbol
+			}
+			else{
+				logError(_logger, "Only ids can be added to forest\n");
+				ERROR_OCCURED = true;
+				*compi=FAILED;
+				return;
+			}
 		}
 		else{
-			logError(_logger, "Wrong DeclarationValueType for arithmeticAssignation: %d\n", arithmeticAssignation->value->type);
+			logError(_logger, "Wrong members for arithmeticAssignation: both need to be ints\n");
 			ERROR_OCCURED = true;
 			*compi=FAILED;
 			return;
 		}
 	}
 	else if(arithmeticAssignation->type == ID_BY_OPP){
-		
-	}
-	else if(arithmeticAssignation->type == ATT_BY_VALUE){
-		if(arithmeticAssignation->value->type == IDvalue){
-			
-		}
-		else if(arithmeticAssignation->value->type == INTEGERvalue){
-			
-		}
-		else if(arithmeticAssignation->value->type == STRINGvalue){
-			
-		}
-		else if(arithmeticAssignation->value->type == HEXCOLORvalue){
-			
-		}
-		else if(arithmeticAssignation->value->type == BOOLEANvalue){
-			
-		}
-		else if(arithmeticAssignation->value->type == DECLARATIONvalue){
-			
-		}
-		else if(arithmeticAssignation->value->type == ATTvalue){
-			
-		}
-		else{
-			logError(_logger, "Wrong DeclarationValueType for arithmeticAssignation: %d\n", arithmeticAssignation->value->type);
+		EntryType type = getType(arithmeticAssignation->id->idValue);
+		if(type == EMPTY_TYPE){
+			logError(_logger, "Nonexistent variable: %s\n", arithmeticAssignation->id->idValue);
 			ERROR_OCCURED = true;
 			*compi=FAILED;
 			return;
 		}
 
+		if(type == INTEGER_TYPE){
+			_INTEGER * integer = getInteger(arithmeticAssignation->id->idValue).value._integer;
+
+			ArithmeticOperation * aux = calloc(1, sizeof(ArithmeticOperation));
+			aux->operator = arithmeticAssignation->operator;
+			aux->type = LV_RO;
+			DeclarationValue * auxVal = calloc(1, sizeof(DeclarationValue));
+			auxVal->type = INTEGERvalue;
+			auxVal->intValue->value = integer->value;
+			aux->leftValue = auxVal;
+			aux->rightOperation = arithmeticAssignation->arithmeticOperation;
+			int res = _generateArithmeticOperation(aux);
+			free(auxVal);
+			free(aux);
+
+			integer->value = res;
+			return;
+		}
+		else{
+			logError(_logger, "Wrong members for arithmeticAssignation: both need to be ints\n");
+			ERROR_OCCURED = true;
+			*compi=FAILED;
+			return;
+		}		
+	}
+	else if(arithmeticAssignation->type == ATT_BY_VALUE){
+		if(arithmeticAssignation->att->type == WORLDatt){
+			_WORLD * world = getWorld("world").value._world;
+			if(strcmp(arithmeticAssignation->att->attribute->idValue, "height") == 0){
+				ArithmeticOperation * aux = calloc(1, sizeof(ArithmeticOperation));
+				aux->operator = arithmeticAssignation->operator;
+				aux->type = LV_RV;
+				DeclarationValue * auxVal = calloc(1, sizeof(DeclarationValue));
+				auxVal->type = INTEGERvalue;
+				auxVal->intValue->value = world->height;
+				aux->leftValue = auxVal;
+				aux->rightValue = arithmeticAssignation->value;
+				int res = _generateArithmeticOperation(aux);
+				free(auxVal);
+				free(aux);
+
+				world->height = res;
+				return;
+			}
+			else if(strcmp(arithmeticAssignation->att->attribute->idValue, "width") == 0){
+				ArithmeticOperation * aux = calloc(1, sizeof(ArithmeticOperation));
+				aux->operator = arithmeticAssignation->operator;
+				aux->type = LV_RV;
+				DeclarationValue * auxVal = calloc(1, sizeof(DeclarationValue));
+				auxVal->type = INTEGERvalue;
+				auxVal->intValue->value = world->width;
+				aux->leftValue = auxVal;
+				aux->rightValue = arithmeticAssignation->value;
+				int res = _generateArithmeticOperation(aux);
+				free(auxVal);
+				free(aux);
+
+				world->width = res;
+				return;
+			}
+			else if(strcmp(arithmeticAssignation->att->attribute->idValue, "uneveness") == 0){
+				ArithmeticOperation * aux = calloc(1, sizeof(ArithmeticOperation));
+				aux->operator = arithmeticAssignation->operator;
+				aux->type = LV_RV;
+				DeclarationValue * auxVal = calloc(1, sizeof(DeclarationValue));
+				auxVal->type = INTEGERvalue;
+				auxVal->intValue->value = world->uneveness;
+				aux->leftValue = auxVal;
+				aux->rightValue = arithmeticAssignation->value;
+				int res = _generateArithmeticOperation(aux);
+				free(auxVal);
+				free(aux);
+
+				world->uneveness = res;
+				return;
+			}
+			else{
+				logError(_logger, "world->%s is not of type ints\n", arithmeticAssignation->att->attribute->idValue);
+				ERROR_OCCURED = true;
+				*compi=FAILED;
+				return;
+			}
+		}
+		else if(arithmeticAssignation->att->type == IDatt){
+			EntryType type = getType(arithmeticAssignation->att->variableID->idValue);
+			if(type == EMPTY_TYPE){
+				logError(_logger, "Nonexistent variable: %s\n", arithmeticAssignation->att->variableID->idValue);
+				ERROR_OCCURED = true;
+				*compi=FAILED;
+				return;
+			}
+
+			if(type == TREE_TYPE){
+				_TREE * tree = getTree(arithmeticAssignation->att->variableID->idValue).value._tree;
+				if(strcmp(arithmeticAssignation->att->attributeID->idValue, "x") == 0){
+					ArithmeticOperation * aux = calloc(1, sizeof(ArithmeticOperation));
+					aux->operator = arithmeticAssignation->operator;
+					aux->type = LV_RV;
+					DeclarationValue * auxVal = calloc(1, sizeof(DeclarationValue));
+					auxVal->type = INTEGERvalue;
+					auxVal->intValue->value = tree->x;
+					aux->leftValue = auxVal;
+					aux->rightValue = arithmeticAssignation->value;
+					int res = _generateArithmeticOperation(aux);
+					free(auxVal);
+					free(aux);
+
+					tree->x = res;
+					return;
+				}
+				else if(strcmp(arithmeticAssignation->att->attributeID->idValue, "height") == 0){
+					ArithmeticOperation * aux = calloc(1, sizeof(ArithmeticOperation));
+					aux->operator = arithmeticAssignation->operator;
+					aux->type = LV_RV;
+					DeclarationValue * auxVal = calloc(1, sizeof(DeclarationValue));
+					auxVal->type = INTEGERvalue;
+					auxVal->intValue->value = tree->height;
+					aux->leftValue = auxVal;
+					aux->rightValue = arithmeticAssignation->value;
+					int res = _generateArithmeticOperation(aux);
+					free(auxVal);
+					free(aux);
+
+					tree->height = res;
+					return;
+				}
+				else if(strcmp(arithmeticAssignation->att->attributeID->idValue, "depth") == 0){
+					ArithmeticOperation * aux = calloc(1, sizeof(ArithmeticOperation));
+					aux->operator = arithmeticAssignation->operator;
+					aux->type = LV_RV;
+					DeclarationValue * auxVal = calloc(1, sizeof(DeclarationValue));
+					auxVal->type = INTEGERvalue;
+					auxVal->intValue->value = tree->depth;
+					aux->leftValue = auxVal;
+					aux->rightValue = arithmeticAssignation->value;
+					int res = _generateArithmeticOperation(aux);
+					free(auxVal);
+					free(aux);
+
+					tree->depth = res;
+					return;
+				}
+				else if(strcmp(arithmeticAssignation->att->attributeID->idValue, "density") == 0){
+					ArithmeticOperation * aux = calloc(1, sizeof(ArithmeticOperation));
+					aux->operator = arithmeticAssignation->operator;
+					aux->type = LV_RV;
+					DeclarationValue * auxVal = calloc(1, sizeof(DeclarationValue));
+					auxVal->type = INTEGERvalue;
+					auxVal->intValue->value = tree->density;
+					aux->leftValue = auxVal;
+					aux->rightValue = arithmeticAssignation->value;
+					int res = _generateArithmeticOperation(aux);
+					free(auxVal);
+					free(aux);
+
+					tree->density = res;
+					return;
+				}
+				else if(strcmp(arithmeticAssignation->att->attributeID->idValue, "bark") == 0){
+					ArithmeticOperation * aux = calloc(1, sizeof(ArithmeticOperation));
+					aux->operator = arithmeticAssignation->operator;
+					aux->type = LV_RV;
+					DeclarationValue * auxVal = calloc(1, sizeof(DeclarationValue));
+					auxVal->type = INTEGERvalue;
+					auxVal->intValue->value = tree->bark;
+					aux->leftValue = auxVal;
+					aux->rightValue = arithmeticAssignation->value;
+					int res = _generateArithmeticOperation(aux);
+					free(auxVal);
+					free(aux);
+
+					tree->bark = res;
+					return;
+				}
+				else{
+					logError(_logger, "tree->%s is not of type int\n", arithmeticAssignation->att->attributeID->idValue);
+					ERROR_OCCURED = true;
+					*compi=FAILED;
+					return;
+				}
+			}
+			else if(type == FOREST_TYPE){
+				_FOREST * forest = getForest(arithmeticAssignation->att->variableID->idValue).value._forest;
+				if(strcmp(arithmeticAssignation->att->attributeID->idValue, "start") == 0){
+					ArithmeticOperation * aux = calloc(1, sizeof(ArithmeticOperation));
+					aux->operator = arithmeticAssignation->operator;
+					aux->type = LV_RV;
+					DeclarationValue * auxVal = calloc(1, sizeof(DeclarationValue));
+					auxVal->type = INTEGERvalue;
+					auxVal->intValue->value = forest->start;
+					aux->leftValue = auxVal;
+					aux->rightValue = arithmeticAssignation->value;
+					int res = _generateArithmeticOperation(aux);
+					free(auxVal);
+					free(aux);
+
+					forest->start = res;
+					return;
+				}
+				else if(strcmp(arithmeticAssignation->att->attributeID->idValue, "end") == 0){
+					ArithmeticOperation * aux = calloc(1, sizeof(ArithmeticOperation));
+					aux->operator = arithmeticAssignation->operator;
+					aux->type = LV_RV;
+					DeclarationValue * auxVal = calloc(1, sizeof(DeclarationValue));
+					auxVal->type = INTEGERvalue;
+					auxVal->intValue->value = forest->end;
+					aux->leftValue = auxVal;
+					aux->rightValue = arithmeticAssignation->value;
+					int res = _generateArithmeticOperation(aux);
+					free(auxVal);
+					free(aux);
+
+					forest->end = res;
+					return;
+				}
+				else{
+					logError(_logger, "forest->%s is not of type int\n", arithmeticAssignation->att->attributeID->idValue);
+					ERROR_OCCURED = true;
+					*compi=FAILED;
+					return;
+				}
+			}
+		}
+		else{
+			logError(_logger, "Unknown attribute type %d\n", arithmeticAssignation->att->type);
+			ERROR_OCCURED = true;
+			*compi=FAILED;
+			return;
+		}
 	}
 	else if(arithmeticAssignation->type == ATT_BY_OPP){
+		if(arithmeticAssignation->att->type == WORLDatt){
+			_WORLD * world = getWorld("world").value._world;
+			if(strcmp(arithmeticAssignation->att->attribute->idValue, "height") == 0){
+				ArithmeticOperation * aux = calloc(1, sizeof(ArithmeticOperation));
+				aux->operator = arithmeticAssignation->operator;
+				aux->type = LV_RO;
+				DeclarationValue * auxVal = calloc(1, sizeof(DeclarationValue));
+				auxVal->type = INTEGERvalue;
+				auxVal->intValue->value = world->height;
+				aux->leftValue = auxVal;
+				aux->rightOperation = arithmeticAssignation->arithmeticOperation;
+				int res = _generateArithmeticOperation(aux);
+				free(auxVal);
+				free(aux);
 
+				world->height = res;
+				return;
+			}
+			else if(strcmp(arithmeticAssignation->att->attribute->idValue, "width") == 0){
+				ArithmeticOperation * aux = calloc(1, sizeof(ArithmeticOperation));
+				aux->operator = arithmeticAssignation->operator;
+				aux->type = LV_RO;
+				DeclarationValue * auxVal = calloc(1, sizeof(DeclarationValue));
+				auxVal->type = INTEGERvalue;
+				auxVal->intValue->value = world->width;
+				aux->leftValue = auxVal;
+				aux->rightOperation = arithmeticAssignation->arithmeticOperation;
+				int res = _generateArithmeticOperation(aux);
+				free(auxVal);
+				free(aux);
+
+				world->width = res;
+				return;
+			}
+			else if(strcmp(arithmeticAssignation->att->attribute->idValue, "uneveness") == 0){
+				ArithmeticOperation * aux = calloc(1, sizeof(ArithmeticOperation));
+				aux->operator = arithmeticAssignation->operator;
+				aux->type = LV_RO;
+				DeclarationValue * auxVal = calloc(1, sizeof(DeclarationValue));
+				auxVal->type = INTEGERvalue;
+				auxVal->intValue->value = world->uneveness;
+				aux->leftValue = auxVal;
+				aux->rightOperation = arithmeticAssignation->arithmeticOperation;
+				int res = _generateArithmeticOperation(aux);
+				free(auxVal);
+				free(aux);
+
+				world->uneveness = res;
+				return;
+			}
+			else{
+				logError(_logger, "world->%s is not of type ints\n", arithmeticAssignation->att->attribute->idValue);
+				ERROR_OCCURED = true;
+				*compi=FAILED;
+				return;
+			}
+		}
+		else if(arithmeticAssignation->att->type == IDatt){
+			EntryType type = getType(arithmeticAssignation->att->variableID->idValue);
+			if(type == EMPTY_TYPE){
+				logError(_logger, "Nonexistent variable: %s\n", arithmeticAssignation->att->variableID->idValue);
+				ERROR_OCCURED = true;
+				*compi=FAILED;
+				return;
+			}
+
+			if(type == TREE_TYPE){
+				_TREE * tree = getTree(arithmeticAssignation->att->variableID->idValue).value._tree;
+				if(strcmp(arithmeticAssignation->att->attributeID->idValue, "x") == 0){
+					ArithmeticOperation * aux = calloc(1, sizeof(ArithmeticOperation));
+					aux->operator = arithmeticAssignation->operator;
+					aux->type = LV_RO;
+					DeclarationValue * auxVal = calloc(1, sizeof(DeclarationValue));
+					auxVal->type = INTEGERvalue;
+					auxVal->intValue->value = tree->x;
+					aux->leftValue = auxVal;
+					aux->rightOperation = arithmeticAssignation->arithmeticOperation;
+					int res = _generateArithmeticOperation(aux);
+					free(auxVal);
+					free(aux);
+
+					tree->x = res;
+					return;
+				}
+				else if(strcmp(arithmeticAssignation->att->attributeID->idValue, "height") == 0){
+					ArithmeticOperation * aux = calloc(1, sizeof(ArithmeticOperation));
+					aux->operator = arithmeticAssignation->operator;
+					aux->type = LV_RO;
+					DeclarationValue * auxVal = calloc(1, sizeof(DeclarationValue));
+					auxVal->type = INTEGERvalue;
+					auxVal->intValue->value = tree->height;
+					aux->leftValue = auxVal;
+					aux->rightOperation = arithmeticAssignation->arithmeticOperation;
+					int res = _generateArithmeticOperation(aux);
+					free(auxVal);
+					free(aux);
+
+					tree->height = res;
+					return;
+				}
+				else if(strcmp(arithmeticAssignation->att->attributeID->idValue, "depth") == 0){
+					ArithmeticOperation * aux = calloc(1, sizeof(ArithmeticOperation));
+					aux->operator = arithmeticAssignation->operator;
+					aux->type = LV_RO;
+					DeclarationValue * auxVal = calloc(1, sizeof(DeclarationValue));
+					auxVal->type = INTEGERvalue;
+					auxVal->intValue->value = tree->depth;
+					aux->leftValue = auxVal;
+					aux->rightOperation = arithmeticAssignation->arithmeticOperation;
+					int res = _generateArithmeticOperation(aux);
+					free(auxVal);
+					free(aux);
+
+					tree->depth = res;
+					return;
+				}	
+				else if(strcmp(arithmeticAssignation->att->attributeID->idValue, "density") == 0){
+					ArithmeticOperation * aux = calloc(1, sizeof(ArithmeticOperation));
+					aux->operator = arithmeticAssignation->operator;
+					aux->type = LV_RO;
+					DeclarationValue * auxVal = calloc(1, sizeof(DeclarationValue));
+					auxVal->type = INTEGERvalue;
+					auxVal->intValue->value = tree->density;
+					aux->leftValue = auxVal;
+					aux->rightOperation = arithmeticAssignation->arithmeticOperation;
+					int res = _generateArithmeticOperation(aux);
+					free(auxVal);
+					free(aux);
+
+					tree->density = res;
+					return;
+				}
+				else if(strcmp(arithmeticAssignation->att->attributeID->idValue, "bark") == 0){
+					ArithmeticOperation * aux = calloc(1, sizeof(ArithmeticOperation));
+					aux->operator = arithmeticAssignation->operator;
+					aux->type = LV_RO;
+					DeclarationValue * auxVal = calloc(1, sizeof(DeclarationValue));
+					auxVal->type = INTEGERvalue;
+					auxVal->intValue->value = tree->bark;
+					aux->leftValue = auxVal;
+					aux->rightOperation = arithmeticAssignation->arithmeticOperation;
+					int res = _generateArithmeticOperation(aux);
+					free(auxVal);
+					free(aux);
+
+					tree->bark = res;
+					return;
+				}
+				else{
+					logError(_logger, "tree->%s is not of type int\n", arithmeticAssignation->att->attributeID->idValue);
+					ERROR_OCCURED = true;
+					*compi=FAILED;
+					return;
+				}
+			}
+			else if(type == FOREST_TYPE){
+				_FOREST * forest = getForest(arithmeticAssignation->att->variableID->idValue).value._forest;
+				if(strcmp(arithmeticAssignation->att->attributeID->idValue, "start") == 0){
+					ArithmeticOperation * aux = calloc(1, sizeof(ArithmeticOperation));
+					aux->operator = arithmeticAssignation->operator;
+					aux->type = LV_RO;
+					DeclarationValue * auxVal = calloc(1, sizeof(DeclarationValue));
+					auxVal->type = INTEGERvalue;
+					auxVal->intValue->value = forest->start;
+					aux->leftValue = auxVal;
+					aux->rightOperation = arithmeticAssignation->arithmeticOperation;
+					int res = _generateArithmeticOperation(aux);
+					free(auxVal);
+					free(aux);
+
+					forest->start = res;
+					return;
+				}
+				else if(strcmp(arithmeticAssignation->att->attributeID->idValue, "end") == 0){
+					ArithmeticOperation * aux = calloc(1, sizeof(ArithmeticOperation));
+					aux->operator = arithmeticAssignation->operator;
+					aux->type = LV_RO;
+					DeclarationValue * auxVal = calloc(1, sizeof(DeclarationValue));
+					auxVal->type = INTEGERvalue;
+					auxVal->intValue->value = forest->end;
+					aux->leftValue = auxVal;
+					aux->rightOperation = arithmeticAssignation->arithmeticOperation;
+					int res = _generateArithmeticOperation(aux);
+					free(auxVal);
+					free(aux);
+
+					forest->end = res;
+					return;
+				}
+				else{
+					logError(_logger, "forest->%s is not of type int\n", arithmeticAssignation->att->attributeID->idValue);
+					ERROR_OCCURED = true;
+					*compi=FAILED;
+					return;
+				}
+			}
+		}
+		else{
+			logError(_logger, "Unknown AttributeValueType: %d\n", arithmeticAssignation->att->type);
+			ERROR_OCCURED = true;
+			*compi=FAILED;
+			return;
+		}
 	}
 	else{
 		logError(_logger, "Unknown AssignationType: %d\n", arithmeticAssignation->type);
