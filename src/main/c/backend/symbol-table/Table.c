@@ -20,13 +20,13 @@ void initializeTable(void){
 }
 
 void destroyTable(void){
-    kh_destroy(hash, table);
+    kh_destroy(myhash, table);
     destroyLogger(_logger);
 }
 
 EntryType getType(char * identifier){
     logInformation(_logger, "Looking up type with the identifier: %s...", identifier);
-    khiter_t k = kh_get(hash, table, identifier);
+    khiter_t k = kh_get(myhash, table, identifier);
     if( k == kh_end(table) ){
         return EMPTY_TYPE;
     }
