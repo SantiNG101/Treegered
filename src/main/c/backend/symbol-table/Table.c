@@ -1,15 +1,14 @@
 #include "Table.h"
 #include "khash.h"
 
-
 typedef struct {
-	EntryValue value;
+    EntryValue value;
     EntryType type;
 } Entry;
 
 static Logger * _logger = NULL;
 
-KHASH_MAP_INIT_STR(myhash, Entry)
+KHASH_MAP_INIT_STR(myhash, Entry)  // Usa "myhash" como nombre del hash.
 
 khash_t(myhash) * table;
 
@@ -26,25 +25,39 @@ void destroyTable(void){
 
 EntryType getType(char * identifier){
     logInformation(_logger, "Looking up type with the identifier: %s...", identifier);
+
+    // Buscar el identificador en el hash.
     khiter_t k = kh_get(myhash, table, identifier);
-    if( k == kh_end(table) ){
-        return EMPTY_TYPE;
+    if (k == kh_end(table)) {
+        logWarning(_logger, "Identifier %s not found", identifier);
+        return EMPTY_TYPE;  // Si no se encuentra, devolver EMPTY_TYPE.
     }
+
+    // Si se encuentra, obtener la entrada y devolver el tipo.
     Entry entry = kh_value(table, k);
+    logInformation(_logger, "Identifier %s found with type: %d", identifier, entry.type);
     return entry.type;
 }
 
 static EntryResult getEntry(char * identifier, EntryType type){
     logInformation(_logger, "Looking up value with the identifier: %s...", identifier);
-    EntryResult result = { .found=false} ;
+    EntryResult result = { .found=false};  // Inicializar como no encontrado.
+
+    // Buscar el identificador en el hash.
     khiter_t k = kh_get(myhash, table, identifier);
-    if ( k==kh_end(table) )
+    if (k == kh_end(table)) {
+        logWarning(_logger, "Identifier %s not found", identifier);
         return result;
-    Entry entry = kh_value(table,k);
-    if ( type == entry.type ) {
-        result.found=true, 
-        result.value=entry.value;
     }
+
+    // Si se encuentra, verificar si el tipo coincide.
+    Entry entry = kh_value(table, k);
+    if (type == entry.type) {
+        result.found = true;
+        result.value = entry.value;  // Asignar el valor.
+        logInformation(_logger, "Found value for identifier %s of type %d", identifier, type);
+    }
+
     return result;
 }
 
@@ -76,37 +89,39 @@ EntryResult getWorld(char * identifier){
     return getEntry(identifier, WORLD_TYPE);
 }
 
-boolean exists(char * identifier ) {
+boolean exists(char * identifier) {
     khiter_t k = kh_get(myhash, table, identifier);
-    if ( k==kh_end(table) )
+    if (k == kh_end(table)) {
+        logWarning(_logger, "Identifier %s does not exist", identifier);
         return false;
-    return true; 
+    }
+    return true;  // Si el identificador existe, devolver true.
 }
 
-
-static boolean insert(char * identifier,  EntryType type, EntryValue value ){
+static boolean insert(char * identifier, EntryType type, EntryValue value) {
     int ret;
     logWarning(_logger, "Placing the identifier: %s...", identifier);
 
+    // Intentar insertar el identificador en el hash.
     khiter_t k = kh_put(myhash, table, identifier, &ret);
-    if ( ret <= 0)
-        return false;
-    logCritical(_logger, "Load key");
-    Entry entry = {
-        .type = type,
-        .value = value
-    };
+    if (ret <= 0) {
+        logError(_logger, "Failed to insert identifier: %s", identifier);
+        return false;  // Si no se pudo insertar, devolver false.
+    }
 
-    kh_value(table,k) = entry;
+    // Crear la entrada y asignarla al identificador.
+    Entry entry = { .type = type, .value = value };
+    kh_value(table, k) = entry;
+
+    logInformation(_logger, "Identifier %s inserted successfully", identifier);
     return true;
 }
 
-boolean insertInteger(char * identifier, _INTEGER * value ){
+boolean insertInteger(char * identifier, _INTEGER * value) {
     EntryValue entryValue;
     entryValue._integer = value;
     return insert(identifier, INTEGER_TYPE, entryValue);
 }
-
 
 boolean insertBoolean(char * identifier, _BOOLEAN * value){
     EntryValue entryValue;
