@@ -739,29 +739,349 @@ static void _generateGeneralAssignation(GeneralAssignation * generalAssignation)
 		insertInteger(generalAssignation->idDeclared->idValue, integer);
 	}
 	else if(generalAssignation->type == ID_BY_VALUE){
-		if(generalAssignation->value->type == IDvalue){
-			
+		EntryType type = getType(generalAssignation->id->idValue);
+		if(type == EMPTY_TYPE){
+			logError(_logger, "Nonexistent variable: %s\n", generalAssignation->id->idValue);
+			ERROR_OCCURED = true;
+			*compi=FAILED;
+			return;
 		}
-		else if(generalAssignation->value->type == INTEGERvalue){
-			
+		if(type == INTEGER_TYPE){
+			_INTEGER * integer = getInteger(generalAssignation->id->idValue).value._integer;
+
+			if(generalAssignation->value->type == INTEGERvalue){
+				integer->value = generalAssignation->value->intValue->value;
+				return;
+			}
+			else if(generalAssignation->value->type == ATTvalue){
+				if(generalAssignation->value->attValue->type == WORLDatt){
+					_WORLD * world = getWorld("world").value._world;
+
+					if(strcmp(generalAssignation->value->attValue->attribute->idValue, "width") == 0){
+						integer->value = world->width;
+						return;
+					}
+					else if(strcmp(generalAssignation->value->attValue->attribute->idValue, "height") == 0){
+						integer->value = world->height;
+						return;
+					}
+					else if(strcmp(generalAssignation->value->attValue->attribute->idValue, "uneveness") == 0){
+						integer->value = world->uneveness;
+						return;
+					}
+					else{
+						logError(_logger, "Unknown int assign by world attribute: name(%s)\n", generalAssignation->value->attValue->attribute->idValue);
+						ERROR_OCCURED = true;
+						*compi=FAILED;
+					}
+					return;
+				}
+				else if(generalAssignation->value->attValue->type == IDatt){
+					EntryType type = getType(generalAssignation->value->attValue->variableID->idValue);
+					if(type == EMPTY_TYPE){
+						logError(_logger, "Nonexistent variable: %s\n", generalAssignation->value->attValue->variableID->idValue);
+						ERROR_OCCURED = true;
+						*compi=FAILED;
+						return;
+					}
+					if(type == TREE_TYPE){
+						_TREE * tree = getTree(generalAssignation->value->attValue->variableID->idValue).value._tree;
+						if(strcmp(generalAssignation->value->attValue->attributeID->idValue, "x") == 0){
+							integer->value = tree->x;
+							return;
+						}
+						else if(strcmp(generalAssignation->value->attValue->attributeID->idValue, "depth") == 0){
+							integer->value = tree->depth;
+							return;
+						}
+						else if(strcmp(generalAssignation->value->attValue->attributeID->idValue, "density") == 0){
+							integer->value = tree->density;
+							return;
+						}
+						else if(strcmp(generalAssignation->value->attValue->attributeID->idValue, "bark") == 0){
+							integer->value = tree->bark;
+							return;
+						}
+						else if(strcmp(generalAssignation->value->attValue->attributeID->idValue, "height") == 0){
+							integer->value = tree->height;
+							return;
+						}
+						else{
+							logError(_logger, "Unknown int assign by tree attribute: name(%s)\n", generalAssignation->value->attValue->attributeID->idValue);
+							ERROR_OCCURED = true;
+							*compi=FAILED;
+							return;
+						}
+					}
+					else if(type == FOREST_TYPE){
+						_FOREST * forest = getTree(generalAssignation->value->attValue->variableID->idValue).value._forest;
+						if(strcmp(generalAssignation->value->attValue->attributeID->idValue, "start") == 0){
+							integer->value = forest->start;
+							return;
+						}
+						else if(strcmp(generalAssignation->value->attValue->attributeID->idValue, "end") == 0){
+							integer->value = forest->end;
+							return;
+						}
+						else{
+							logError(_logger, "Unknown int assign by forest attribute: name(%s)\n", generalAssignation->value->attValue->attributeID->idValue);
+							ERROR_OCCURED = true;
+							*compi=FAILED;
+							return;
+						}
+					}
+					else{
+						logError(_logger, "Variables of type %d dont have attributes\n", type);
+						ERROR_OCCURED = true;
+						*compi=FAILED;
+					}
+				}
+				else{
+					EntryType type = getType(generalAssignation->att->variableID->idValue);
+					if(type == EMPTY_TYPE){
+						logError(_logger, "Nonexistent variable: %s\n", generalAssignation->att->variableID->idValue);
+						ERROR_OCCURED = true;
+						*compi=FAILED;
+						return;
+					}
+				}
+			}
+			else if(generalAssignation->value->type == DECLARATIONvalue){
+				GeneralAssignation * aux = calloc(1, sizeof(GeneralAssignation));
+				aux->id = generalAssignation->id;
+				aux->value = generalAssignation->value->declareValue;
+				aux->type = generalAssignation->type;
+				_generateGeneralAssignation(aux);
+				free(aux);
+				return;
+			}
+			else{
+				logError(_logger, "Tried to assign DeclarationType: %d to int classType\n", generalAssignation->value->type);
+				ERROR_OCCURED = true;
+				*compi=FAILED;
+				return;
+			}
+			return;
 		}
-		else if(generalAssignation->value->type == STRINGvalue){
-			
+		else if(type == STRING_TYPE){
+			_STRING * string = getString(generalAssignation->id->idValue).value._string;
+		
+			if(generalAssignation->value->type == STRINGvalue){
+				string->value = generalAssignation->value->charValue->value;
+				return;
+			}
+			else if(generalAssignation->value->type == ATTvalue){
+				if(generalAssignation->value->attValue->type == WORLDatt){
+					_WORLD * world = getWorld("world").value._world;
+
+					if(strcmp(generalAssignation->value->attValue->attribute->idValue, "message") == 0){
+						string->value = world->message;
+						return;
+					}
+					else{
+						logError(_logger, "Unknown str assign by world attribute: name(%s)\n", generalAssignation->value->attValue->attribute->idValue);
+						ERROR_OCCURED = true;
+						*compi=FAILED;
+					}
+					return;
+				}
+				else if(generalAssignation->value->attValue->type == IDatt){
+					EntryType type = getType(generalAssignation->value->attValue->variableID->idValue);
+					if(type == EMPTY_TYPE){
+						logError(_logger, "Nonexistent variable: %s\n", generalAssignation->value->attValue->variableID->idValue);
+						ERROR_OCCURED = true;
+						*compi=FAILED;
+						return;
+					}
+					if(type == TREE_TYPE){
+						logError(_logger, "Unknown str assign by tree attribute: name(%s)\n", generalAssignation->value->attValue->attributeID->idValue);
+						ERROR_OCCURED = true;
+						*compi=FAILED;
+						return;
+					}
+					else{
+						logError(_logger, "Variables of type %d dont have attributes to init str\n", type);
+						ERROR_OCCURED = true;
+						*compi=FAILED;
+					}
+				}
+				else{
+					EntryType type = getType(generalAssignation->att->variableID->idValue);
+					if(type == EMPTY_TYPE){
+						logError(_logger, "Nonexistent variable: %s\n", generalAssignation->att->variableID->idValue);
+						ERROR_OCCURED = true;
+						*compi=FAILED;
+						return;
+					}
+				}
+			}
+			else if(generalAssignation->value->type == DECLARATIONvalue){
+				GeneralAssignation * aux = calloc(1, sizeof(GeneralAssignation));
+				aux->id = generalAssignation->id;
+				aux->value = generalAssignation->value->declareValue;
+				aux->type = generalAssignation->type;
+				_generateGeneralAssignation(aux);
+				free(aux);
+				return;
+			}
+			else{
+				logError(_logger, "Tried to assign DeclarationType: %d to str classType\n", generalAssignation->value->type);
+				ERROR_OCCURED = true;
+				*compi=FAILED;
+				return;
+			}
+			return;
 		}
-		else if(generalAssignation->value->type == HEXCOLORvalue){
-			
+		else if(type == BOOL_TYPE){
+			_BOOLEAN * boool = getBoolean(generalAssignation->id->idValue).value._boolean;
+
+			if(generalAssignation->value->type == BOOLEANvalue){
+				boool->value = generalAssignation->value->booleanValue->value;
+				return;
+			}
+			else if(generalAssignation->value->type == ATTvalue){
+				if(generalAssignation->value->attValue->type == WORLDatt){
+					logError(_logger, "Unknown bool assign by world attribute: name(%s)\n", generalAssignation->value->attValue->attribute->idValue);
+					ERROR_OCCURED = true;
+					*compi=FAILED;
+					return;
+				}
+				else if(generalAssignation->value->attValue->type == IDatt){
+					EntryType type = getType(generalAssignation->value->attValue->variableID->idValue);
+					if(type == EMPTY_TYPE){
+						logError(_logger, "Nonexistent variable: %s\n", generalAssignation->value->attValue->variableID->idValue);
+						ERROR_OCCURED = true;
+						*compi=FAILED;
+						return;
+					}
+					if(type == TREE_TYPE){
+						_TREE * tree = getTree(generalAssignation->value->attValue->variableID->idValue).value._tree;
+						if(strcmp(generalAssignation->value->attValue->attributeID->idValue, "snowed") == 0){
+							boool->value = tree->snowed;
+							return;
+						}
+						else{
+							logError(_logger, "Unknown boolean assign by tree attribute: name(%s)\n", generalAssignation->value->attValue->attributeID->idValue);
+							ERROR_OCCURED = true;
+							*compi=FAILED;
+							return;
+						}
+					}
+					else if(type == FOREST_TYPE){
+						logError(_logger, "Unknown boolean assign by forest attribute: name(%s)\n", generalAssignation->value->attValue->attributeID->idValue);
+						ERROR_OCCURED = true;
+						*compi=FAILED;
+						return;
+					}
+					else{
+						logError(_logger, "Variables of type %d dont have attributes\n", type);
+						ERROR_OCCURED = true;
+						*compi=FAILED;
+					}
+				}
+				else{
+					EntryType type = getType(generalAssignation->att->variableID->idValue);
+					if(type == EMPTY_TYPE){
+						logError(_logger, "Nonexistent variable: %s\n", generalAssignation->att->variableID->idValue);
+						ERROR_OCCURED = true;
+						*compi=FAILED;
+						return;
+					}
+				}
+			}
+			else if(generalAssignation->value->type == DECLARATIONvalue){
+				GeneralAssignation * aux = calloc(1, sizeof(GeneralAssignation));
+				aux->id = generalAssignation->id;
+				aux->value = generalAssignation->value->declareValue;
+				aux->type = generalAssignation->type;
+				_generateGeneralAssignation(aux);
+				free(aux);
+				return;
+			}
+			else{
+				logError(_logger, "Tried to assign DeclarationType: %d to boolean classType\n", generalAssignation->value->type);
+				ERROR_OCCURED = true;
+				*compi=FAILED;
+				return;
+			}
+			return;
 		}
-		else if(generalAssignation->value->type == BOOLEANvalue){
-			
-		}
-		else if(generalAssignation->value->type == DECLARATIONvalue){
-			
-		}
-		else if(generalAssignation->value->type == ATTvalue){
-			
+		else if(type == HEXCOLOR_TYPE){
+			_HEXCOLOR * color = getHexcolor(generalAssignation->id->idValue).value._hexcolor;
+
+			if(generalAssignation->value->type == HEXCOLORvalue){
+				color->value = generalAssignation->value->hexcolorValue->value;
+				return;
+			}
+			else if(generalAssignation->value->type == ATTvalue){
+				if(generalAssignation->value->attValue->type == WORLDatt){
+					logError(_logger, "Unknown hexcolor assign by world attribute: name(%s)\n", generalAssignation->value->attValue->attribute->idValue);
+					ERROR_OCCURED = true;
+					*compi=FAILED;
+					return;
+				}
+				else if(generalAssignation->value->attValue->type == IDatt){
+					EntryType type = getType(generalAssignation->value->attValue->variableID->idValue);
+					if(type == EMPTY_TYPE){
+						logError(_logger, "Nonexistent variable: %s\n", generalAssignation->value->attValue->variableID->idValue);
+						ERROR_OCCURED = true;
+						*compi=FAILED;
+						return;
+					}
+					if(type == TREE_TYPE){
+						_TREE * tree = getTree(generalAssignation->value->attValue->variableID->idValue).value._tree;
+						if(strcmp(generalAssignation->value->attValue->attributeID->idValue, "color") == 0){
+							color->value = tree->color;
+							return;
+						}
+						else{
+							logError(_logger, "Unknown hexcolor assign by tree attribute: name(%s)\n", generalAssignation->value->attValue->attributeID->idValue);
+							ERROR_OCCURED = true;
+							*compi=FAILED;
+							return;
+						}
+					}
+					else if(type == FOREST_TYPE){
+						logError(_logger, "Unknown hexcolor assign by forest attribute: name(%s)\n", generalAssignation->value->attValue->attributeID->idValue);
+						ERROR_OCCURED = true;
+						*compi=FAILED;
+						return;
+					}
+					else{
+						logError(_logger, "Variables of type %d dont have attributes for hexcolor init\n", type);
+						ERROR_OCCURED = true;
+						*compi=FAILED;
+					}
+				}
+				else{
+					EntryType type = getType(generalAssignation->att->variableID->idValue);
+					if(type == EMPTY_TYPE){
+						logError(_logger, "Nonexistent variable: %s\n", generalAssignation->att->variableID->idValue);
+						ERROR_OCCURED = true;
+						*compi=FAILED;
+						return;
+					}
+				}
+			}
+			else if(generalAssignation->value->type == DECLARATIONvalue){
+				GeneralAssignation * aux = calloc(1, sizeof(GeneralAssignation));
+				aux->id = generalAssignation->id;
+				aux->value = generalAssignation->value->declareValue;
+				aux->type = generalAssignation->type;
+				_generateGeneralAssignation(aux);
+				free(aux);
+				return;
+			}
+			else{
+				logError(_logger, "Tried to assign DeclarationType: %d to int classType\n", generalAssignation->value->type);
+				ERROR_OCCURED = true;
+				*compi=FAILED;
+				return;
+			}
+			return;
 		}
 		else{
-			logError(_logger, "Wrong DeclarationValueType for generalAssignation: %d\n", generalAssignation->value->type);
+			logError(_logger, "Unknown classType to assign: %d\n", type);
 			ERROR_OCCURED = true;
 			*compi=FAILED;
 			return;
