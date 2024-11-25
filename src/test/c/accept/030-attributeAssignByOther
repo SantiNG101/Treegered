@@ -1,3 +1,4 @@
 tree t1;
 tree t2;
-t2->height = t1->height;
+int a = t1->height;
+t2->height = a;

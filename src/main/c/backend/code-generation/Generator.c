@@ -119,41 +119,441 @@ static int _getArithOpResult(int v1, int v2, OperatorType ot){
 static int _generateArithmeticOperation(ArithmeticOperation * arithmeticOperation){
 	if(ERROR_OCCURED==true) return 0;
 	if(arithmeticOperation->type == LV_RV){
-		if(arithmeticOperation->leftValue->type == ATTvalue || arithmeticOperation->leftValue->type == DECLARATIONvalue){
-			//TODO
-			return 0;
+		int left;
+		int right;
+		boolean noneleft=true;
+		boolean noneright=true;
+		if(arithmeticOperation->leftValue->type == ATTvalue){
+			if(arithmeticOperation->leftValue->attValue->type == WORLDatt){
+				_WORLD * world = getWorld("world").value._world;
+				if(strcmp(arithmeticOperation->leftValue->attValue->attribute->idValue, "width") == 0){
+					left = world->width;
+					noneleft=false;
+				}
+				else if(strcmp(arithmeticOperation->leftValue->attValue->attribute->idValue, "height") == 0){
+					left = world->height;
+					noneleft=false;
+				}
+				else if(strcmp(arithmeticOperation->leftValue->attValue->attribute->idValue, "uneveness") == 0){
+					left = world->uneveness;
+					noneleft=false;
+				}
+				else{
+					logError(_logger, "Unknown int assign by world attribute: name(%s)\n", arithmeticOperation->leftValue->attValue->attribute->idValue);
+					ERROR_OCCURED = true;
+					*compi=FAILED;
+					return 0;
+				}
+			}		
+			else if(arithmeticOperation->leftValue->attValue->type == IDatt){
+				EntryType type = getType(arithmeticOperation->leftValue->attValue->variableID->idValue);
+				if(type == EMPTY_TYPE){
+					logError(_logger, "Nonexistent variable: %s\n", arithmeticOperation->leftValue->attValue->variableID->idValue);
+					ERROR_OCCURED = true;
+					*compi=FAILED;
+					return 0;
+				}
+				if(type == TREE_TYPE){
+					_TREE * tree = getTree(arithmeticOperation->leftValue->attValue->variableID->idValue).value._tree;
+					if(strcmp(arithmeticOperation->leftValue->attValue->attribute->idValue, "x") == 0){
+						left = tree->x;
+						noneleft=false;
+					}
+					else if(strcmp(arithmeticOperation->leftValue->attValue->attribute->idValue, "height") == 0){
+						left = tree->height;
+						noneleft=false;
+					}
+					else if(strcmp(arithmeticOperation->leftValue->attValue->attribute->idValue, "density") == 0){
+						left = tree->density;
+						noneleft=false;
+					}
+					else if(strcmp(arithmeticOperation->leftValue->attValue->attribute->idValue, "depth") == 0){
+						left = tree->depth;
+						noneleft=false;
+					}
+					else if(strcmp(arithmeticOperation->leftValue->attValue->attribute->idValue, "bark") == 0){
+						left = tree->bark;
+						noneleft=false;
+					}
+					else{
+						logError(_logger, "Unknown int assign by tree attribute: name(%s)\n", arithmeticOperation->leftValue->attValue->attributeID->idValue);
+						ERROR_OCCURED = true;
+						*compi=FAILED;
+						return 0;
+					}
+				}
+				else if(type == FOREST_TYPE){
+					_FOREST * forest = getTree(arithmeticOperation->leftValue->attValue->variableID->idValue).value._forest;
+					if(strcmp(arithmeticOperation->leftValue->attValue->attribute->idValue, "start") == 0){
+						left = forest->start;
+						noneleft=false;
+					}
+					else if(strcmp(arithmeticOperation->leftValue->attValue->attribute->idValue, "end") == 0){
+						left = forest->end;
+						noneleft=false;
+					}
+					else{
+						logError(_logger, "Unknown int assign by forest attribute: name(%s)\n", arithmeticOperation->leftValue->attValue->attributeID->idValue);
+						ERROR_OCCURED = true;
+						*compi=FAILED;
+						return 0;
+					}
+				}
+				else{
+					logError(_logger, "Variables of type %d dont have attributes\n", type);
+					ERROR_OCCURED = true;
+					*compi=FAILED;
+					return 0;
+				}
+			}	
 		}
-		if(arithmeticOperation->rightValue->type == ATTvalue || arithmeticOperation->rightValue->type == DECLARATIONvalue){
-			//TODO
-			return 0;
+		if(arithmeticOperation->rightValue->type == ATTvalue){
+			if(arithmeticOperation->rightValue->attValue->type == WORLDatt){
+				_WORLD * world = getWorld("world").value._world;
+				if(strcmp(arithmeticOperation->rightValue->attValue->attribute->idValue, "width") == 0){
+					right = world->width;
+					noneright=false;
+				}
+				else if(strcmp(arithmeticOperation->rightValue->attValue->attribute->idValue, "height") == 0){
+					right = world->height;
+					noneright=false;
+				}
+				else if(strcmp(arithmeticOperation->rightValue->attValue->attribute->idValue, "uneveness") == 0){
+					right = world->uneveness;
+					noneright=false;
+				}
+				else{
+					logError(_logger, "Unknown int assign by world attribute: name(%s)\n", arithmeticOperation->rightValue->attValue->attribute->idValue);
+					ERROR_OCCURED = true;
+					*compi=FAILED;
+					return 0;
+				}
+			}		
+			else if(arithmeticOperation->rightValue->attValue->type == IDatt){
+				EntryType type = getType(arithmeticOperation->rightValue->attValue->variableID->idValue);
+				if(type == EMPTY_TYPE){
+					logError(_logger, "Nonexistent variable: %s\n", arithmeticOperation->rightValue->attValue->variableID->idValue);
+					ERROR_OCCURED = true;
+					*compi=FAILED;
+					return 0;
+				}
+				if(type == TREE_TYPE){
+					_TREE * tree = getTree(arithmeticOperation->rightValue->attValue->variableID->idValue).value._tree;
+					if(strcmp(arithmeticOperation->rightValue->attValue->attribute->idValue, "x") == 0){
+						right = tree->x;
+						noneright=false;
+					}
+					else if(strcmp(arithmeticOperation->rightValue->attValue->attribute->idValue, "height") == 0){
+						right = tree->height;
+						noneright=false;
+					}
+					else if(strcmp(arithmeticOperation->rightValue->attValue->attribute->idValue, "density") == 0){
+						right = tree->density;
+						noneright=false;
+					}
+					else if(strcmp(arithmeticOperation->rightValue->attValue->attribute->idValue, "depth") == 0){
+						right = tree->depth;
+						noneright=false;
+					}
+					else if(strcmp(arithmeticOperation->rightValue->attValue->attribute->idValue, "bark") == 0){
+						right = tree->bark;
+						noneright=false;
+					}
+					else{
+						logError(_logger, "Unknown int assign by tree attribute: name(%s)\n", arithmeticOperation->rightValue->attValue->attributeID->idValue);
+						ERROR_OCCURED = true;
+						*compi=FAILED;
+						return 0;
+					}
+				}
+				else if(type == FOREST_TYPE){
+					_FOREST * forest = getTree(arithmeticOperation->rightValue->attValue->variableID->idValue).value._forest;
+					if(strcmp(arithmeticOperation->rightValue->attValue->attribute->idValue, "start") == 0){
+						right = forest->start;
+						noneright=false;
+					}
+					else if(strcmp(arithmeticOperation->rightValue->attValue->attribute->idValue, "end") == 0){
+						right = forest->end;
+						noneright=false;
+					}
+					else{
+						logError(_logger, "Unknown int assign by forest attribute: name(%s)\n", arithmeticOperation->rightValue->attValue->attributeID->idValue);
+						ERROR_OCCURED = true;
+						*compi=FAILED;
+						return 0;
+					}
+				}
+				else{
+					logError(_logger, "Variables of type %d dont have attributes\n", type);
+					ERROR_OCCURED = true;
+					*compi=FAILED;
+					return 0;
+				}
+			}	
 		}
-		if(arithmeticOperation->leftValue->type != INTEGERvalue || arithmeticOperation->rightValue->type != INTEGERvalue){
+		if(arithmeticOperation->leftValue->type == DECLARATIONvalue){
+			ArithmeticOperation * aux = calloc(1, sizeof(ArithmeticOperation));
+			aux->operator = arithmeticOperation->operator;
+			aux->arithOp = arithmeticOperation->arithOp;
+			if(arithmeticOperation->type == LV_RV || arithmeticOperation->type == LV_RO) aux->leftValue = arithmeticOperation->leftValue->declareValue;
+			if(arithmeticOperation->type == LV_RV || arithmeticOperation->type == LO_RV) aux->rightValue = arithmeticOperation->rightValue;
+			if(arithmeticOperation->type == LO_RV || arithmeticOperation->type == LO_RO) aux->leftOperation = arithmeticOperation->leftOperation;
+			if(arithmeticOperation->type == LV_RO || arithmeticOperation->type == LO_RO) aux->rightOperation = arithmeticOperation->rightOperation;
+			aux->type = arithmeticOperation->type;
+			int toRet = _generateArithmeticOperation(aux);
+			free(aux);
+			left = toRet;
+			noneleft=false;
+		}
+		if(arithmeticOperation->rightValue->type == DECLARATIONvalue){
+			ArithmeticOperation * aux = calloc(1, sizeof(ArithmeticOperation));
+			aux->operator = arithmeticOperation->operator;
+			aux->arithOp = arithmeticOperation->arithOp;
+			if(arithmeticOperation->type == LV_RV || arithmeticOperation->type == LV_RO)aux->leftValue = arithmeticOperation->leftValue;
+			if(arithmeticOperation->type == LV_RV || arithmeticOperation->type == LO_RV)aux->rightValue = arithmeticOperation->rightValue->declareValue;
+			if(arithmeticOperation->type == LO_RV || arithmeticOperation->type == LO_RO)aux->leftOperation = arithmeticOperation->leftOperation;
+			if(arithmeticOperation->type == LV_RO || arithmeticOperation->type == LO_RO)aux->rightOperation = arithmeticOperation->rightOperation;
+			aux->type = arithmeticOperation->type;
+			int toRet = _generateArithmeticOperation(aux);
+			free(aux);
+			right = toRet;
+			noneright=false;
+		}
+		if(arithmeticOperation->leftValue->type == INTEGERvalue){
+			left = arithmeticOperation->leftValue->intValue->value;
+			noneleft=false;
+		}
+		if(arithmeticOperation->rightValue->type == INTEGERvalue){
+			right = arithmeticOperation->rightValue->intValue->value;
+			noneright=false;
+		}
+		if(noneleft==true || noneright==true){
 			logError(_logger, "Cannot operate with type other than int\n");
 			ERROR_OCCURED = true;
 			*compi=FAILED;
 			return false;
 		}
-		return _getArithOpResult(arithmeticOperation->leftValue->intValue->value, arithmeticOperation->rightValue->intValue->value, arithmeticOperation->operator);
+		return _getArithOpResult(left, right, arithmeticOperation->operator);
 	}
 	else if(arithmeticOperation->type == LV_RO){
-		if(arithmeticOperation->leftValue->type == ATTvalue || arithmeticOperation->leftValue->type == DECLARATIONvalue){
-			//TODO
-			return 0;
+		int left;
+		boolean noneleft=true;
+		if(arithmeticOperation->leftValue->type == ATTvalue){
+			if(arithmeticOperation->leftValue->attValue->type == WORLDatt){
+				_WORLD * world = getWorld("world").value._world;
+				if(strcmp(arithmeticOperation->leftValue->attValue->attribute->idValue, "width") == 0){
+					left = world->width;
+					noneleft=false;
+				}
+				else if(strcmp(arithmeticOperation->leftValue->attValue->attribute->idValue, "height") == 0){
+					left = world->height;
+					noneleft=false;
+				}
+				else if(strcmp(arithmeticOperation->leftValue->attValue->attribute->idValue, "uneveness") == 0){
+					left = world->uneveness;
+					noneleft=false;
+				}
+				else{
+					logError(_logger, "Unknown int assign by world attribute: name(%s)\n", arithmeticOperation->leftValue->attValue->attribute->idValue);
+					ERROR_OCCURED = true;
+					*compi=FAILED;
+					return 0;
+				}
+			}		
+			else if(arithmeticOperation->leftValue->attValue->type == IDatt){
+				EntryType type = getType(arithmeticOperation->leftValue->attValue->variableID->idValue);
+				if(type == EMPTY_TYPE){
+					logError(_logger, "Nonexistent variable: %s\n", arithmeticOperation->leftValue->attValue->variableID->idValue);
+					ERROR_OCCURED = true;
+					*compi=FAILED;
+					return 0;
+				}
+				if(type == TREE_TYPE){
+					_TREE * tree = getTree(arithmeticOperation->leftValue->attValue->variableID->idValue).value._tree;
+					if(strcmp(arithmeticOperation->leftValue->attValue->attribute->idValue, "x") == 0){
+						left = tree->x;
+						noneleft=false;
+					}
+					else if(strcmp(arithmeticOperation->leftValue->attValue->attribute->idValue, "height") == 0){
+						left = tree->height;
+						noneleft=false;
+					}
+					else if(strcmp(arithmeticOperation->leftValue->attValue->attribute->idValue, "density") == 0){
+						left = tree->density;
+						noneleft=false;
+					}
+					else if(strcmp(arithmeticOperation->leftValue->attValue->attribute->idValue, "depth") == 0){
+						left = tree->depth;
+						noneleft=false;
+					}
+					else if(strcmp(arithmeticOperation->leftValue->attValue->attribute->idValue, "bark") == 0){
+						left = tree->bark;
+						noneleft=false;
+					}
+					else{
+						logError(_logger, "Unknown int assign by tree attribute: name(%s)\n", arithmeticOperation->leftValue->attValue->attributeID->idValue);
+						ERROR_OCCURED = true;
+						*compi=FAILED;
+						return 0;
+					}
+				}
+				else if(type == FOREST_TYPE){
+					_FOREST * forest = getTree(arithmeticOperation->leftValue->attValue->variableID->idValue).value._forest;
+					if(strcmp(arithmeticOperation->leftValue->attValue->attribute->idValue, "start") == 0){
+						left = forest->start;
+						noneleft=false;
+					}
+					else if(strcmp(arithmeticOperation->leftValue->attValue->attribute->idValue, "end") == 0){
+						left = forest->end;
+						noneleft=false;
+					}
+					else{
+						logError(_logger, "Unknown int assign by forest attribute: name(%s)\n", arithmeticOperation->leftValue->attValue->attributeID->idValue);
+						ERROR_OCCURED = true;
+						*compi=FAILED;
+						return 0;
+					}
+				}
+				else{
+					logError(_logger, "Variables of type %d dont have attributes\n", type);
+					ERROR_OCCURED = true;
+					*compi=FAILED;
+					return 0;
+				}
+			}	
 		}
-		if(arithmeticOperation->leftValue->type != INTEGERvalue){
+		if(arithmeticOperation->leftValue->type == DECLARATIONvalue){
+			ArithmeticOperation * aux = calloc(1, sizeof(ArithmeticOperation));
+			aux->operator = arithmeticOperation->operator;
+			aux->arithOp = arithmeticOperation->arithOp;
+			if(arithmeticOperation->type == LV_RV || arithmeticOperation->type == LV_RO) aux->leftValue = arithmeticOperation->leftValue->declareValue;
+			if(arithmeticOperation->type == LV_RV || arithmeticOperation->type == LO_RV) aux->rightValue = arithmeticOperation->rightValue;
+			if(arithmeticOperation->type == LO_RV || arithmeticOperation->type == LO_RO) aux->leftOperation = arithmeticOperation->leftOperation;
+			if(arithmeticOperation->type == LV_RO || arithmeticOperation->type == LO_RO) aux->rightOperation = arithmeticOperation->rightOperation;
+			aux->type = arithmeticOperation->type;
+			int toRet = _generateArithmeticOperation(aux);
+			free(aux);
+			left = toRet;
+			noneleft=false;
+		}
+		if(arithmeticOperation->leftValue->type == INTEGERvalue){
+			left = arithmeticOperation->leftValue->intValue->value;
+			noneleft=false;
+		}
+		if(noneleft==true){
 			logError(_logger, "Cannot operate with type other than int\n");
 			ERROR_OCCURED = true;
 			*compi=FAILED;
 			return false;
 		}
-		return _getArithOpResult(arithmeticOperation->leftValue->intValue->value, _generateArithmeticOperation(arithmeticOperation->rightOperation), arithmeticOperation->operator);
+		return _getArithOpResult(left, _generateArithmeticOperation(arithmeticOperation->rightOperation), arithmeticOperation->operator);
 	}
 	else if(arithmeticOperation->type == LO_RV){
-		if(arithmeticOperation->rightValue->type == ATTvalue || arithmeticOperation->rightValue->type == DECLARATIONvalue){
-			//TODO
-			return 0;
+		int right;
+		boolean noneright=true;
+		if(arithmeticOperation->rightValue->type == ATTvalue){
+			if(arithmeticOperation->rightValue->attValue->type == WORLDatt){
+				_WORLD * world = getWorld("world").value._world;
+				if(strcmp(arithmeticOperation->rightValue->attValue->attribute->idValue, "width") == 0){
+					right = world->width;
+					noneright=false;
+				}
+				else if(strcmp(arithmeticOperation->rightValue->attValue->attribute->idValue, "height") == 0){
+					right = world->height;
+					noneright=false;
+				}
+				else if(strcmp(arithmeticOperation->rightValue->attValue->attribute->idValue, "uneveness") == 0){
+					right = world->uneveness;
+					noneright=false;
+				}
+				else{
+					logError(_logger, "Unknown int assign by world attribute: name(%s)\n", arithmeticOperation->rightValue->attValue->attribute->idValue);
+					ERROR_OCCURED = true;
+					*compi=FAILED;
+					return 0;
+				}
+			}		
+			else if(arithmeticOperation->rightValue->attValue->type == IDatt){
+				EntryType type = getType(arithmeticOperation->rightValue->attValue->variableID->idValue);
+				if(type == EMPTY_TYPE){
+					logError(_logger, "Nonexistent variable: %s\n", arithmeticOperation->rightValue->attValue->variableID->idValue);
+					ERROR_OCCURED = true;
+					*compi=FAILED;
+					return 0;
+				}
+				if(type == TREE_TYPE){
+					_TREE * tree = getTree(arithmeticOperation->rightValue->attValue->variableID->idValue).value._tree;
+					if(strcmp(arithmeticOperation->rightValue->attValue->attribute->idValue, "x") == 0){
+						right = tree->x;
+						noneright=false;
+					}
+					else if(strcmp(arithmeticOperation->rightValue->attValue->attribute->idValue, "height") == 0){
+						right = tree->height;
+						noneright=false;
+					}
+					else if(strcmp(arithmeticOperation->rightValue->attValue->attribute->idValue, "density") == 0){
+						right = tree->density;
+						noneright=false;
+					}
+					else if(strcmp(arithmeticOperation->rightValue->attValue->attribute->idValue, "depth") == 0){
+						right = tree->depth;
+						noneright=false;
+					}
+					else if(strcmp(arithmeticOperation->rightValue->attValue->attribute->idValue, "bark") == 0){
+						right = tree->bark;
+						noneright=false;
+					}
+					else{
+						logError(_logger, "Unknown int assign by tree attribute: name(%s)\n", arithmeticOperation->rightValue->attValue->attributeID->idValue);
+						ERROR_OCCURED = true;
+						*compi=FAILED;
+						return 0;
+					}
+				}
+				else if(type == FOREST_TYPE){
+					_FOREST * forest = getTree(arithmeticOperation->rightValue->attValue->variableID->idValue).value._forest;
+					if(strcmp(arithmeticOperation->rightValue->attValue->attribute->idValue, "start") == 0){
+						right = forest->start;
+						noneright=false;
+					}
+					else if(strcmp(arithmeticOperation->rightValue->attValue->attribute->idValue, "end") == 0){
+						right = forest->end;
+						noneright=false;
+					}
+					else{
+						logError(_logger, "Unknown int assign by forest attribute: name(%s)\n", arithmeticOperation->rightValue->attValue->attributeID->idValue);
+						ERROR_OCCURED = true;
+						*compi=FAILED;
+						return 0;
+					}
+				}
+				else{
+					logError(_logger, "Variables of type %d dont have attributes\n", type);
+					ERROR_OCCURED = true;
+					*compi=FAILED;
+					return 0;
+				}
+			}	
 		}
-		if(arithmeticOperation->rightValue->type != INTEGERvalue){
+		if(arithmeticOperation->rightValue->type == DECLARATIONvalue){
+			ArithmeticOperation * aux = calloc(1, sizeof(ArithmeticOperation));
+			aux->operator = arithmeticOperation->operator;
+			aux->arithOp = arithmeticOperation->arithOp;
+			if(arithmeticOperation->type == LV_RV || arithmeticOperation->type == LV_RO)aux->leftValue = arithmeticOperation->leftValue;
+			if(arithmeticOperation->type == LV_RV || arithmeticOperation->type == LO_RV)aux->rightValue = arithmeticOperation->rightValue->declareValue;
+			if(arithmeticOperation->type == LO_RV || arithmeticOperation->type == LO_RO)aux->leftOperation = arithmeticOperation->leftOperation;
+			if(arithmeticOperation->type == LV_RO || arithmeticOperation->type == LO_RO)aux->rightOperation = arithmeticOperation->rightOperation;
+			aux->type = arithmeticOperation->type;
+			int toRet = _generateArithmeticOperation(aux);
+			free(aux);
+			right = toRet;
+			noneright=false;
+		}
+		if(arithmeticOperation->rightValue->type == INTEGERvalue){
+			right = arithmeticOperation->rightValue->intValue->value;
+			noneright=false;
+		}
+		if(noneright==true){
 			logError(_logger, "Cannot operate with type other than int\n");
 			ERROR_OCCURED = true;
 			*compi=FAILED;
@@ -259,7 +659,7 @@ static boolean _generateConditionalClause(ConditionalClause * conditionalClause)
 		return _generateConditionalClause(conditionalClause->conditionalClause);
 	}
 	else if(conditionalClause->conditionalType == V_V){
-		if(conditionalClause->leftValue->type == ATTvalue){//TODO check que exista la variabl, recuperarla de la tabla y ver q coincidaa el tipo
+		if(conditionalClause->leftValue->type == ATTvalue){
 			if(conditionalClause->leftValue->attValue->type == WORLDatt){
 				return true;//TODO
 			}
@@ -276,12 +676,39 @@ static boolean _generateConditionalClause(ConditionalClause * conditionalClause)
 		return _getConditionalClauseResultVV(conditionalClause->leftValue, conditionalClause->rightValue, conditionalClause->comparissonType);
 	}
 	else if(conditionalClause->conditionalType == V_C){
-		if(conditionalClause->leftValue->type == ATTvalue){//TODO check que exista la variabl, recuperarla de la tabla y ver q coincidaa el tipo
+		if(conditionalClause->leftValue->type == ATTvalue){
 			if(conditionalClause->leftValue->attValue->type == WORLDatt){
-				return true;//TODO
+				logError(_logger, "No world attribute is boolean\n");
+				ERROR_OCCURED = true;
+				*compi=FAILED;
+				return false;
 			}
 			else if(conditionalClause->leftValue->attValue->type == IDatt){
-				return true;//TODO
+				EntryType type = getType(conditionalClause->leftValue->attValue->variableID->idValue);
+					if(type == EMPTY_TYPE){
+						logError(_logger, "Nonexistent variable: %s\n", conditionalClause->leftValue->attValue->variableID->idValue);
+						ERROR_OCCURED = true;
+						*compi=FAILED;
+						return false;
+					}
+				if(type == TREE_TYPE){
+					if(strcmp(conditionalClause->leftValue->attValue->attributeID->idValue, "snowed") == 0){
+						_TREE * tree = getTree(conditionalClause->leftValue->attValue->variableID->idValue).value._tree;
+						return _getConditionalClauseResultBool(tree->snowed, _generateConditionalClause(conditionalClause->leftConditionalClause), conditionalClause->comparissonType);
+					}
+					else{
+						logError(_logger, "tree->%s is not boolean\n", conditionalClause->leftValue->attValue->attributeID->idValue);
+						ERROR_OCCURED = true;
+						*compi=FAILED;
+						return false;
+					}
+				}
+				else{
+					logError(_logger, "No boolean attribute in type %d\n", type);
+					ERROR_OCCURED = true;
+					*compi=FAILED;
+					return false;
+				}
 			}
 			else{
 				logError(_logger, "Unknown AttributeValueType: %d\n", conditionalClause->leftValue->attValue->type);
@@ -299,12 +726,39 @@ static boolean _generateConditionalClause(ConditionalClause * conditionalClause)
 		return _getConditionalClauseResultBool(conditionalClause->leftValueDeclare->booleanValue->value, _generateConditionalClause(conditionalClause->rightConditionalClause), conditionalClause->comparissonType);
 	}
 	else if(conditionalClause->conditionalType == C_V){
-		if(conditionalClause->rightValue->type == ATTvalue){//TODO check que exista la variabl, recuperarla de la tabla y ver q coincidaa el tipo
+		if(conditionalClause->rightValue->type == ATTvalue){
 			if(conditionalClause->rightValue->attValue->type == WORLDatt){
-				return true;//TODO
+				logError(_logger, "No world attribute is boolean\n");
+				ERROR_OCCURED = true;
+				*compi=FAILED;
+				return false;
 			}
 			else if(conditionalClause->rightValue->attValue->type == IDatt){
-				return true;//TODO
+				EntryType type = getType(conditionalClause->rightValue->attValue->variableID->idValue);
+					if(type == EMPTY_TYPE){
+						logError(_logger, "Nonexistent variable: %s\n", conditionalClause->rightValue->attValue->variableID->idValue);
+						ERROR_OCCURED = true;
+						*compi=FAILED;
+						return false;
+					}
+				if(type == TREE_TYPE){
+					if(strcmp(conditionalClause->rightValue->attValue->attributeID->idValue, "snowed") == 0){
+						_TREE * tree = getTree(conditionalClause->rightValue->attValue->variableID->idValue).value._tree;
+						return _getConditionalClauseResultBool(_generateConditionalClause(conditionalClause->leftConditionalClause), tree->snowed, conditionalClause->comparissonType);
+					}
+					else{
+						logError(_logger, "tree->%s is not boolean\n", conditionalClause->rightValue->attValue->attributeID->idValue);
+						ERROR_OCCURED = true;
+						*compi=FAILED;
+						return false;
+					}
+				}
+				else{
+					logError(_logger, "No boolean attribute in type %d\n", type);
+					ERROR_OCCURED = true;
+					*compi=FAILED;
+					return false;
+				}
 			}
 			else{
 				logError(_logger, "Unknown AttributeValueType: %d\n", conditionalClause->rightValue->attValue->type);
