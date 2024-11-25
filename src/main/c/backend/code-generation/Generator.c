@@ -56,8 +56,8 @@ static void _generateTreeExpression(TreeExpression * treeExpression);
 static void _generateTreeAssignments(TreeAssignments * treeAssignments, char * treeId);
 static void _generateTreeAssignment(TreeAssignment * treeAssignment, char * treeId);
 static void _generateForestExpression(ForestExpression * forestExpression);
-static void _generateForestAssignments(ForestAssignments * forestAssignments);
-static void _generateForestAssignment(ForestAssignment * forestAssignment);
+static void _generateForestAssignments(ForestAssignments * forestAssignments, char * forestId);
+static void _generateForestAssignment(ForestAssignment * forestAssignment, char * forestId);
 static void _generateGrowExpression(GrowExpression * growExpression);
 static void _generateForExpression(ForExpression * forExpression);
 static void _generateArithmeticAssignation(ArithmeticAssignation * arithmeticAssignation);
@@ -582,39 +582,195 @@ static void _generateGrowExpression(GrowExpression * growExpression){
 	}
 }
 
-static void _generateForestAssignment(ForestAssignment * forestAssignment){
+static void _generateForestAssignment(ForestAssignment * forestAssignment, char * forestId){
 	if(ERROR_OCCURED==true) return;
+
+	_FOREST * forest = getForest(forestId).value._forest;
+
 	if(forestAssignment->type == ID_BY_VALUE){
-		//TODO mismo q co el de world pero con forest
 		if(forestAssignment->value->type == INTEGERvalue){
-			//if(checkForestAttribute(forestAssignment->id->idValue, INTCLASS)){
-				//addToTable();//TODO nose como acceder al nodo de world, en particular al id este, capaz se podria integrar en checkWorldAtt el update de tabla y mandar directo el value?
-			//}
+			if(strcmp(forestAssignment->id->idValue, "start") == 0){
+				forest->start = forestAssignment->value->intValue->value;
+			}
+			else if(strcmp(forestAssignment->id->idValue, "end") == 0){
+				forest->end = forestAssignment->value->intValue->value;
+			}
+			else{
+				logError(_logger, "Unknown forest attribute assignment by int value by name: %s\n", forestAssignment->id->idValue);
+				ERROR_OCCURED = true;
+				*compi=FAILED;
+			}
+				return;
 		}
-		else if(forestAssignment->value->type == STRINGvalue){
-			//if(checkForestAttribute(forestAssignment->id->idValue, STRCLASS)){
-				//addToTable();//TODO idem
-			//}
-		}
-		else if(forestAssignment->value->type == HEXCOLORvalue){
-			//if(checkForestAttribute(forestAssignment->id->idValue, HEXCOLORCLASS)){
-				//addToTable();//TODO idem
-			//}
-		}
-		else if(forestAssignment->value->type == BOOLEANvalue){
-			//if(checkForestAttribute(forestAssignment->id->idValue, BOOLCLASS)){
-				//addToTable();//TODO idem
-			//}
+		else if(forestAssignment->value->type == IDvalue){
+			EntryType type = getType(forestAssignment->value->idValue->idValue);
+			if(type == EMPTY_TYPE){
+				logError(_logger, "Nonexistent variable: %s\n", forestAssignment->value->idValue->idValue);
+				ERROR_OCCURED = true;
+				*compi=FAILED;
+				return;
+			}
+			else if(type == INTEGER_TYPE){
+				if(strcmp(forestAssignment->id->idValue, "start") == 0){
+					forest->start = getInteger(forestAssignment->value->idValue->idValue).value._integer->value;
+				}
+				else if(strcmp(forestAssignment->id->idValue, "end") == 0){
+					forest->end = getInteger(forestAssignment->value->idValue->idValue).value._integer->value;
+				}
+				else{
+					logError(_logger, "Unknown forest attribute assignment by int value by name: %s\n", forestAssignment->id->idValue);
+					ERROR_OCCURED = true;
+					*compi=FAILED;
+				}
+				return;
+			}
+			else{
+				logError(_logger, "Unknown id type for forest assignment: %d\n", type);
+				ERROR_OCCURED = true;
+				*compi=FAILED;
+			}
+			return;
 		}
 		else if(forestAssignment->value->type == DECLARATIONvalue){
-			//if(checkForestAttribute(forestAssignment->id->idValue, BOOLCLASS)){
-				//addToTable();//TODO idem
-			//}
+			ForestAssignment * aux = calloc(1, sizeof(ForestAssignment));
+			aux->id = forestAssignment->id;
+			aux->value = forestAssignment->value->declareValue;
+			_generateForestAssignment(aux, forestId);
+			free(aux);
+			return;
 		}
 		else if(forestAssignment->value->type == ATTvalue){
-			//if(checkForestAttribute(forestAssignment->id->idValue, BOOLCLASS)){
-				//addToTable();//TODO idem
-			//}
+			if(forestAssignment->value->attValue->type == WORLDatt){
+				_WORLD * world = getWorld("world").value._world;
+				if(strcmp(forestAssignment->value->attValue->attribute->idValue, "height") == 0){
+					if(strcmp(forestAssignment->id->idValue, "start") == 0){
+						forest->start = world->height;
+					}
+					else if(strcmp(forestAssignment->id->idValue, "end") == 0){
+						forest->end = world->height;
+					}
+					insertForest(forestId, forest);
+				}
+				else if(strcmp(forestAssignment->value->attValue->attribute->idValue, "width") == 0){
+					if(strcmp(forestAssignment->id->idValue, "start") == 0){
+						forest->start = world->width;
+					}
+					else if(strcmp(forestAssignment->id->idValue, "end") == 0){
+						forest->end = world->width;
+					}
+					insertForest(forestId, forest);
+				}
+				else{
+					logError(_logger, "Unkown world attribute of int type: %s\n", forestAssignment->value->attValue->attribute->idValue);
+					ERROR_OCCURED = true;
+					*compi=FAILED;
+				}
+				return;	
+			}
+			else if(forestAssignment->value->attValue->type == IDatt){
+				EntryType type = getType(forestAssignment->value->attValue->variableID->idValue);
+				if(type == EMPTY_TYPE){
+					logError(_logger, "Nonexistent variable: %s\n", forestAssignment->value->attValue->variableID->idValue);
+					ERROR_OCCURED = true;
+					*compi=FAILED;
+					return;
+				}
+
+				if((strcmp(forestAssignment->id->idValue, "start") == 0) || (strcmp(forestAssignment->id->idValue, "end") == 0)){
+					if(type == TREE_TYPE){
+						_TREE * tree = getTree(forestAssignment->value->attValue->variableID->idValue).value._tree;
+						if(strcmp(forestAssignment->value->attValue->attributeID->idValue, "x") == 0){
+							if(strcmp(forestAssignment->id->idValue, "start") == 0){
+								forest->start = tree->x;
+							}
+							else if(strcmp(forestAssignment->id->idValue, "end") == 0){
+								forest->end = tree->x;
+							}							
+						}
+						else if(strcmp(forestAssignment->value->attValue->attributeID->idValue, "height") == 0){
+							if(strcmp(forestAssignment->id->idValue, "start") == 0){
+								forest->start = tree->height;
+							}
+							else if(strcmp(forestAssignment->id->idValue, "end") == 0){
+								forest->end = tree->height;
+							}							
+						}
+						else if(strcmp(forestAssignment->value->attValue->attributeID->idValue, "depth") == 0){
+							if(strcmp(forestAssignment->id->idValue, "start") == 0){
+								forest->start = tree->depth;
+							}
+							else if(strcmp(forestAssignment->id->idValue, "end") == 0){
+								forest->end = tree->depth;
+							}							
+						}
+						else if(strcmp(forestAssignment->value->attValue->attributeID->idValue, "density") == 0){
+							if(strcmp(forestAssignment->id->idValue, "start") == 0){
+								forest->start = tree->density;
+							}
+							else if(strcmp(forestAssignment->id->idValue, "end") == 0){
+								forest->end = tree->density;
+							}							
+						}
+						else if(strcmp(forestAssignment->value->attValue->attributeID->idValue, "bark") == 0){
+							if(strcmp(forestAssignment->id->idValue, "start") == 0){
+								forest->start = tree->bark;
+							}
+							else if(strcmp(forestAssignment->id->idValue, "end") == 0){
+								forest->end = tree->bark;
+							}							
+						}
+						else{
+							logError(_logger, "Unkown tree attribute of int type: %s\n", forestAssignment->value->attValue->attributeID->idValue);
+							ERROR_OCCURED = true;
+							*compi=FAILED;
+						}
+						return;
+					}
+					else if(type == FOREST_TYPE){
+						_FOREST * forest2 = getForest(forestAssignment->value->attValue->variableID->idValue).value._forest;
+						if(strcmp(forestAssignment->value->attValue->attributeID->idValue, "start") == 0){
+							if(strcmp(forestAssignment->id->idValue, "start") == 0){
+								forest->start = forest2->start;
+							}
+							else if(strcmp(forestAssignment->id->idValue, "end") == 0){
+								forest->end = forest2->start;
+							}							
+						}
+						else if(strcmp(forestAssignment->value->attValue->attributeID->idValue, "end") == 0){
+							if(strcmp(forestAssignment->id->idValue, "start") == 0){
+								forest->start = forest2->end;
+							}
+							else if(strcmp(forestAssignment->id->idValue, "end") == 0){
+								forest->end = forest2->end;
+							}							
+						}
+						else{
+							logError(_logger, "Unkown forest attribute of int type: %s\n", forestAssignment->value->attValue->attributeID->idValue);
+							ERROR_OCCURED = true;
+							*compi=FAILED;
+						}
+						return;
+					}
+					else{
+						logError(_logger, "Variables of type %d dont have attributes\n", type);
+						ERROR_OCCURED = true;
+						*compi=FAILED;
+					}
+					return;
+				}
+				else{
+					logError(_logger, "Unknown forestAttribute: %s\n", forestAssignment->id->idValue);
+					ERROR_OCCURED = true;
+					*compi=FAILED;
+				}
+				return;
+			}
+			else{
+				logError(_logger, "Unknown attributeValueType: %d\n", forestAssignment->value->attValue->type);
+				ERROR_OCCURED = true;
+				*compi=FAILED;
+			}
+			return;
 		}
 		else{
 			logError(_logger, "Wrong DeclarationValueType for forestAssignment: %d\n", forestAssignment->value->type);
@@ -625,9 +781,22 @@ static void _generateForestAssignment(ForestAssignment * forestAssignment){
 	}
 	else if(forestAssignment->type == ID_BY_OPP){//OBS: only INTCLASS att are possible then
 		int op = _generateArithmeticOperation(forestAssignment->arithmeticOperation);
-		//if(checkForestAttribute(forestAssignment->id->idValue, INTCLASS)){
-			//addToTable();//TODO lo mismo que en el caso anterior, seria con op siempre lo cual es aun mas comodo
-		//}
+		if(ERROR_OCCURED==true) return;
+
+		if(strcmp(forestAssignment->id->idValue, "start") == 0){
+			forest->start = op;
+			insertForest(forestId, forest);//TODO no se si asi se actualizan
+		}
+		else if(strcmp(forestAssignment->id->idValue, "end") == 0){
+			forest->end = op;
+			insertForest(forestId, forest);
+		}
+		else{
+			logError(_logger, "Unknown forest attribute assign by operation: name(%s)\n", forestAssignment->id->idValue);
+			ERROR_OCCURED = true;
+			*compi=FAILED;
+		}
+		return;
 	}
 	else{
 		logError(_logger, "Unknown AssignationType: %d\n", forestAssignment->type);
@@ -637,14 +806,14 @@ static void _generateForestAssignment(ForestAssignment * forestAssignment){
 	return;
 }
 
-static void _generateForestAssignments(ForestAssignments * forestAssignments){
+static void _generateForestAssignments(ForestAssignments * forestAssignments, char * forestId){
 	if(ERROR_OCCURED==true) return;
 	if(forestAssignments->type == SIMPLE_fa){
-		_generateForestAssignment(forestAssignments->singleForestAssignment);
+		_generateForestAssignment(forestAssignments->singleForestAssignment, forestId);
 	}
 	else if(forestAssignments->type == MULTIPLE_fa){
-		_generateForestAssignment(forestAssignments->multipleForestAssignment);
-		_generateForestAssignments(forestAssignments->forestAssignments);
+		_generateForestAssignment(forestAssignments->multipleForestAssignment, forestId);
+		_generateForestAssignments(forestAssignments->forestAssignments, forestId);
 	}
 	else{
 		logError(_logger, "Unknown ForestAssignType: %d\n", forestAssignments->type);
@@ -656,13 +825,31 @@ static void _generateForestAssignments(ForestAssignments * forestAssignments){
 static void _generateForestExpression(ForestExpression * forestExpression){
 	if(ERROR_OCCURED==true) return;
 	if(forestExpression->type == EMPTY_f){
-		_output(file, 0, "forestExpression att:%s\n", forestExpression->id->idValue);//TODO sacar es para probar no mas
-		//TODO guardar forest default con ese id
+		if(exists(forestExpression->id->idValue)){
+			logError(_logger, "Existent variable: %s\n", forestExpression->id->idValue);
+			ERROR_OCCURED = true;
+			*compi=FAILED;
+		}
+		else{
+			_FOREST * forest = calloc(1, sizeof(_FOREST));
+			forest->start = DEFAULT_FOREST_START;
+			forest->end = DEFAULT_FOREST_END;
+			insertForest(forestExpression->id->idValue, forest);
+		}
 	}
 	else if(forestExpression->type == FULL_f){
-		_output(file, 0, "forestExpression att:%s\n", forestExpression->id->idValue);//TODO sacar es para probar no mas
-		//TODO guardar forest default con ese id (capaz pasar por parametro el id para guardarlo con key id->att?)
-		_generateForestAssignments(forestExpression->forestAssignments);
+		if(exists(forestExpression->id->idValue)){
+			logError(_logger, "Existent variable: %s\n", forestExpression->id->idValue);
+			ERROR_OCCURED = true;
+			*compi=FAILED;
+		}
+		else{
+			_FOREST * forest = calloc(1, sizeof(_FOREST));
+			forest->start = DEFAULT_FOREST_START;
+			forest->end = DEFAULT_FOREST_END;
+			insertForest(forestExpression->id->idValue, forest);
+			_generateForestAssignments(forestExpression->forestAssignments, forestExpression->id->idValue);
+		}
 	}
 	else{
 		logError(_logger, "Unknown ForestType: %d\n", forestExpression->type);
@@ -741,6 +928,85 @@ static void _generateTreeAssignment(TreeAssignment * treeAssignment, char * tree
 			}
 			return;
 		}
+		else if(treeAssignment->value->type == IDvalue){
+			EntryType type = getType(treeAssignment->value->idValue->idValue);
+			if(type == EMPTY_TYPE){
+				logError(_logger, "Nonexistent variable: %s\n", treeAssignment->value->idValue->idValue);
+				ERROR_OCCURED = true;
+				*compi=FAILED;
+				return;
+			}
+			else if(type == INTEGER_TYPE){
+				if(strcmp(treeAssignment->id->idValue, "x") == 0){
+					tree->x = getInteger(treeAssignment->value->idValue->idValue).value._integer->value;
+					insertTree(treeId, tree);
+				}
+				else if(strcmp(treeAssignment->id->idValue, "height") == 0){
+					tree->height = getInteger(treeAssignment->value->idValue->idValue).value._integer->value;
+					insertTree(treeId, tree);
+				}
+				else if(strcmp(treeAssignment->id->idValue, "depth") == 0){
+					tree->depth = getInteger(treeAssignment->value->idValue->idValue).value._integer->value;
+					insertTree(treeId, tree);
+				}
+				else if(strcmp(treeAssignment->id->idValue, "density") == 0){
+					tree->density = getInteger(treeAssignment->value->idValue->idValue).value._integer->value;
+					insertTree(treeId, tree);
+				}
+				else if(strcmp(treeAssignment->id->idValue, "bark") == 0){
+					tree->bark = getInteger(treeAssignment->value->idValue->idValue).value._integer->value;
+					insertTree(treeId, tree);
+				}
+				else{
+					logError(_logger, "Unknown tree attribute assignment by int value by name: %s\n", treeAssignment->id->idValue);
+					ERROR_OCCURED = true;
+					*compi=FAILED;
+				}
+				return;
+			}
+			else if(type == BOOL_TYPE){
+				if(strcmp(treeAssignment->id->idValue, "snowed") == 0){
+					tree->snowed = getBoolean(treeAssignment->value->idValue->idValue).value._boolean->value;
+					insertTree(treeId, tree);
+				}
+				else{
+					logError(_logger, "Unknown tree attribute assignment by boolean value by name: %s\n", treeAssignment->id->idValue);
+					ERROR_OCCURED = true;
+					*compi=FAILED;
+				}
+				return;
+			}
+			else if(type == STRING_TYPE){
+				if(strcmp(treeAssignment->id->idValue, "leaf") == 0 && strlen(treeAssignment->value->charValue->value) == 3){
+					tree->leaf = getString(treeAssignment->value->idValue->idValue).value._string->value[1];
+					insertTree(treeId, tree);
+				}
+				else{
+					logError(_logger, "Unknown tree attribute assignment by char value by name: %s\n", treeAssignment->id->idValue);
+					ERROR_OCCURED = true;
+					*compi=FAILED;
+				}
+				return;
+			}
+			else if(type == HEXCOLOR_TYPE){
+				if(strcmp(treeAssignment->id->idValue, "color") == 0){
+					tree->color = getHexcolor(treeAssignment->value->idValue->idValue).value._hexcolor->value;
+					insertTree(treeId, tree);
+				}
+				else{
+					logError(_logger, "Unknown tree attribute assignment by hexcolor value by name: %s\n", treeAssignment->id->idValue);
+					ERROR_OCCURED = true;
+					*compi=FAILED;
+				}
+				return;
+			}
+			else{
+				logError(_logger, "Unknown id type for tree assignment: %d\n", type);
+				ERROR_OCCURED = true;
+				*compi=FAILED;
+			}
+			return;
+		}
 		else if(treeAssignment->value->type == DECLARATIONvalue){
 			TreeAssignment * aux = calloc(1, sizeof(TreeAssignment));
 			aux->id = treeAssignment->id;
@@ -752,7 +1018,7 @@ static void _generateTreeAssignment(TreeAssignment * treeAssignment, char * tree
 		else if(treeAssignment->value->type == ATTvalue){
 			if(treeAssignment->value->attValue->type == WORLDatt){
 				_WORLD * world = getWorld("world").value._world;
-				if(strcmp(treeAssignment->value->attValue->attributeID->idValue, "height") == 0){
+				if(strcmp(treeAssignment->value->attValue->attribute->idValue, "height") == 0){
 					if(strcmp(treeAssignment->id->idValue, "x") == 0){
 						tree->x = world->height;
 					}
@@ -770,7 +1036,7 @@ static void _generateTreeAssignment(TreeAssignment * treeAssignment, char * tree
 					}
 					insertTree(treeId, tree);
 				}
-				else if(strcmp(treeAssignment->value->attValue->attributeID->idValue, "width") == 0){
+				else if(strcmp(treeAssignment->value->attValue->attribute->idValue, "width") == 0){
 					if(strcmp(treeAssignment->id->idValue, "x") == 0){
 						tree->x = world->width;
 					}
@@ -788,7 +1054,7 @@ static void _generateTreeAssignment(TreeAssignment * treeAssignment, char * tree
 					}
 					insertTree(treeId, tree);
 				}
-				else if(strcmp(treeAssignment->value->attValue->attributeID->idValue, "uneveness") == 0){
+				else if(strcmp(treeAssignment->value->attValue->attribute->idValue, "uneveness") == 0){
 					if(strcmp(treeAssignment->id->idValue, "x") == 0){
 						tree->x = world->uneveness;
 					}
@@ -807,7 +1073,7 @@ static void _generateTreeAssignment(TreeAssignment * treeAssignment, char * tree
 					insertTree(treeId, tree);
 				}
 				else{
-					logError(_logger, "Unkown world attribute of int type: %s\n", treeAssignment->value->attValue->attributeID->idValue);
+					logError(_logger, "Unkown world attribute of int type: %s\n", treeAssignment->value->attValue->attribute->idValue);
 					ERROR_OCCURED = true;
 					*compi=FAILED;
 				}
@@ -824,7 +1090,7 @@ static void _generateTreeAssignment(TreeAssignment * treeAssignment, char * tree
 
 				if((strcmp(treeAssignment->id->idValue, "x") == 0) || (strcmp(treeAssignment->id->idValue, "depth") == 0) || (strcmp(treeAssignment->id->idValue, "density") == 0) || (strcmp(treeAssignment->id->idValue, "bark") == 0) || (strcmp(treeAssignment->id->idValue, "height") == 0)){
 					if(type == TREE_TYPE){
-						_TREE * tree2 = getForest(treeAssignment->value->attValue->variableID->idValue).value._tree;
+						_TREE * tree2 = getTree(treeAssignment->value->attValue->variableID->idValue).value._tree;
 						if(strcmp(treeAssignment->value->attValue->attributeID->idValue, "x") == 0){
 							if(strcmp(treeAssignment->id->idValue, "x") == 0){
 								tree->x = tree2->x;
@@ -1290,7 +1556,7 @@ static void _generateWorldAssignment(WorldAssignment * worldAssignment){
 
 				if((strcmp(worldAssignment->id->idValue, "uneveness") == 0) || (strcmp(worldAssignment->id->idValue, "width") == 0) || (strcmp(worldAssignment->id->idValue, "height") == 0)){
 					if(type == TREE_TYPE){
-						_TREE * tree = getForest(worldAssignment->value->attValue->variableID->idValue).value._tree;
+						_TREE * tree = getTree(worldAssignment->value->attValue->variableID->idValue).value._tree;
 						if(strcmp(worldAssignment->value->attValue->attributeID->idValue, "x") == 0){
 							if(strcmp(worldAssignment->id->idValue, "uneveness") == 0){
 								world->uneveness = tree->x;
