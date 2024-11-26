@@ -12,7 +12,10 @@ typedef enum {
     TREE_TYPE = TREE_T,
     FOREST_TYPE = FOREST_T,
     WORLD_TYPE = WORLD_T,
-    EMPTY_TYPE = EMPTY_T
+    EMPTY_TYPE = EMPTY_T,
+    TREE_NODE_TYPE = TREE_NODE_T,
+    FOREST_NODE_TYPE = FOREST_NODE_T,
+    GROW_NODE_TYPE = GROW_NODE_T
 } EntryType;
 
 typedef union {
@@ -23,6 +26,9 @@ typedef union {
     _TREE * _tree;
     _FOREST * _forest;
     _WORLD * _world;
+    _TREENODE * _treenode;
+    _FORESTNODE * _forestnode;
+    _GROWNODE * _grownode;
 } EntryValue;  
 
 typedef struct{
@@ -51,6 +57,12 @@ EntryResult getForest(char * identifier);
 
 EntryResult getWorld(char * identifier);
 
+EntryResult getTreeNode(char * identifier);
+
+EntryResult getForestNode(char * identifier);
+
+EntryResult getGrow(char * identifier);
+
 boolean exists(char * identifier );
 
 boolean insertInteger(char * identifier, _INTEGER * value );
@@ -67,5 +79,10 @@ boolean insertForest(char * identifier, _FOREST * value);
 
 boolean insertWorld(char * identifier, _WORLD * value);
 
+boolean insertTreeNode(char * identifier, _TREENODE * value);
+
+boolean insertForestNode(char * identifier, _FORESTNODE * value);
+
+boolean insertGrow(char * identifier, _GROWNODE * value);
 
 #endif  // TABLE_H

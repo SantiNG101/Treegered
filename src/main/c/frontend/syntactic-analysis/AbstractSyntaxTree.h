@@ -40,6 +40,9 @@ typedef struct _INTEGER _INTEGER;
 typedef struct _TREE _TREE;
 typedef struct _FOREST _FOREST;
 typedef struct _WORLD _WORLD;
+typedef struct _TREENODE _TREENODE;
+typedef struct _FORESTNODE _FORESTNODE;
+typedef struct _GROWNODE _GROWNODE;
 typedef struct type type;
 typedef struct DeclarationValue DeclarationValue;
 typedef struct Program Program;
@@ -95,6 +98,36 @@ enum AttributeValueType { IDatt, WORLDatt};
 	Structs for the ast
 */
 
+struct _GROWNODE{
+    struct _TREENODE *trees;
+    struct _FORESTNODE *forests;
+};
+
+struct _TREENODE{
+
+    int height;
+    int x;
+    int snowed;
+    char* color;
+    int depth;
+    int density;
+    int bark;
+    char leaf;
+
+    struct _TREENODE *next;
+
+};
+
+
+struct _FORESTNODE{
+
+    struct _TREENODE* trees;
+    int start;
+    int end;
+    struct _FORESTNODE* next;
+
+};
+
 struct _ID{
 	Id idValue;
 };
@@ -129,6 +162,7 @@ struct _TREE{
 struct _FOREST{
     int start;
     int end;
+    struct _TREENODE * trees;
 };
 
 struct _WORLD{

@@ -43,7 +43,11 @@ static void _generateEpilogue() {
  */
 static void _generateProgram(Program * program) {
     _WORLD * world = getWorld("world").value._world;
-	_output(file, 0, "%s\n", world->message);
+    _GROWNODE * grow = getGrow("grow").value._grownode;
+    if(grow->trees == NULL && grow->forests == NULL) _output(file, 0, "%s\n", world->message);
+    else if(grow->trees != NULL && grow->forests == NULL) _output(file, 0, "%s\n", "hay trees");
+    else if(grow->trees == NULL && grow->forests != NULL) _output(file, 0, "%s\n", "hay forests");
+    else _output(file, 0, "%s\n", "hay ambos");
 }
 
 /**

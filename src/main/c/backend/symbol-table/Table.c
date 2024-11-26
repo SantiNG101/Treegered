@@ -89,6 +89,18 @@ EntryResult getWorld(char * identifier){
     return getEntry(identifier, WORLD_TYPE);
 }
 
+EntryResult getForestNode(char * identifier){
+    return getEntry(identifier, FOREST_NODE_TYPE);
+}
+
+EntryResult getTreeNode(char * identifier){
+    return getEntry(identifier, TREE_NODE_TYPE);
+}
+
+EntryResult getGrow(char * identifier){
+    return getEntry(identifier, GROW_NODE_TYPE);
+}
+
 boolean exists(char * identifier) {
     khiter_t k = kh_get(myhash, table, identifier);
     if (k == kh_end(table)) {
@@ -157,4 +169,22 @@ boolean insertWorld(char * identifier, _WORLD * value){
     EntryValue entryValue;
     entryValue._world = value;
     return insert(identifier, WORLD_TYPE, entryValue);
+}
+
+boolean insertForestNode(char * identifier, _FORESTNODE * value){
+    EntryValue entryValue;
+    entryValue._forestnode = value;
+    return insert(identifier, FOREST_NODE_TYPE, entryValue);
+}
+
+boolean insertTreeNode(char * identifier, _TREENODE * value){
+    EntryValue entryValue;
+    entryValue._treenode = value;
+    return insert(identifier, TREE_NODE_TYPE, entryValue);
+}
+
+boolean insertGrow(char * identifier, _GROWNODE * value){
+    EntryValue entryValue;
+    entryValue._grownode = value;
+    return insert(identifier, GROW_NODE_TYPE, entryValue);
 }

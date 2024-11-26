@@ -65,6 +65,71 @@ static int _getArithOpResult(int v1, int v2, OperatorType ot);
 
 /**************************************** */
 
+void addTreeToGrowRecursive(_TREENODE * current, _TREENODE * tree){
+	if(current->next == NULL){
+		current->next = tree;
+	}
+	else return addTreeToGrowRecursive(current->next, tree);
+}
+
+void addTreeToGrow(_GROWNODE * grow, _TREENODE *tree){
+	if(grow->trees == NULL){
+		grow->trees = tree;
+		return;
+	}
+	else return addTreeToGrowRecursive(grow->trees, tree);
+}
+
+
+void addForestToGrowRecursive(_FORESTNODE * current, _FORESTNODE * forest){
+	if(current->next == NULL){
+		current->next = forest;
+	}
+	else return addForestToGrowRecursive(current->next, forest);
+}
+
+void addForestToGrow(_GROWNODE * grow, _FORESTNODE * forest){
+	if(grow->forests == NULL){
+		grow->forests = forest;
+		return;
+	}
+	else return addForestToGrowRecursive(grow->forests, forest);
+}
+
+void addTreeRecursive(_TREENODE * current, _TREE * wanted){
+	if(current->next == NULL){
+		_TREENODE * new = calloc(1, sizeof(_TREENODE));
+		new->height = wanted->height;
+		new->x = wanted->x;
+		new->snowed = wanted->snowed;
+		new->color = wanted->color;
+		new->depth = wanted->depth;
+		new->density = wanted->density;
+		new->bark = wanted->bark;
+		new->leaf = wanted->leaf;
+		current->next=new;
+		return;
+	}
+	else return addTreeRecursive(current->next, wanted);
+}
+
+void addTreeToForest(_FOREST * forest, _TREE * tree){
+	if(forest->trees == NULL){
+		_TREENODE * new = calloc(1, sizeof(_TREENODE));
+		new->height = tree->height;
+		new->x = tree->x;
+		new->snowed = tree->snowed;
+		new->color = tree->color;
+		new->depth = tree->depth;
+		new->density = tree->density;
+		new->bark = tree->bark;
+		new->leaf = tree->leaf;
+		forest->trees = new;
+		return;
+	}
+	addTreeRecursive(forest->trees, tree);
+}
+
 static int _getArithOpResult(int v1, int v2, OperatorType ot){
 	if(ot == ADD_o){
 		return v1 + v2;
@@ -2307,7 +2372,7 @@ static void _generateArithmeticAssignation(ArithmeticAssignation * arithmeticAss
 					return;
 				}
 				_TREE * tree = getTree(arithmeticAssignation->value->idValue->idValue).value._tree;
-				//TODO logica añadir tree al arbol
+				addTreeToForest(forest, tree);
 			}
 			else{
 				logError(_logger, "Only ids can be added to forest\n");
@@ -2875,8 +2940,30 @@ static void _generateGrowExpression(GrowExpression * growExpression){
 		*compi=FAILED;
 		return;
 	}
-	if(type == FOREST_TYPE || type == TREE_TYPE){
-		//TODO logica del grow
+	if(type == FOREST_TYPE){
+		_GROWNODE * grow = getGrow("grow").value._grownode;
+		_FOREST * forest = getForest(growExpression->id->idValue).value._forest;
+		_FORESTNODE * growforest = calloc(1, sizeof(_FORESTNODE));
+		growforest->start = forest->start;
+		growforest->end = forest->end;
+		growforest->trees = forest->trees;
+		addForestToGrow(grow, growforest);
+		return;
+	}
+	else if(type == TREE_TYPE){
+		_GROWNODE * grow = getGrow("grow").value._grownode;
+		_TREE * tree = getTree(growExpression->id->idValue).value._tree;
+		_TREENODE * growtree = calloc(1, sizeof(_TREENODE));
+		growtree->height = tree->height;
+		growtree->x = tree->x;
+		growtree->snowed = tree->snowed;
+		growtree->color = tree->color;
+		growtree->depth = tree->depth;
+		growtree->density = tree->density;
+		growtree->bark = tree->bark;
+		growtree->leaf = tree->leaf;
+		addTreeToGrow(grow, growtree);
+		return;
 	}
 	else{
 		logError(_logger, "Cannot grow variables of type: %d\n", type);
@@ -3135,6 +3222,7 @@ static void _generateForestExpression(ForestExpression * forestExpression){
 			_FOREST * forest = calloc(1, sizeof(_FOREST));
 			forest->start = DEFAULT_FOREST_START;
 			forest->end = DEFAULT_FOREST_END;
+			forest->trees = NULL;
 			insertForest(forestExpression->id->idValue, forest);
 		}
 	}
@@ -3148,6 +3236,7 @@ static void _generateForestExpression(ForestExpression * forestExpression){
 			_FOREST * forest = calloc(1, sizeof(_FOREST));
 			forest->start = DEFAULT_FOREST_START;
 			forest->end = DEFAULT_FOREST_END;
+			forest->trees = NULL;
 			insertForest(forestExpression->id->idValue, forest);
 			_generateForestAssignments(forestExpression->forestAssignments, forestExpression->id->idValue);
 		}
@@ -4070,6 +4159,8 @@ static void _generateProgramExpression(ProgramExpression * programExpression){
 	world->uneveness = DEFAULT_WORLD_UNEVENESS;
 	world->message = DEFAULT_WORLD_MESSAGE;
 	insertWorld("world", world);
+	_GROWNODE * grow = calloc(1, sizeof(_GROWNODE));
+	insertGrow("grow", grow);
 
 	if(programExpression->type == WORLDLESS){
 		_generateMainExpressions(programExpression->worldlessMainExpressions);
