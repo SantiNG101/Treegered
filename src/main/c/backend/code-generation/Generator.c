@@ -1042,6 +1042,7 @@ static void _generateConditionalExpression(ConditionalExpression * conditionalEx
 }
 
 static void _generateGeneralAssignation(GeneralAssignation * generalAssignation){
+	logInformation(_logger, "general assignation.");
 	if(ERROR_OCCURED==true) return;
 
 	if(generalAssignation->type == ID_BY_VALUE_TYPE){
@@ -1798,6 +1799,7 @@ static void _generateGeneralAssignation(GeneralAssignation * generalAssignation)
 		integer->value = op;
 	}
 	else if(generalAssignation->type == ATT_BY_VALUE){
+		logInformation(_logger, "ga: ATT_BY_VALUE");
 		if(generalAssignation->att->type == WORLDatt){
 			_WORLD * world = getWorld("world").value._world;
 			logError(_logger, "Cannot change worldAttributes after initialization:\n");
@@ -1806,6 +1808,7 @@ static void _generateGeneralAssignation(GeneralAssignation * generalAssignation)
 			return;
 		}
 		else if(generalAssignation->att->type == IDatt){
+		logInformation(_logger, "ga: IDatt: %s->%s", generalAssignation->att->variableID->idValue, generalAssignation->att->attributeID->idValue);
 			EntryType type = getType(generalAssignation->att->variableID->idValue);
 			if(type == EMPTY_TYPE){
 				logError(_logger, "Nonexistent variable: %s\n", generalAssignation->att->variableID->idValue);
@@ -1814,9 +1817,11 @@ static void _generateGeneralAssignation(GeneralAssignation * generalAssignation)
 				return;
 			}
 			if(type == TREE_TYPE){
+				logInformation(_logger, "ga: TREE_TYPE assign");
 				_TREE * tree = getTree(generalAssignation->att->variableID->idValue).value._tree;
 
 				if(generalAssignation->value->type == INTEGERvalue){
+				logInformation(_logger, "ga: TREE_TYPE assign INTEGERvalue");
 					if(strcmp(generalAssignation->att->attributeID->idValue, "x") == 0){
 						tree->x = generalAssignation->value->intValue->value;
 					}
@@ -1886,6 +1891,75 @@ static void _generateGeneralAssignation(GeneralAssignation * generalAssignation)
 					_generateGeneralAssignation(aux);
 					free(aux);
 					return;
+				}
+				else if(generalAssignation->value->type == IDvalue){
+					EntryType IDtype = getType(generalAssignation->value->idValue->idValue);
+					if(type == EMPTY_TYPE){
+						logError(_logger, "Nonexistent variable: %s\n", generalAssignation->value->idValue->idValue);
+						ERROR_OCCURED = true;
+						*compi=FAILED;
+						return;
+					}
+					if(IDtype == INTEGERvalue){
+						_INTEGER * IDint = getInteger(generalAssignation->value->idValue->idValue).value._integer;
+						if(strcmp(generalAssignation->att->attributeID->idValue, "x") == 0){
+							tree->x = IDint->value;
+						}
+						else if(strcmp(generalAssignation->att->attributeID->idValue, "height") == 0){
+							tree->height = IDint->value;
+						}
+						else if(strcmp(generalAssignation->att->attributeID->idValue, "density") == 0){
+							tree->density = IDint->value;
+						}
+						else if(strcmp(generalAssignation->att->attributeID->idValue, "depth") == 0){
+							tree->depth = IDint->value;
+						}
+						else if(strcmp(generalAssignation->att->attributeID->idValue, "bark") == 0){
+							tree->bark = IDint->value;
+						}
+						else{
+							logError(_logger, "Unknown treeAttribute for int assign: %s\n", generalAssignation->att->attributeID->idValue);
+							ERROR_OCCURED = true;
+							*compi=FAILED;
+						}
+						return;
+					}
+					else if(IDtype == STRINGvalue){
+						_STRING * IDstr = getString(generalAssignation->value->idValue->idValue).value._string;
+						if(strcmp(generalAssignation->att->attributeID->idValue, "leaf") == 0 && strlen(IDstr->value) == 3){
+							tree->leaf = IDstr->value[1];
+						}
+						else{
+							logError(_logger, "Unknown treeAttribute for char assign: %s\n", generalAssignation->att->attributeID->idValue);
+							ERROR_OCCURED = true;
+							*compi=FAILED;
+						}
+						return;
+					}
+					else if(IDtype == BOOLEANvalue){
+						_BOOLEAN * IDbool = getBoolean(generalAssignation->value->idValue->idValue).value._boolean;
+						if(strcmp(generalAssignation->att->attributeID->idValue, "snowed") == 0){
+							tree->snowed = IDbool->value;
+						}
+						else{
+							logError(_logger, "Unknown treeAttribute for boolean assign: %s\n", generalAssignation->att->attributeID->idValue);
+							ERROR_OCCURED = true;
+							*compi=FAILED;
+						}
+						return;
+					}
+					else if(IDtype == HEXCOLORvalue){
+						_HEXCOLOR * IDcolor = getHexcolor(generalAssignation->value->idValue->idValue).value._hexcolor;
+						if(strcmp(generalAssignation->att->attributeID->idValue, "color") == 0){
+							tree->color = IDcolor->value;
+						}
+						else{
+							logError(_logger, "Unknown treeAttribute for hexcolor assign: %s\n", generalAssignation->att->attributeID->idValue);
+							ERROR_OCCURED = true;
+							*compi=FAILED;
+						}
+						return;
+					}
 				}
 				else{
 					logError(_logger, "Tried to assign DeclarationType: %d to int classType\n", generalAssignation->value->type);
@@ -2596,6 +2670,7 @@ static void _generateForExpression(ForExpression * forExpression){
 }
 
 static void _generateGrowExpression(GrowExpression * growExpression){
+	logInformation(_logger, "grow(%s).", growExpression->id->idValue);
 	if(ERROR_OCCURED==true) return;
 	EntryType type = getType(growExpression->id->idValue);
 	if(type == EMPTY_TYPE){
@@ -2842,8 +2917,8 @@ static void _generateForestAssignments(ForestAssignments * forestAssignments, ch
 		_generateForestAssignment(forestAssignments->singleForestAssignment, forestId);
 	}
 	else if(forestAssignments->type == MULTIPLE_fa){
-		_generateForestAssignment(forestAssignments->multipleForestAssignment, forestId);
 		_generateForestAssignments(forestAssignments->forestAssignments, forestId);
+		_generateForestAssignment(forestAssignments->multipleForestAssignment, forestId);
 	}
 	else{
 		logError(_logger, "Unknown ForestAssignType: %d\n", forestAssignments->type);
@@ -3312,8 +3387,8 @@ static void _generateTreeAssignments(TreeAssignments * treeAssignments, char * t
 		_generateTreeAssignment(treeAssignments->singleTreeAssignment, treeId);
 	}
 	else if(treeAssignments->type == MULTIPLE_ta){
-		_generateTreeAssignment(treeAssignments->multipleTreeAssignment, treeId);
 		_generateTreeAssignments(treeAssignments->treeAssignments, treeId);
+		_generateTreeAssignment(treeAssignments->multipleTreeAssignment, treeId);
 	}
 	else{
 		logError(_logger, "Unknown TreeAssignType: %d\n", treeAssignments->type);
@@ -3323,6 +3398,7 @@ static void _generateTreeAssignments(TreeAssignments * treeAssignments, char * t
 }
 
 static void _generateTreeExpression(TreeExpression * treeExpression){
+	logInformation(_logger, "tree %s.", treeExpression->id->idValue);
 	if(ERROR_OCCURED==true) return;
 	if(treeExpression->type == EMPTY_t){
 		if(exists(treeExpression->id->idValue)){
@@ -3373,26 +3449,34 @@ static void _generateTreeExpression(TreeExpression * treeExpression){
 }
 
 static void _generateMainExpression(MainExpression * mainExpression){
+	logInformation(_logger, "Main expresion. type:%d", mainExpression->type);
 	if(ERROR_OCCURED==true) return;
 	if(mainExpression->type == TREE_m){
+		logInformation(_logger, "me: tree");
 		_generateTreeExpression(mainExpression->treeExpression);
 	}
 	else if(mainExpression->type == FOREST_m){
+		logInformation(_logger, "me: forest");
 		_generateForestExpression(mainExpression->forestExpression);
 	}
 	else if(mainExpression->type == GROW_m){
+		logInformation(_logger, "me: grow");
 		_generateGrowExpression(mainExpression->growExpression);
 	}
 	else if(mainExpression->type == FOR_m){
+		logInformation(_logger, "me: for");
 		_generateForExpression(mainExpression->forExpression);
 	}
 	else if(mainExpression->type == ARITHMETIC_m){
+		logInformation(_logger, "me: aithmetic");
 		_generateArithmeticAssignation(mainExpression->arithmeticAssignation);
 	}
 	else if(mainExpression->type == GENERAL_ASSIGNATION_m){
+		logInformation(_logger, "me: generalAssignation");
 		_generateGeneralAssignation(mainExpression->generalAssignation);
 	}
 	else if(mainExpression->type == CONDITIONAL_m){
+		logInformation(_logger, "me: conditional");
 		_generateConditionalExpression(mainExpression->conditionalExpression);
 	}
 	else{
@@ -3405,11 +3489,13 @@ static void _generateMainExpression(MainExpression * mainExpression){
 static void _generateMainExpressions(MainExpressions * mainExpressions){
 	if(ERROR_OCCURED==true) return;
 	if(mainExpressions->type == SIMPLE_e){
+		logInformation(_logger, "simpleME");
 		_generateMainExpression(mainExpressions->singleMainExpression);
 	}
 	else if(mainExpressions->type == MULTIPLE_e){
-		_generateMainExpression(mainExpressions->multipleMainExpression);
+		logInformation(_logger, "multipleME");
 		_generateMainExpressions(mainExpressions->mainExpressions);
+		_generateMainExpression(mainExpressions->multipleMainExpression);
 	}
 	else{
 		logError(_logger, "Unknown ExpressionType: %d\n", mainExpressions->type);
@@ -3766,8 +3852,8 @@ static void _generateWorldAssignments(WorldAssignments * worldAssignments){
 		_generateWorldAssignment(worldAssignments->singleWorldAssignment);
 	}
 	else if(worldAssignments->wType == MULTIPLE_w){
-		_generateWorldAssignment(worldAssignments->multipleWorldAssignment);
 		_generateWorldAssignments(worldAssignments->worldAssignments);
+		_generateWorldAssignment(worldAssignments->multipleWorldAssignment);
 	}
 	else{
 		logError(_logger, "Unknown WorldType: %d\n", worldAssignments->wType);
@@ -3793,8 +3879,8 @@ static void _generateProgramExpression(ProgramExpression * programExpression){
 		_generateMainExpressions(programExpression->worldlessMainExpressions);
 	}
 	else if(programExpression->type == WORLDFULL){
-		_generateWorldExpression(programExpression->worldExpression);
 		_generateMainExpressions(programExpression->mainExpressions);
+		_generateWorldExpression(programExpression->worldExpression);
 	}
 	else{
 		logError(_logger, "Unknown ProgramType: %d\n", programExpression->type);
