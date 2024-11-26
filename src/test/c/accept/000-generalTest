@@ -33,13 +33,14 @@ for k in [0, 1]{
 
 tree t2 with (x=world->width*(3/4), height=70);
 t2->color = #B0CA07;
+t2->depth = 4;
 
 tree t3 with (
 	x = 30, 
 	height = 110, 
 	leaf = '&', 
 	color = #00AAFF, 
-	depth = 1, 
+	depth = 7, 
 	density = 50, 
 	bark = 1, 
 	snowed = false 

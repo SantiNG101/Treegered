@@ -43,7 +43,7 @@ static void _generatePrologue(void) {
 		"<style>\n"
 		"body {\n  margin: 0;\n  overflow: hidden;\n}\n"
 		".tree {\n  position: absolute;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n}\n"
-		".trunk {\n background-color: brown;\n}\n"
+		".trunk {\n background-color: brown; border: 2px solid #1B0000;\n}\n"
 		".leaves {\n  border-radius: 50%;\n  text-align: center;\n  color: white;\n}\n"
 		"</style>\n"
 		"<script>\n"
