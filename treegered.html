@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Tree Visualization</title>
+<style>
+body {
+  margin: 0;
+  overflow: hidden;
+}
+.tree {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.trunk {
+ background-color: brown;
+}
+.leaves {
+  border-radius: 50%;
+  text-align: center;
+  color: white;
+}
+</style>
+<script>
+window.onload = function() {
+  document.body.style.height = window.innerHeight + 'px';
+  document.body.style.width = window.innerWidth + 'px';
+  const worldHeight = 70;
+  const worldWidth = 100;
+  const scaleHeight = window.innerHeight / worldHeight;
+  const scaleWidth = window.innerWidth / worldWidth;
+  document.querySelectorAll('.tree').forEach(tree => {
+    tree.style.left = (parseFloat(tree.style.left) * scaleWidth) + 'px';
+    tree.style.bottom = (parseFloat(tree.style.bottom) * scaleHeight) + 'px';
+  });
+  document.querySelectorAll('.leaves, .trunk').forEach(part => {
+    part.style.width = (parseFloat(part.style.width) * scaleWidth) + 'px';
+    part.style.height = (parseFloat(part.style.height) * scaleHeight) + 'px';
+  });
+};
+</script>
+</head>
+<body style='background-color: black'>
+<h1 style='position:absolute; top:10px; left:10px; color:white' >bie ^_^</h1>
+</body>
+</html>

@@ -10,7 +10,11 @@ FILE * file = NULL;
 
 void initializeGeneratorModule() {
 	_logger = createLogger("Generator");
-    file = fopen("treegered.txt", "w");
+    file = fopen("treegered.html", "w");
+	if (file == NULL) {
+        printf("Error: Could not open treegered.html for writing.\n");
+        return;
+    }
 }
 
 void shutdownGeneratorModule() {
@@ -21,21 +25,93 @@ void shutdownGeneratorModule() {
 }
 
 /** PRIVATE FUNCTIONS */
-
+static void _generatePrologue(void);
 static void _generateEpilogue();
 static void _generateProgram(Program * program);
+static void _generateWorldPrologue(const int worldHeight, const int worldWidth, const char * worldMessage);
+static void _generateTreeDraw(int x, boolean snowed, int density, int height, int depth, char* color, int bark);
+
+void _generateGrowTrees(_TREENODE * trees);
+void _generateGrowForests(_FORESTNODE * forests);
 
 static char * _indentation(const unsigned int indentationLevel);
 static void _output(FILE * file, const unsigned int indentationLevel, const char * const format, ...);
 
-/**
- * Creates the epilogue of the generated output, that is, the final lines that
- * completes a valid Latex document.
- */
-static void _generateEpilogue() {
+static void _generatePrologue(void) {
 	_output(file, 0, "%s",
-		"            bie\n"
+		"<!DOCTYPE html>\n<html>\n<head>\n<title>Tree Visualization</title>\n"
+		"<style>\n"
+		"body {\n  margin: 0;\n  overflow: hidden;\n}\n"
+		".tree {\n  position: absolute;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n}\n"
+		".trunk {\n background-color: brown;\n}\n"
+		".leaves {\n  border-radius: 50%;\n  text-align: center;\n  color: white;\n}\n"
+		"</style>\n"
+		"<script>\n"
+		"window.onload = function() {\n"
+		"  document.body.style.height = window.innerHeight + 'px';\n"
+		"  document.body.style.width = window.innerWidth + 'px';\n"
 	);
+}
+
+static void _generateWorldPrologue(const int worldHeight, const int worldWidth, const char * worldMessage){
+	_output(file, 0, "  const worldHeight = %d;\n"
+	, worldHeight
+	);
+	_output(file, 0, "  const worldWidth = %d;\n"
+	, worldWidth
+	);
+	_output(file, 0, "%s",
+		"  const scaleHeight = window.innerHeight / worldHeight;\n"
+		"  const scaleWidth = window.innerWidth / worldWidth;\n"
+		"  document.querySelectorAll('.tree').forEach(tree => {\n"
+		"    tree.style.left = (parseFloat(tree.style.left) * scaleWidth) + 'px';\n"
+		"    tree.style.bottom = (parseFloat(tree.style.bottom) * scaleHeight) + 'px';\n"
+		"  });\n"
+		"  document.querySelectorAll('.leaves, .trunk').forEach(part => {\n"
+		"    part.style.width = (parseFloat(part.style.width) * scaleWidth) + 'px';\n"
+		"    part.style.height = (parseFloat(part.style.height) * scaleHeight) + 'px';\n"
+		"  });\n"
+		"};\n"
+		"</script>\n"
+		"</head>\n<body style='background-color: black'>\n"
+	);
+	_output(file, 0, "<h1 style='position:absolute; top:10px; left:10px; color:white' >%s</h1>\n"
+	, worldMessage
+	);
+}
+
+static void _generateTreeDraw(int x, boolean snowed, int density, int height, int depth, char* color, int bark){
+	_output(file, 0, "<div class='tree' style='left: %d%; bottom: 0;'>\n"
+	, x
+	);
+	if(snowed!=0){
+		_output(file, 0, "<div class='leaves' style='width: %dpx; height: %dpx; background-color: white; z-index:%d; position:absolute; top: 5px; left:-5px'></div>\n"
+		, (density+1), (height/2), ((depth*2)-1)
+		);
+	}
+	_output(file, 0, "<div class='leaves' style='width: %dpx; height: %dpx; background-color: %s; z-index:%d; position:relative; top:10px'></div>\n"
+	, (density), (height/2), (color), (depth*2)
+	);
+	_output(file, 0, "<div class='trunk' style='height: %dpx; width: %dpx; z-index:%d;'></div>\n"
+	, (height/2), (bark), ((depth*2)-1)
+	);
+	_output(file, 0, "</div>\n");
+}
+
+static void _generateEpilogue() {
+	_output(file, 0, "%s", "</body>\n</html>");
+}
+
+void _generateGrowTrees(_TREENODE * trees){
+	if(trees == NULL) return;
+	_generateTreeDraw(trees->x, trees->snowed, trees->density, trees->height, trees->depth, trees->color, trees->bark);
+	return _generateGrowTrees(trees->next);
+}
+
+void _generateGrowForests(_FORESTNODE * forests){
+	if(forests == NULL) return;
+	_generateGrowTrees(forests->trees);
+	return _generateGrowForests(forests->next);
 }
 
 /**
@@ -43,11 +119,18 @@ static void _generateEpilogue() {
  */
 static void _generateProgram(Program * program) {
     _WORLD * world = getWorld("world").value._world;
+	_generateWorldPrologue(world->height, world->width, world->message);
     _GROWNODE * grow = getGrow("grow").value._grownode;
-    if(grow->trees == NULL && grow->forests == NULL) _output(file, 0, "%s\n", world->message);
-    else if(grow->trees != NULL && grow->forests == NULL) _output(file, 0, "%s\n", "hay trees");
-    else if(grow->trees == NULL && grow->forests != NULL) _output(file, 0, "%s\n", "hay forests");
-    else _output(file, 0, "%s\n", "hay ambos");
+    if(grow->trees != NULL && grow->forests == NULL){
+		_generateGrowTrees(grow->trees);
+	}
+    else if(grow->trees == NULL && grow->forests != NULL){
+		_generateGrowForests(grow->forests);
+	}
+    else{
+		_generateGrowTrees(grow->trees);
+		_generateGrowForests(grow->forests);
+	}
 }
 
 /**
@@ -82,7 +165,8 @@ static void _output(FILE * file, const unsigned int indentationLevel, const char
 
 void generate(CompilerState * compilerState) {
 	logDebugging(_logger, "Generating final output...");
+	_generatePrologue();
 	_generateProgram(compilerState->abstractSyntaxtTree);
-	_generateEpilogue(compilerState->value);
+	_generateEpilogue();
 	logDebugging(_logger, "Generation is done.");
 }

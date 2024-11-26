@@ -99,7 +99,13 @@ DeclarationValue * DeclarationValueStringSemanticAction(char* string, Declaratio
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	DeclarationValue * declarationValueString = calloc(1, sizeof(DeclarationValue));
 	_STRING * aux = calloc(1, sizeof(_STRING));
-	aux->value = string;
+
+	//remove initial and final '
+	int newLength = strlen(string) - 2;
+	 char *newString = calloc(newLength + 1, sizeof(char));
+	strncpy(newString, string + 1, newLength);
+
+	aux->value = newString;
 	declarationValueString->charValue = aux;
 	declarationValueString->type = type;
 	return declarationValueString;

@@ -96,11 +96,11 @@ void addForestToGrow(_GROWNODE * grow, _FORESTNODE * forest){
 	else return addForestToGrowRecursive(grow->forests, forest);
 }
 
-void addTreeRecursive(_TREENODE * current, _TREE * wanted){
+void addTreeRecursive(_TREENODE * current, _TREE * wanted, int worldHeight, int worldWidth, int fStart, int fEnd){
 	if(current->next == NULL){
 		_TREENODE * new = calloc(1, sizeof(_TREENODE));
-		new->height = wanted->height;
-		new->x = wanted->x;
+		new->height = (int) ((float)(wanted->height) / 100 * worldHeight);
+		new->x = (int) ((float)((int) (fStart + ((float)wanted->x)/100 * (fEnd - fStart))) / 100 * worldWidth);
 		new->snowed = wanted->snowed;
 		new->color = wanted->color;
 		new->depth = wanted->depth;
@@ -110,14 +110,15 @@ void addTreeRecursive(_TREENODE * current, _TREE * wanted){
 		current->next=new;
 		return;
 	}
-	else return addTreeRecursive(current->next, wanted);
+	else return addTreeRecursive(current->next, wanted, worldHeight, worldWidth, fStart, fEnd);
 }
 
 void addTreeToForest(_FOREST * forest, _TREE * tree){
+	_WORLD * world = getWorld("world").value._world;
 	if(forest->trees == NULL){
 		_TREENODE * new = calloc(1, sizeof(_TREENODE));
-		new->height = tree->height;
-		new->x = tree->x;
+		new->height =(int) ((float)(tree->height) / 100 * world->height);
+		new->x = (int) ((float)((int) (forest->start + ((float)tree->x)/100 * (forest->end - forest->start))) / 100 * world->width);
 		new->snowed = tree->snowed;
 		new->color = tree->color;
 		new->depth = tree->depth;
@@ -127,7 +128,7 @@ void addTreeToForest(_FOREST * forest, _TREE * tree){
 		forest->trees = new;
 		return;
 	}
-	addTreeRecursive(forest->trees, tree);
+	addTreeRecursive(forest->trees, tree, world->height, world->width, forest->start, forest->end);
 }
 
 static int _getArithOpResult(int v1, int v2, OperatorType ot){
@@ -2044,8 +2045,8 @@ static void _generateGeneralAssignation(GeneralAssignation * generalAssignation)
 					return;
 				}
 				else if(generalAssignation->value->type == STRINGvalue){
-					if(strcmp(generalAssignation->att->attributeID->idValue, "leaf") == 0 && strlen(generalAssignation->value->charValue->value) == 3){
-						tree->leaf = generalAssignation->value->charValue->value[1];
+					if(strcmp(generalAssignation->att->attributeID->idValue, "leaf") == 0 && strlen(generalAssignation->value->charValue->value) == 1){
+						tree->leaf = generalAssignation->value->charValue->value[0];
 					}
 					else{
 						logError(_logger, "Unknown treeAttribute for char assign: %s\n", generalAssignation->att->attributeID->idValue);
@@ -2125,8 +2126,8 @@ static void _generateGeneralAssignation(GeneralAssignation * generalAssignation)
 					}
 					else if(IDtype == STRINGvalue){
 						_STRING * IDstr = getString(generalAssignation->value->idValue->idValue).value._string;
-						if(strcmp(generalAssignation->att->attributeID->idValue, "leaf") == 0 && strlen(IDstr->value) == 3){
-							tree->leaf = IDstr->value[1];
+						if(strcmp(generalAssignation->att->attributeID->idValue, "leaf") == 0 && strlen(IDstr->value) == 1){
+							tree->leaf = IDstr->value[0];
 						}
 						else{
 							logError(_logger, "Unknown treeAttribute for char assign: %s\n", generalAssignation->att->attributeID->idValue);
@@ -2951,11 +2952,12 @@ static void _generateGrowExpression(GrowExpression * growExpression){
 		return;
 	}
 	else if(type == TREE_TYPE){
+		_WORLD * world = getWorld("world").value._world;
 		_GROWNODE * grow = getGrow("grow").value._grownode;
 		_TREE * tree = getTree(growExpression->id->idValue).value._tree;
 		_TREENODE * growtree = calloc(1, sizeof(_TREENODE));
-		growtree->height = tree->height;
-		growtree->x = tree->x;
+		growtree->height = (int) ((float)(tree->height) / 100 * world->height);
+		growtree->x = (int) ((float)(tree->x) / 100 * world->width);
 		growtree->snowed = tree->snowed;
 		growtree->color = tree->color;
 		growtree->depth = tree->depth;
@@ -3278,8 +3280,8 @@ static void _generateTreeAssignment(TreeAssignment * treeAssignment, char * tree
 			return;
 		}
 		else if(treeAssignment->value->type == STRINGvalue){
-			if(strcmp(treeAssignment->id->idValue, "leaf") == 0 && strlen(treeAssignment->value->charValue->value) == 3){
-				tree->leaf = treeAssignment->value->charValue->value[1];
+			if(strcmp(treeAssignment->id->idValue, "leaf") == 0 && strlen(treeAssignment->value->charValue->value) == 1){
+				tree->leaf = treeAssignment->value->charValue->value[0];
 			}
 			else{
 				logError(_logger, "Unknown tree attribute assignment by char value by name: %s\n", treeAssignment->id->idValue);
@@ -3353,8 +3355,8 @@ static void _generateTreeAssignment(TreeAssignment * treeAssignment, char * tree
 				return;
 			}
 			else if(type == STRING_TYPE){
-				if(strcmp(treeAssignment->id->idValue, "leaf") == 0 && strlen(treeAssignment->value->charValue->value) == 3){
-					tree->leaf = getString(treeAssignment->value->idValue->idValue).value._string->value[1];
+				if(strcmp(treeAssignment->id->idValue, "leaf") == 0 && strlen(treeAssignment->value->charValue->value) == 1){
+					tree->leaf = getString(treeAssignment->value->idValue->idValue).value._string->value[0];
 				}
 				else{
 					logError(_logger, "Unknown tree attribute assignment by char value by name: %s\n", treeAssignment->id->idValue);
@@ -3702,6 +3704,7 @@ static void _generateTreeExpression(TreeExpression * treeExpression){
 			tree->bark = DEFAULT_TREE_BARK;
 			tree->snowed = DEFAULT_TREE_SNOWED;
 			insertTree(treeExpression->id->idValue, tree);
+			logInformation(_logger, "tree snow %d", tree->snowed);
 		}
 	}
 	else if(treeExpression->type == FULL_t){

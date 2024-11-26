@@ -107,7 +107,7 @@ struct _TREENODE{
 
     int height;
     int x;
-    int snowed;
+    boolean snowed;
     char* color;
     int depth;
     int density;

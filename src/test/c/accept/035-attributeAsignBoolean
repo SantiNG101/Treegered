@@ -1,2 +1,2 @@
 tree t1;
-t1->snowed = TRUE;
+t1->snowed = true;

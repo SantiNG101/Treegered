@@ -2,7 +2,7 @@ world {
 	height = 100,
 	width = 100, 
 	uneveness = 1,
-	message = 'something'
+	message = 'Behold, Fangorn'
 }
 
 /*
@@ -10,14 +10,14 @@ world {
 */
 
 tree t1 with (
-	x = 1, 
-	height = 1, 
+	x = 30, 
+	height = 50, 
 	leaf = '&', 
-	color = #FFFFFF, 
-	depth = 1, 
-	density = 1, 
+	color = #FFAAFF, 
+	depth = 5, 
+	density = 20, 
 	bark = 2, 
-	snowed = TRUE 
+	snowed = false 
 );
 
 forest f1 with (
@@ -31,10 +31,23 @@ for k in [0, 1]{
 	res += k;
 }
 
-tree t2 with (x=world->width*(3/4), height=world->height/2);
+tree t2 with (x=world->width*(3/4), height=70);
+t2->color = #B0CA07;
+
+tree t3 with (
+	x = 30, 
+	height = 110, 
+	leaf = '&', 
+	color = #00AAFF, 
+	depth = 1, 
+	density = 50, 
+	bark = 1, 
+	snowed = false 
+);
 
 f1 += t1;
 f1 += t2;
+f1 += t3;
 
 for t in f1{
 	t->height += 1;
@@ -44,6 +57,31 @@ grow(t1);
 
 if(f1->start < 5){f1->start += 2;}
 
-t1->snowed = FALSE;
-
 grow(f1);
+
+t1->color = #00610E;
+t2->color = #3D860B;
+t3->color = #34A203;
+
+t3->density = 6;
+t3->height = 140;
+t3->depth = 2;
+
+forest f2 with(
+	start = 30, 
+	end = 70 
+);
+
+f2 += t1;
+f2 += t2;
+f2 += t3;
+
+grow(f2);
+
+f2->start = 0;
+f2->end = 100;
+
+t3->color = #34A203;
+f2 += t3;
+
+grow(f2);
