@@ -117,12 +117,55 @@ static int _getArithOpResult(int v1, int v2, OperatorType ot){
 }
 
 static int _generateArithmeticOperation(ArithmeticOperation * arithmeticOperation){
+	logInformation(_logger, "ArithmaticOperation");
 	if(ERROR_OCCURED==true) return 0;
 	if(arithmeticOperation->type == LV_RV){
 		int left;
 		int right;
 		boolean noneleft=true;
 		boolean noneright=true;
+		if(arithmeticOperation->leftValue->type == IDvalue){
+			logInformation(_logger, "ao: leftID: %s", arithmeticOperation->leftValue->idValue->idValue);
+			EntryType IDtype = getType(arithmeticOperation->leftValue->idValue->idValue);
+			if(IDtype == EMPTY_TYPE){
+				logError(_logger, "Nonexistent variable: %s\n", arithmeticOperation->leftValue->idValue->idValue);
+				ERROR_OCCURED = true;
+				*compi=FAILED;
+				return 0;
+			}
+			if(IDtype == INTEGER_TYPE){
+				_INTEGER * IDint = getInteger(arithmeticOperation->leftValue->idValue->idValue).value._integer;
+				left = IDint->value;
+				noneleft = false;
+			}
+			else{
+				logError(_logger, "Cannot operate with type other than int\n");
+				ERROR_OCCURED = true;
+				*compi=FAILED;
+				return 0;
+			}
+		}
+		if(arithmeticOperation->rightValue->type == IDvalue){
+			logInformation(_logger, "ao: rightID: %s", arithmeticOperation->rightValue->idValue->idValue);
+			EntryType IDtype = getType(arithmeticOperation->rightValue->idValue->idValue);
+			if(IDtype == EMPTY_TYPE){
+				logError(_logger, "Nonexistent variable: %s\n", arithmeticOperation->rightValue->idValue->idValue);
+				ERROR_OCCURED = true;
+				*compi=FAILED;
+				return 0;
+			}
+			if(IDtype == INTEGER_TYPE){
+				_INTEGER * IDint = getInteger(arithmeticOperation->rightValue->idValue->idValue).value._integer;
+				right = IDint->value;
+				noneright = false;
+			}
+			else{
+				logError(_logger, "Cannot operate with ID type other than int\n");
+				ERROR_OCCURED = true;
+				*compi=FAILED;
+				return 0;
+			}
+		}
 		if(arithmeticOperation->leftValue->type == ATTvalue){
 			if(arithmeticOperation->leftValue->attValue->type == WORLDatt){
 				_WORLD * world = getWorld("world").value._world;
@@ -338,6 +381,27 @@ static int _generateArithmeticOperation(ArithmeticOperation * arithmeticOperatio
 	else if(arithmeticOperation->type == LV_RO){
 		int left;
 		boolean noneleft=true;
+		if(arithmeticOperation->leftValue->type == IDvalue){
+			logInformation(_logger, "ao: leftID: %s", arithmeticOperation->leftValue->idValue->idValue);
+			EntryType IDtype = getType(arithmeticOperation->leftValue->idValue->idValue);
+			if(IDtype == EMPTY_TYPE){
+				logError(_logger, "Nonexistent variable: %s\n", arithmeticOperation->leftValue->idValue->idValue);
+				ERROR_OCCURED = true;
+				*compi=FAILED;
+				return 0;
+			}
+			if(IDtype == INTEGER_TYPE){
+				_INTEGER * IDint = getInteger(arithmeticOperation->leftValue->idValue->idValue).value._integer;
+				left = IDint->value;
+				noneleft = false;
+			}
+			else{
+				logError(_logger, "Cannot operate with type other than int\n");
+				ERROR_OCCURED = true;
+				*compi=FAILED;
+				return 0;
+			}
+		}
 		if(arithmeticOperation->leftValue->type == ATTvalue){
 			if(arithmeticOperation->leftValue->attValue->type == WORLDatt){
 				_WORLD * world = getWorld("world").value._world;
@@ -451,6 +515,28 @@ static int _generateArithmeticOperation(ArithmeticOperation * arithmeticOperatio
 	else if(arithmeticOperation->type == LO_RV){
 		int right;
 		boolean noneright=true;
+		
+		if(arithmeticOperation->rightValue->type == IDvalue){
+			logInformation(_logger, "ao: rightID: %s", arithmeticOperation->rightValue->idValue->idValue);
+			EntryType IDtype = getType(arithmeticOperation->rightValue->idValue->idValue);
+			if(IDtype == EMPTY_TYPE){
+				logError(_logger, "Nonexistent variable: %s\n", arithmeticOperation->rightValue->idValue->idValue);
+				ERROR_OCCURED = true;
+				*compi=FAILED;
+				return 0;
+			}
+			if(IDtype == INTEGER_TYPE){
+				_INTEGER * IDint = getInteger(arithmeticOperation->rightValue->idValue->idValue).value._integer;
+				right = IDint->value;
+				noneright = false;
+			}
+			else{
+				logError(_logger, "Cannot operate with ID type other than int\n");
+				ERROR_OCCURED = true;
+				*compi=FAILED;
+				return 0;
+			}
+		}
 		if(arithmeticOperation->rightValue->type == ATTvalue){
 			if(arithmeticOperation->rightValue->attValue->type == WORLDatt){
 				_WORLD * world = getWorld("world").value._world;
@@ -654,6 +740,7 @@ static boolean _getConditionalClauseResultBool(boolean b1, boolean b2, Compariss
 }
 
 static boolean _generateConditionalClause(ConditionalClause * conditionalClause){
+	logInformation(_logger, "ConditionalClause");
 	if(ERROR_OCCURED==true) return false;
 	if(conditionalClause->conditionalType == PARENTHESIS_c){
 		return _generateConditionalClause(conditionalClause->conditionalClause);
@@ -661,31 +748,48 @@ static boolean _generateConditionalClause(ConditionalClause * conditionalClause)
 	else if(conditionalClause->conditionalType == V_V){
 		DeclarationValue * dvLeft = NULL;
 		DeclarationValue * dvRight = NULL;
+		_INTEGER * intLeft = NULL;
+		_INTEGER * intRight = NULL;
+		_BOOLEAN * boolLeft = NULL;
+		_BOOLEAN * boolRight = NULL;
 		boolean freeLeft = false;
+		boolean freeIntLeft = false;
+		boolean freeBoolLeft = false;
 		boolean freeRight = false;
+		boolean freeIntRight = false;
+		boolean freeBoolRight = false;
 		if(conditionalClause->leftValue->type == ATTvalue){
 			if(conditionalClause->leftValue->attValue->type == WORLDatt){
 				_WORLD * world = getWorld("world").value._world;
 				if(strcmp(conditionalClause->leftValue->attValue->attribute->idValue, "height") == 0){
 					DeclarationValue * aux = calloc(1, sizeof(DeclarationValue));
 					aux->type = INTEGERvalue;
-					aux->intValue->value = world->height;
+					intLeft = calloc(1, sizeof(_INTEGER));
+					intLeft->value = world->height;
+					aux->intValue = intLeft;
 					dvLeft=aux;
 					freeLeft = true;
+					freeIntLeft = true;
 				}
 				else if(strcmp(conditionalClause->leftValue->attValue->attribute->idValue, "width") == 0){
 					DeclarationValue * aux = calloc(1, sizeof(DeclarationValue));
 					aux->type = INTEGERvalue;
-					aux->intValue->value = world->width;
+					intLeft = calloc(1, sizeof(_INTEGER));
+					intLeft->value = world->width;
+					aux->intValue = intLeft;
 					dvLeft=aux;
 					freeLeft = true;
+					freeIntLeft = true;
 				}
 				else if(strcmp(conditionalClause->leftValue->attValue->attribute->idValue, "uneveness") == 0){
 					DeclarationValue * aux = calloc(1, sizeof(DeclarationValue));
 					aux->type = INTEGERvalue;
-					aux->intValue->value = world->uneveness;
+					intLeft = calloc(1, sizeof(_INTEGER));
+					intLeft->value = world->uneveness;
+					aux->intValue = intLeft;
 					dvLeft=aux;
 					freeLeft = true;
+					freeIntLeft = true;
 				}
 				else{
 					logError(_logger, "Attribute cant be used in conditional clause\n");
@@ -707,37 +811,52 @@ static boolean _generateConditionalClause(ConditionalClause * conditionalClause)
 					if(strcmp(conditionalClause->leftValue->attValue->attributeID->idValue, "x") == 0){
 						DeclarationValue * aux = calloc(1, sizeof(DeclarationValue));
 						aux->type = INTEGERvalue;
-						aux->intValue->value = tree->x;
+						intLeft = calloc(1, sizeof(_INTEGER));
+						intLeft->value = tree->x;
+						aux->intValue = intLeft;
 						dvLeft=aux;
 						freeLeft = true;
+						freeIntLeft = true;
 					}
 					else if(strcmp(conditionalClause->leftValue->attValue->attributeID->idValue, "height") == 0){
 						DeclarationValue * aux = calloc(1, sizeof(DeclarationValue));
 						aux->type = INTEGERvalue;
-						aux->intValue->value = tree->height;
+						intLeft = calloc(1, sizeof(_INTEGER));
+						intLeft->value = tree->height;
+						aux->intValue = intLeft;
 						dvLeft=aux;
 						freeLeft = true;
+						freeIntLeft = true;
 					}
 					else if(strcmp(conditionalClause->leftValue->attValue->attributeID->idValue, "depth") == 0){
 						DeclarationValue * aux = calloc(1, sizeof(DeclarationValue));
 						aux->type = INTEGERvalue;
-						aux->intValue->value = tree->depth;
+						intLeft = calloc(1, sizeof(_INTEGER));
+						intLeft->value = tree->depth;
+						aux->intValue = intLeft;
 						dvLeft=aux;
 						freeLeft = true;
+						freeIntLeft = true;
 					}
 					else if(strcmp(conditionalClause->leftValue->attValue->attributeID->idValue, "density") == 0){
 						DeclarationValue * aux = calloc(1, sizeof(DeclarationValue));
 						aux->type = INTEGERvalue;
-						aux->intValue->value = tree->density;
+						intLeft = calloc(1, sizeof(_INTEGER));
+						intLeft->value = tree->density;
+						aux->intValue = intLeft;
 						dvLeft=aux;
 						freeLeft = true;
+						freeIntLeft = true;
 					}
 					else if(strcmp(conditionalClause->leftValue->attValue->attributeID->idValue, "bark") == 0){
 						DeclarationValue * aux = calloc(1, sizeof(DeclarationValue));
 						aux->type = INTEGERvalue;
-						aux->intValue->value = tree->bark;
+						intLeft = calloc(1, sizeof(_INTEGER));
+						intLeft->value = tree->bark;
+						aux->intValue = intLeft;
 						dvLeft=aux;
 						freeLeft = true;
+						freeIntLeft = true;
 					}
 					else{
 						logError(_logger, "Attribute cannot be used in conditional clause\n");
@@ -751,16 +870,22 @@ static boolean _generateConditionalClause(ConditionalClause * conditionalClause)
 					if(strcmp(conditionalClause->leftValue->attValue->attributeID->idValue, "start") == 0){
 						DeclarationValue * aux = calloc(1, sizeof(DeclarationValue));
 						aux->type = INTEGERvalue;
-						aux->intValue->value = forest->start;
+						intLeft = calloc(1, sizeof(_INTEGER));
+						intLeft->value = forest->start;
+						aux->intValue = intLeft;
 						dvLeft=aux;
 						freeLeft = true;
+						freeIntLeft = true;
 					}
 					else if(strcmp(conditionalClause->leftValue->attValue->attributeID->idValue, "end") == 0){
 						DeclarationValue * aux = calloc(1, sizeof(DeclarationValue));
 						aux->type = INTEGERvalue;
-						aux->intValue->value = forest->end;
+						intLeft = calloc(1, sizeof(_INTEGER));
+						intLeft->value = forest->end;
+						aux->intValue = intLeft;
 						dvLeft=aux;
 						freeLeft = true;
+						freeIntLeft = true;
 					}
 					else{
 						logError(_logger, "Attribute cannot be used in conditional clause\n");
@@ -789,23 +914,32 @@ static boolean _generateConditionalClause(ConditionalClause * conditionalClause)
 				if(strcmp(conditionalClause->rightValue->attValue->attribute->idValue, "height") == 0){
 					DeclarationValue * aux = calloc(1, sizeof(DeclarationValue));
 					aux->type = INTEGERvalue;
-					aux->intValue->value = world->height;
+					intRight = calloc(1, sizeof(_INTEGER));
+					intRight->value = world->height;
+					aux->intValue = intRight;
 					dvRight=aux;
 					freeRight = true;
+					freeIntRight = true;
 				}
 				else if(strcmp(conditionalClause->rightValue->attValue->attribute->idValue, "width") == 0){
 					DeclarationValue * aux = calloc(1, sizeof(DeclarationValue));
 					aux->type = INTEGERvalue;
-					aux->intValue->value = world->width;
+					intRight = calloc(1, sizeof(_INTEGER));
+					intRight->value = world->width;
+					aux->intValue = intRight;
 					dvRight=aux;
 					freeRight = true;
+					freeIntRight = true;
 				}
 				else if(strcmp(conditionalClause->rightValue->attValue->attribute->idValue, "uneveness") == 0){
 					DeclarationValue * aux = calloc(1, sizeof(DeclarationValue));
 					aux->type = INTEGERvalue;
-					aux->intValue->value = world->uneveness;
+					intRight = calloc(1, sizeof(_INTEGER));
+					intRight->value = world->uneveness;
+					aux->intValue = intRight;
 					dvRight=aux;
 					freeRight = true;
+					freeIntRight = true;
 				}
 				else{
 					logError(_logger, "Attribute cant be used in conditional clause\n");
@@ -827,37 +961,52 @@ static boolean _generateConditionalClause(ConditionalClause * conditionalClause)
 					if(strcmp(conditionalClause->rightValue->attValue->attributeID->idValue, "x") == 0){
 						DeclarationValue * aux = calloc(1, sizeof(DeclarationValue));
 						aux->type = INTEGERvalue;
-						aux->intValue->value = tree->x;
+						intRight = calloc(1, sizeof(_INTEGER));
+						intRight->value = tree->x;
+						aux->intValue = intRight;
 						dvRight=aux;
 						freeRight = true;
+						freeIntRight = true;
 					}
 					else if(strcmp(conditionalClause->rightValue->attValue->attributeID->idValue, "height") == 0){
 						DeclarationValue * aux = calloc(1, sizeof(DeclarationValue));
 						aux->type = INTEGERvalue;
-						aux->intValue->value = tree->height;
+						intRight = calloc(1, sizeof(_INTEGER));
+						intRight->value = tree->height;
+						aux->intValue = intRight;
 						dvRight=aux;
 						freeRight = true;
+						freeIntRight = true;
 					}
 					else if(strcmp(conditionalClause->rightValue->attValue->attributeID->idValue, "depth") == 0){
 						DeclarationValue * aux = calloc(1, sizeof(DeclarationValue));
 						aux->type = INTEGERvalue;
-						aux->intValue->value = tree->depth;
+						intRight = calloc(1, sizeof(_INTEGER));
+						intRight->value = tree->depth;
+						aux->intValue = intRight;
 						dvRight=aux;
 						freeRight = true;
+						freeIntRight = true;
 					}
 					else if(strcmp(conditionalClause->rightValue->attValue->attributeID->idValue, "density") == 0){
 						DeclarationValue * aux = calloc(1, sizeof(DeclarationValue));
 						aux->type = INTEGERvalue;
-						aux->intValue->value = tree->density;
+						intRight = calloc(1, sizeof(_INTEGER));
+						intRight->value = tree->density;
+						aux->intValue = intRight;
 						dvRight=aux;
 						freeRight = true;
+						freeIntRight = true;
 					}
 					else if(strcmp(conditionalClause->rightValue->attValue->attributeID->idValue, "bark") == 0){
 						DeclarationValue * aux = calloc(1, sizeof(DeclarationValue));
 						aux->type = INTEGERvalue;
-						aux->intValue->value = tree->bark;
+						intRight = calloc(1, sizeof(_INTEGER));
+						intRight->value = tree->bark;
+						aux->intValue = intRight;
 						dvRight=aux;
 						freeRight = true;
+						freeIntRight = true;
 					}
 					else{
 						logError(_logger, "Attribute cannot be used in conditional clause\n");
@@ -871,16 +1020,22 @@ static boolean _generateConditionalClause(ConditionalClause * conditionalClause)
 					if(strcmp(conditionalClause->rightValue->attValue->attributeID->idValue, "start") == 0){
 						DeclarationValue * aux = calloc(1, sizeof(DeclarationValue));
 						aux->type = INTEGERvalue;
-						aux->intValue->value = forest->start;
+						intRight = calloc(1, sizeof(_INTEGER));
+						intRight->value = forest->start;
+						aux->intValue = intRight;
 						dvRight=aux;
 						freeRight = true;
+						freeIntRight = true;
 					}
 					else if(strcmp(conditionalClause->rightValue->attValue->attributeID->idValue, "end") == 0){
 						DeclarationValue * aux = calloc(1, sizeof(DeclarationValue));
 						aux->type = INTEGERvalue;
-						aux->intValue->value = forest->end;
+						intRight = calloc(1, sizeof(_INTEGER));
+						intRight->value = forest->end;
+						aux->intValue = intRight;
 						dvRight=aux;
 						freeRight = true;
+						freeIntRight = true;
 					}
 					else{
 						logError(_logger, "Attribute cannot be used in conditional clause\n");
@@ -908,6 +1063,8 @@ static boolean _generateConditionalClause(ConditionalClause * conditionalClause)
 		int toRet = _getConditionalClauseResultVV(dvLeft, dvRight, conditionalClause->comparissonType);
 		if(freeLeft == true) free(dvLeft);
 		if(freeRight == true) free(dvRight);
+		if(freeIntLeft == true) free(intLeft);
+		if(freeIntRight == true) free(intRight);
 		return toRet;
 	}
 	else if(conditionalClause->conditionalType == V_C){
@@ -1778,6 +1935,7 @@ static void _generateGeneralAssignation(GeneralAssignation * generalAssignation)
 		}
 	}
 	else if(generalAssignation->type == ID_BY_OPP){//OBS: only INTCLASS var are possible then
+	logInformation(_logger, "ga: ID_BY_OPP");
 		EntryType type = getType(generalAssignation->id->idValue);
 		if(type == EMPTY_TYPE){
 			logError(_logger, "Nonexistent variable: %s\n", generalAssignation->id->idValue);
@@ -2123,8 +2281,10 @@ static void _generateGeneralAssignation(GeneralAssignation * generalAssignation)
 }
 
 static void _generateArithmeticAssignation(ArithmeticAssignation * arithmeticAssignation){//INTtypes or forest!
+	logInformation(_logger, "arithmetic assignation.");
 	if(ERROR_OCCURED==true) return;
 	if(arithmeticAssignation->type == ID_BY_VALUE){
+		logInformation(_logger, "aa: ID_BY_VALUE");
 		EntryType type = getType(arithmeticAssignation->id->idValue);
 		if(type == EMPTY_TYPE){
 			logError(_logger, "Nonexistent variable: %s\n", arithmeticAssignation->id->idValue);
@@ -2134,6 +2294,7 @@ static void _generateArithmeticAssignation(ArithmeticAssignation * arithmeticAss
 		}
 
 		if(type == INTEGER_TYPE){
+			logInformation(_logger, "aa: INTEGER_TYPE");
 			_INTEGER * integer = getInteger(arithmeticAssignation->id->idValue).value._integer;
 
 			ArithmeticOperation * aux = calloc(1, sizeof(ArithmeticOperation));
@@ -2141,7 +2302,7 @@ static void _generateArithmeticAssignation(ArithmeticAssignation * arithmeticAss
 			aux->type = LV_RV;
 			DeclarationValue * auxVal = calloc(1, sizeof(DeclarationValue));
 			auxVal->type = INTEGERvalue;
-			auxVal->intValue->value = integer->value;
+			auxVal->intValue = integer;
 			aux->leftValue = auxVal;
 			aux->rightValue = arithmeticAssignation->value;
 			int res = _generateArithmeticOperation(aux);
@@ -2203,7 +2364,7 @@ static void _generateArithmeticAssignation(ArithmeticAssignation * arithmeticAss
 			aux->type = LV_RO;
 			DeclarationValue * auxVal = calloc(1, sizeof(DeclarationValue));
 			auxVal->type = INTEGERvalue;
-			auxVal->intValue->value = integer->value;
+			auxVal->intValue = integer;
 			aux->leftValue = auxVal;
 			aux->rightOperation = arithmeticAssignation->arithmeticOperation;
 			int res = _generateArithmeticOperation(aux);
@@ -2229,10 +2390,13 @@ static void _generateArithmeticAssignation(ArithmeticAssignation * arithmeticAss
 				aux->type = LV_RV;
 				DeclarationValue * auxVal = calloc(1, sizeof(DeclarationValue));
 				auxVal->type = INTEGERvalue;
-				auxVal->intValue->value = world->height;
+				_INTEGER * auxInt = calloc(1, sizeof(_INTEGER));
+				auxInt->value = world->height;
+				auxVal->intValue = auxInt;
 				aux->leftValue = auxVal;
 				aux->rightValue = arithmeticAssignation->value;
 				int res = _generateArithmeticOperation(aux);
+				free(auxInt);
 				free(auxVal);
 				free(aux);
 
@@ -2245,10 +2409,13 @@ static void _generateArithmeticAssignation(ArithmeticAssignation * arithmeticAss
 				aux->type = LV_RV;
 				DeclarationValue * auxVal = calloc(1, sizeof(DeclarationValue));
 				auxVal->type = INTEGERvalue;
-				auxVal->intValue->value = world->width;
+				_INTEGER * auxInt = calloc(1, sizeof(_INTEGER));
+				auxInt->value = world->width;
+				auxVal->intValue = auxInt;
 				aux->leftValue = auxVal;
 				aux->rightValue = arithmeticAssignation->value;
 				int res = _generateArithmeticOperation(aux);
+				free(auxInt);
 				free(auxVal);
 				free(aux);
 
@@ -2261,10 +2428,13 @@ static void _generateArithmeticAssignation(ArithmeticAssignation * arithmeticAss
 				aux->type = LV_RV;
 				DeclarationValue * auxVal = calloc(1, sizeof(DeclarationValue));
 				auxVal->type = INTEGERvalue;
-				auxVal->intValue->value = world->uneveness;
+				_INTEGER * auxInt = calloc(1, sizeof(_INTEGER));
+				auxInt->value = world->uneveness;
+				auxVal->intValue = auxInt;
 				aux->leftValue = auxVal;
 				aux->rightValue = arithmeticAssignation->value;
 				int res = _generateArithmeticOperation(aux);
+				free(auxInt);
 				free(auxVal);
 				free(aux);
 
@@ -2295,10 +2465,13 @@ static void _generateArithmeticAssignation(ArithmeticAssignation * arithmeticAss
 					aux->type = LV_RV;
 					DeclarationValue * auxVal = calloc(1, sizeof(DeclarationValue));
 					auxVal->type = INTEGERvalue;
-					auxVal->intValue->value = tree->x;
+					_INTEGER * auxInt = calloc(1, sizeof(_INTEGER));
+					auxInt->value = tree->x;
+					auxVal->intValue = auxInt;
 					aux->leftValue = auxVal;
 					aux->rightValue = arithmeticAssignation->value;
 					int res = _generateArithmeticOperation(aux);
+					free(auxInt);
 					free(auxVal);
 					free(aux);
 
@@ -2311,10 +2484,13 @@ static void _generateArithmeticAssignation(ArithmeticAssignation * arithmeticAss
 					aux->type = LV_RV;
 					DeclarationValue * auxVal = calloc(1, sizeof(DeclarationValue));
 					auxVal->type = INTEGERvalue;
-					auxVal->intValue->value = tree->height;
+					_INTEGER * auxInt = calloc(1, sizeof(_INTEGER));
+					auxInt->value = tree->height;
+					auxVal->intValue = auxInt;
 					aux->leftValue = auxVal;
 					aux->rightValue = arithmeticAssignation->value;
 					int res = _generateArithmeticOperation(aux);
+					free(auxInt);
 					free(auxVal);
 					free(aux);
 
@@ -2327,10 +2503,13 @@ static void _generateArithmeticAssignation(ArithmeticAssignation * arithmeticAss
 					aux->type = LV_RV;
 					DeclarationValue * auxVal = calloc(1, sizeof(DeclarationValue));
 					auxVal->type = INTEGERvalue;
-					auxVal->intValue->value = tree->depth;
+					_INTEGER * auxInt = calloc(1, sizeof(_INTEGER));
+					auxInt->value = tree->depth;
+					auxVal->intValue = auxInt;
 					aux->leftValue = auxVal;
 					aux->rightValue = arithmeticAssignation->value;
 					int res = _generateArithmeticOperation(aux);
+					free(auxInt);
 					free(auxVal);
 					free(aux);
 
@@ -2343,10 +2522,13 @@ static void _generateArithmeticAssignation(ArithmeticAssignation * arithmeticAss
 					aux->type = LV_RV;
 					DeclarationValue * auxVal = calloc(1, sizeof(DeclarationValue));
 					auxVal->type = INTEGERvalue;
-					auxVal->intValue->value = tree->density;
+					_INTEGER * auxInt = calloc(1, sizeof(_INTEGER));
+					auxInt->value = tree->density;
+					auxVal->intValue = auxInt;
 					aux->leftValue = auxVal;
 					aux->rightValue = arithmeticAssignation->value;
 					int res = _generateArithmeticOperation(aux);
+					free(auxInt);
 					free(auxVal);
 					free(aux);
 
@@ -2359,10 +2541,13 @@ static void _generateArithmeticAssignation(ArithmeticAssignation * arithmeticAss
 					aux->type = LV_RV;
 					DeclarationValue * auxVal = calloc(1, sizeof(DeclarationValue));
 					auxVal->type = INTEGERvalue;
-					auxVal->intValue->value = tree->bark;
+					_INTEGER * auxInt = calloc(1, sizeof(_INTEGER));
+					auxInt->value = tree->bark;
+					auxVal->intValue = auxInt;
 					aux->leftValue = auxVal;
 					aux->rightValue = arithmeticAssignation->value;
 					int res = _generateArithmeticOperation(aux);
+					free(auxInt);
 					free(auxVal);
 					free(aux);
 
@@ -2384,10 +2569,13 @@ static void _generateArithmeticAssignation(ArithmeticAssignation * arithmeticAss
 					aux->type = LV_RV;
 					DeclarationValue * auxVal = calloc(1, sizeof(DeclarationValue));
 					auxVal->type = INTEGERvalue;
-					auxVal->intValue->value = forest->start;
+					_INTEGER * auxInt = calloc(1, sizeof(_INTEGER));
+					auxInt->value = forest->start;
+					auxVal->intValue = auxInt;
 					aux->leftValue = auxVal;
 					aux->rightValue = arithmeticAssignation->value;
 					int res = _generateArithmeticOperation(aux);
+					free(auxInt);
 					free(auxVal);
 					free(aux);
 
@@ -2400,10 +2588,13 @@ static void _generateArithmeticAssignation(ArithmeticAssignation * arithmeticAss
 					aux->type = LV_RV;
 					DeclarationValue * auxVal = calloc(1, sizeof(DeclarationValue));
 					auxVal->type = INTEGERvalue;
-					auxVal->intValue->value = forest->end;
+					_INTEGER * auxInt = calloc(1, sizeof(_INTEGER));
+					auxInt->value = forest->end;
+					auxVal->intValue = auxInt;
 					aux->leftValue = auxVal;
 					aux->rightValue = arithmeticAssignation->value;
 					int res = _generateArithmeticOperation(aux);
+					free(auxInt);
 					free(auxVal);
 					free(aux);
 
@@ -2434,10 +2625,13 @@ static void _generateArithmeticAssignation(ArithmeticAssignation * arithmeticAss
 				aux->type = LV_RO;
 				DeclarationValue * auxVal = calloc(1, sizeof(DeclarationValue));
 				auxVal->type = INTEGERvalue;
-				auxVal->intValue->value = world->height;
+				_INTEGER * auxInt = calloc(1, sizeof(_INTEGER));
+				auxInt->value = world->height;
+				auxVal->intValue = auxInt;
 				aux->leftValue = auxVal;
 				aux->rightOperation = arithmeticAssignation->arithmeticOperation;
 				int res = _generateArithmeticOperation(aux);
+				free(auxInt);
 				free(auxVal);
 				free(aux);
 
@@ -2450,10 +2644,13 @@ static void _generateArithmeticAssignation(ArithmeticAssignation * arithmeticAss
 				aux->type = LV_RO;
 				DeclarationValue * auxVal = calloc(1, sizeof(DeclarationValue));
 				auxVal->type = INTEGERvalue;
-				auxVal->intValue->value = world->width;
+				_INTEGER * auxInt = calloc(1, sizeof(_INTEGER));
+				auxInt->value = world->width;
+				auxVal->intValue = auxInt;
 				aux->leftValue = auxVal;
 				aux->rightOperation = arithmeticAssignation->arithmeticOperation;
 				int res = _generateArithmeticOperation(aux);
+				free(auxInt);
 				free(auxVal);
 				free(aux);
 
@@ -2466,10 +2663,13 @@ static void _generateArithmeticAssignation(ArithmeticAssignation * arithmeticAss
 				aux->type = LV_RO;
 				DeclarationValue * auxVal = calloc(1, sizeof(DeclarationValue));
 				auxVal->type = INTEGERvalue;
-				auxVal->intValue->value = world->uneveness;
+				_INTEGER * auxInt = calloc(1, sizeof(_INTEGER));
+				auxInt->value = world->uneveness;
+				auxVal->intValue = auxInt;
 				aux->leftValue = auxVal;
 				aux->rightOperation = arithmeticAssignation->arithmeticOperation;
 				int res = _generateArithmeticOperation(aux);
+				free(auxInt);
 				free(auxVal);
 				free(aux);
 
@@ -2500,10 +2700,13 @@ static void _generateArithmeticAssignation(ArithmeticAssignation * arithmeticAss
 					aux->type = LV_RO;
 					DeclarationValue * auxVal = calloc(1, sizeof(DeclarationValue));
 					auxVal->type = INTEGERvalue;
-					auxVal->intValue->value = tree->x;
+					_INTEGER * auxInt = calloc(1, sizeof(_INTEGER));
+					auxInt->value = tree->x;
+					auxVal->intValue = auxInt;
 					aux->leftValue = auxVal;
 					aux->rightOperation = arithmeticAssignation->arithmeticOperation;
 					int res = _generateArithmeticOperation(aux);
+					free(auxInt);
 					free(auxVal);
 					free(aux);
 
@@ -2516,10 +2719,13 @@ static void _generateArithmeticAssignation(ArithmeticAssignation * arithmeticAss
 					aux->type = LV_RO;
 					DeclarationValue * auxVal = calloc(1, sizeof(DeclarationValue));
 					auxVal->type = INTEGERvalue;
-					auxVal->intValue->value = tree->height;
+					_INTEGER * auxInt = calloc(1, sizeof(_INTEGER));
+					auxInt->value = tree->height;
+					auxVal->intValue = auxInt;
 					aux->leftValue = auxVal;
 					aux->rightOperation = arithmeticAssignation->arithmeticOperation;
 					int res = _generateArithmeticOperation(aux);
+					free(auxInt);
 					free(auxVal);
 					free(aux);
 
@@ -2532,10 +2738,13 @@ static void _generateArithmeticAssignation(ArithmeticAssignation * arithmeticAss
 					aux->type = LV_RO;
 					DeclarationValue * auxVal = calloc(1, sizeof(DeclarationValue));
 					auxVal->type = INTEGERvalue;
-					auxVal->intValue->value = tree->depth;
+					_INTEGER * auxInt = calloc(1, sizeof(_INTEGER));
+					auxInt->value = tree->depth;
+					auxVal->intValue = auxInt;
 					aux->leftValue = auxVal;
 					aux->rightOperation = arithmeticAssignation->arithmeticOperation;
 					int res = _generateArithmeticOperation(aux);
+					free(auxInt);
 					free(auxVal);
 					free(aux);
 
@@ -2548,10 +2757,13 @@ static void _generateArithmeticAssignation(ArithmeticAssignation * arithmeticAss
 					aux->type = LV_RO;
 					DeclarationValue * auxVal = calloc(1, sizeof(DeclarationValue));
 					auxVal->type = INTEGERvalue;
-					auxVal->intValue->value = tree->density;
+					_INTEGER * auxInt = calloc(1, sizeof(_INTEGER));
+					auxInt->value = tree->density;
+					auxVal->intValue = auxInt;
 					aux->leftValue = auxVal;
 					aux->rightOperation = arithmeticAssignation->arithmeticOperation;
 					int res = _generateArithmeticOperation(aux);
+					free(auxInt);
 					free(auxVal);
 					free(aux);
 
@@ -2564,10 +2776,13 @@ static void _generateArithmeticAssignation(ArithmeticAssignation * arithmeticAss
 					aux->type = LV_RO;
 					DeclarationValue * auxVal = calloc(1, sizeof(DeclarationValue));
 					auxVal->type = INTEGERvalue;
-					auxVal->intValue->value = tree->bark;
+					_INTEGER * auxInt = calloc(1, sizeof(_INTEGER));
+					auxInt->value = tree->bark;
+					auxVal->intValue = auxInt;
 					aux->leftValue = auxVal;
 					aux->rightOperation = arithmeticAssignation->arithmeticOperation;
 					int res = _generateArithmeticOperation(aux);
+					free(auxInt);
 					free(auxVal);
 					free(aux);
 
@@ -2589,10 +2804,13 @@ static void _generateArithmeticAssignation(ArithmeticAssignation * arithmeticAss
 					aux->type = LV_RO;
 					DeclarationValue * auxVal = calloc(1, sizeof(DeclarationValue));
 					auxVal->type = INTEGERvalue;
-					auxVal->intValue->value = forest->start;
+					_INTEGER * auxInt = calloc(1, sizeof(_INTEGER));
+					auxInt->value = forest->start;
+					auxVal->intValue = auxInt;
 					aux->leftValue = auxVal;
 					aux->rightOperation = arithmeticAssignation->arithmeticOperation;
 					int res = _generateArithmeticOperation(aux);
+					free(auxInt);
 					free(auxVal);
 					free(aux);
 
@@ -2605,10 +2823,13 @@ static void _generateArithmeticAssignation(ArithmeticAssignation * arithmeticAss
 					aux->type = LV_RO;
 					DeclarationValue * auxVal = calloc(1, sizeof(DeclarationValue));
 					auxVal->type = INTEGERvalue;
-					auxVal->intValue->value = forest->end;
+					_INTEGER * auxInt = calloc(1, sizeof(_INTEGER));
+					auxInt->value = forest->end;
+					auxVal->intValue = auxInt;
 					aux->leftValue = auxVal;
 					aux->rightOperation = arithmeticAssignation->arithmeticOperation;
 					int res = _generateArithmeticOperation(aux);
+					free(auxInt);
 					free(auxVal);
 					free(aux);
 
