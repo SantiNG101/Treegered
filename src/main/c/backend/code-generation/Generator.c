@@ -75,7 +75,7 @@ static void _generateWorldPrologue(const int worldHeight, const int worldWidth, 
 		"</script>\n"
 		"</head>\n<body style='background-color: black'>\n"
 	);
-	_output(file, 0, "<h1 style='position:absolute; top:10px; left:10px; color:white' >%s</h1>\n"
+	_output(file, 0, "<h1 style='position:absolute; top:10px; left:10px; color:white; background-color:black; z-index:99999' >%s</h1>\n"
 	, worldMessage
 	);
 }

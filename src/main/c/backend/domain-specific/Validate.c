@@ -6,18 +6,18 @@ int ERROR_OCCURED = false;
 static Logger * _logger = NULL;
 
 /* DEFAULT VALUES */
-const int DEFAULT_WORLD_HEIGHT = 70;
+const int DEFAULT_WORLD_HEIGHT = 100;
 const int DEFAULT_WORLD_WIDTH = 100;
 const int DEFAULT_WORLD_UNEVENESS = 0;
 char * DEFAULT_WORLD_MESSAGE = "bie ^_^";
 
-const int DEFAULT_TREE_HEIGHT = 10;
-const int DEFAULT_TREE_X = DEFAULT_WORLD_WIDTH/2;
+const int DEFAULT_TREE_HEIGHT = 70;
+const int DEFAULT_TREE_X = DEFAULT_WORLD_WIDTH/4;
 const char DEFAULT_TREE_LEAF = '*';
-const Hexcolor DEFAULT_TREE_COLOR = "#FFFFFF";
-const int DEFAULT_TREE_DEPTH = 0;
-const int DEFAULT_TREE_DENSITY = 0;
-const int DEFAULT_TREE_BARK = 0;
+const Hexcolor DEFAULT_TREE_COLOR = "#34A203";
+const int DEFAULT_TREE_DEPTH = 1;
+const int DEFAULT_TREE_DENSITY = 50;
+const int DEFAULT_TREE_BARK = 7;
 const boolean DEFAULT_TREE_SNOWED = false;
 
 const int DEFAULT_FOREST_START = 0;
@@ -2058,6 +2058,7 @@ static void _generateGeneralAssignation(GeneralAssignation * generalAssignation)
 				else if(generalAssignation->value->type == BOOLEANvalue){
 					if(strcmp(generalAssignation->att->attributeID->idValue, "snowed") == 0){
 						tree->snowed = generalAssignation->value->booleanValue->value;
+						logInformation(_logger, "new tree->snowed=%d", tree->snowed);
 					}
 					else{
 						logError(_logger, "Unknown treeAttribute for boolean assign: %s\n", generalAssignation->att->attributeID->idValue);
@@ -2140,6 +2141,7 @@ static void _generateGeneralAssignation(GeneralAssignation * generalAssignation)
 						_BOOLEAN * IDbool = getBoolean(generalAssignation->value->idValue->idValue).value._boolean;
 						if(strcmp(generalAssignation->att->attributeID->idValue, "snowed") == 0){
 							tree->snowed = IDbool->value;
+						logInformation(_logger, "new tree->snowed=%d", tree->snowed);
 						}
 						else{
 							logError(_logger, "Unknown treeAttribute for boolean assign: %s\n", generalAssignation->att->attributeID->idValue);
@@ -3304,6 +3306,7 @@ static void _generateTreeAssignment(TreeAssignment * treeAssignment, char * tree
 		else if(treeAssignment->value->type == BOOLEANvalue){
 			if(strcmp(treeAssignment->id->idValue, "snowed") == 0){
 				tree->snowed = treeAssignment->value->booleanValue->value;
+						logInformation(_logger, "new tree->snowed=%d", tree->snowed);
 			}
 			else{
 				logError(_logger, "Unknown tree attribute assignment by boolean value by name: %s\n", treeAssignment->id->idValue);
@@ -3346,6 +3349,7 @@ static void _generateTreeAssignment(TreeAssignment * treeAssignment, char * tree
 			else if(type == BOOL_TYPE){
 				if(strcmp(treeAssignment->id->idValue, "snowed") == 0){
 					tree->snowed = getBoolean(treeAssignment->value->idValue->idValue).value._boolean->value;
+						logInformation(_logger, "new tree->snowed=%d", tree->snowed);
 				}
 				else{
 					logError(_logger, "Unknown tree attribute assignment by boolean value by name: %s\n", treeAssignment->id->idValue);
@@ -3724,6 +3728,7 @@ static void _generateTreeExpression(TreeExpression * treeExpression){
 			tree->bark = DEFAULT_TREE_BARK;
 			tree->snowed = DEFAULT_TREE_SNOWED;
 			insertTree(treeExpression->id->idValue, tree);
+			logInformation(_logger, "tree snow %d", tree->snowed);
 			_generateTreeAssignments(treeExpression->treeAssignments, treeExpression->id->idValue);
 		}
 		
