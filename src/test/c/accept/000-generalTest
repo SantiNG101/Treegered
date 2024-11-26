@@ -17,7 +17,7 @@ tree t1 with (
 	depth = 5, 
 	density = 20, 
 	bark = 2, 
-	snowed = false 
+	snowed = true 
 );
 
 forest f1 with (

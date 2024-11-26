@@ -18,7 +18,7 @@ const Hexcolor DEFAULT_TREE_COLOR = "#34A203";
 const int DEFAULT_TREE_DEPTH = 1;
 const int DEFAULT_TREE_DENSITY = 50;
 const int DEFAULT_TREE_BARK = 7;
-const boolean DEFAULT_TREE_SNOWED = false;
+const boolean DEFAULT_TREE_SNOWED = FALSE;
 
 const int DEFAULT_FOREST_START = 0;
 const int DEFAULT_FOREST_END = DEFAULT_WORLD_WIDTH;
@@ -3762,6 +3762,7 @@ static void _generateTreeExpression(TreeExpression * treeExpression){
 			insertTree(treeExpression->id->idValue, tree);
 			logInformation(_logger, "tree snow %d", tree->snowed);
 			_generateTreeAssignments(treeExpression->treeAssignments, treeExpression->id->idValue);
+			logInformation(_logger, "post treeassignments: tree %s snow %d", treeExpression->id->idValue, tree->snowed);
 		}
 		
 	}

@@ -84,7 +84,7 @@ static void _generateTreeDraw(int x, boolean snowed, int density, int height, in
 	_output(file, 0, "<div class='tree' style='left: %d%; bottom: 0;'>\n"
 	, x
 	);
-	if(snowed!=0){
+	if(snowed==TRUE){
 		_output(file, 0, "<div class='leaves' style='width: %dpx; height: %dpx; background-color: white; z-index:%d; position:absolute; top: 5px; left:-5px'></div>\n"
 		, (density+1), (height/2), ((depth*2)-1)
 		);
