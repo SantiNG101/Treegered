@@ -80,6 +80,38 @@ void addTreeToGrow(_GROWNODE * grow, _TREENODE *tree){
 	else return addTreeToGrowRecursive(grow->trees, tree);
 }
 
+_TREENODE * copyTreesForGrowRecursive(_TREENODE * trees){
+	if(trees == NULL) return NULL;
+	_TREENODE * new = calloc(1, sizeof(_TREENODE));
+	new->height = trees->height;
+	new->x = trees->x;
+	new->snowed = trees->snowed;
+	new->color = trees->color;
+	new->depth = trees->depth;
+	new->density = trees->density;
+	new->bark = trees->bark;
+	new->leaf = trees->leaf;
+	new->next = copyTreesForGrowRecursive(trees->next);
+	return new;
+}
+
+_TREENODE * copyTreesForGrow(_TREENODE * trees){
+	if(trees==NULL) return NULL;
+	if(trees->next == NULL){
+		_TREENODE * new = calloc(1, sizeof(_TREENODE));
+		new->height = trees->height;
+		new->x = trees->x;
+		new->snowed = trees->snowed;
+		new->color = trees->color;
+		new->depth = trees->depth;
+		new->density = trees->density;
+		new->bark = trees->bark;
+		new->leaf = trees->leaf;
+		return new;
+	}
+	return copyTreesForGrowRecursive(trees);
+}
+
 
 void addForestToGrowRecursive(_FORESTNODE * current, _FORESTNODE * forest){
 	if(current->next == NULL){
@@ -2949,7 +2981,7 @@ static void _generateGrowExpression(GrowExpression * growExpression){
 		_FORESTNODE * growforest = calloc(1, sizeof(_FORESTNODE));
 		growforest->start = forest->start;
 		growforest->end = forest->end;
-		growforest->trees = forest->trees;
+		growforest->trees = copyTreesForGrow(forest->trees);
 		addForestToGrow(grow, growforest);
 		return;
 	}
